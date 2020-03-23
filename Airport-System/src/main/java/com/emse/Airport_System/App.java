@@ -7,6 +7,8 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class App {
 	public static void main(String Args[]) {
     	// line added by Luis to test commit from Eclipse.....
-        SpringApplication.run(App.class, Args);
+        // SpringApplication.run(App.class, Args);
+
+        PlaneControllerTest.mainloop();
     }
 }

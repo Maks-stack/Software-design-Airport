@@ -32,6 +32,14 @@ public class PlaneControllerTest {
         }
         System.out.printf("______________________________________________\n");
 
+        planes.get(0).getState().proceedToNextState(planes.get(0));
+
+        for (Plane plane : planes
+        ) {
+            System.out.printf("ID: %s Model: %s State: %s\n", plane.getId(), plane.getModel(), plane.getState().getStateName());
+        }
+        System.out.printf("______________________________________________\n");
+
 
 
 
