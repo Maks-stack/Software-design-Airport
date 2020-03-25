@@ -2,12 +2,14 @@ package com.emse.Airport_System.ServiceManager;
 
 public class RefuelService extends Service {
 	
-	private String ServiceName = "RefuelService";
+	private final float RefuelServiceDuration = 5;
 	
-	public void CarryOutService() {
-		super.CarryOutService();
+	public RefuelService() {
 		
-		System.out.println("Carry out service " + ServiceName);
-	}
+		ServiceName = "RefuelService";
+		duration = RefuelServiceDuration;	
+		
+		System.out.println("Created Service" + super.ServiceName);
 	
+	}
 }
