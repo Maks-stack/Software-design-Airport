@@ -10,18 +10,20 @@ public class ServiceManager {
 	public ServiceManager() {
 		
 		services = new ArrayList<Service>();
+		services.add(new ReFuel());
+		services.add(new Gate());
+		
 		availableRefuel = new ArrayList<Service>();
 		
 	}
 	
-	public Service getFreeService() {
-		Service s = new Service();
-		return s;
-	}
-	
-	public Service assignService(Plane plane) {
-		Service s = new Service();
-		return s;	
+	public void assignService(Plane plane) {
+		
+		for(Service s : plane.getServices()) {
+			s.carryOutService();
+		}
+		
+		plane.clearOutServices();
 	}
 	
 }
