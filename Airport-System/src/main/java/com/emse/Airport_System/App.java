@@ -10,5 +10,6 @@ public class App {
         // SpringApplication.run(App.class, Args);
 
         PlaneControllerTest.mainloop();
+        ServiceManager.Init();
     }
 }
