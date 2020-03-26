@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 public class PilotView {
 	 @RequestMapping("/PilotInterface")
-	    String hello() {
-	        return "Create new Pilot";
+	    String PilotView() {
+	        return "PilotInterface";
 	    } 
 }
