@@ -21,10 +21,10 @@ public class App {
     	// line added by Luis to test commit from Eclipse.....
         SpringApplication.run(App.class, Args);
 
-		PlaneList.add(new Plane());
+        PlaneList.add(new Plane());		
 		
 		for(Plane currentPlane : PlaneList) {
-			ServiceManager.getInstance().AssignService(currentPlane, new RefuelService());
+			ServiceManager.getInstance().GetServices(currentPlane.GetRequestedServices());
 			ServiceManager.getInstance().AssignService(currentPlane, new CleaningService());
 		}
     }
