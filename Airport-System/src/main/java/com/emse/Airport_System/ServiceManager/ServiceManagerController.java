@@ -7,22 +7,22 @@ import java.util.List;
 
 import com.emse.Airport_System.MockPlane.Plane;
 
-public class ServiceManager {
+public class ServiceManagerController {
 	
 	public static enum ServiceEnum{
 	    REFUEL, CLEANING
 	}
 
-	private static ServiceManager firstInstance = null;
+	private static ServiceManagerController firstInstance = null;
 	
 	Service service = new Service();
 			
-	private ServiceManager() {}
+	private ServiceManagerController() {}
 	
-	public static ServiceManager getInstance() {
+	public static ServiceManagerController getInstance() {
 		
 		if(firstInstance == null) {
-			firstInstance = new ServiceManager();
+			firstInstance = new ServiceManagerController();
 		}
 		
 		return firstInstance;

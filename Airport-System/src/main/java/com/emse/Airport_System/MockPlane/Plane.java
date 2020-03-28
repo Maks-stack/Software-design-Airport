@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.emse.Airport_System.ServiceManager.Service;
-import com.emse.Airport_System.ServiceManager.ServiceManager.ServiceEnum;
+import com.emse.Airport_System.ServiceManager.ServiceManagerController.ServiceEnum;
 
 public class Plane {
 	
