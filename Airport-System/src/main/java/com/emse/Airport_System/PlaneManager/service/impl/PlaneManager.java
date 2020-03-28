@@ -7,7 +7,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 
 @Service
-public final class PlaneManager {
+public class PlaneManager {
 	private ArrayList<Plane> planes = new ArrayList<Plane>();
 
   public void addPlane(String model, State state) {
