@@ -1,9 +1,6 @@
 package com.emse.Airport_System.ServiceManager;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-
-import com.emse.Airport_System.MockPlane.Plane;
+import com.emse.Airport_System.model.Plane;
 
 public class ServiceManager {
 
@@ -23,7 +20,7 @@ public class ServiceManager {
 	}
 	
 	public static void AssignService(Plane plane, Service service) {
-		plane.AssignService(service);
+		plane.assignService(service);
 		service.CarryOutService(plane);
 	}
 	
