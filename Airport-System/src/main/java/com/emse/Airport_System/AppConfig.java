@@ -33,4 +33,14 @@ public class AppConfig {
     DataSource dataSource() {
         return new DataSourceSpy(realDataSource());
     }
+
+    @Bean
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix("/WEB-INF/Views/");
+        viewResolver.setSuffix(".jsp");
+
+        return viewResolver;
+    }
 }
