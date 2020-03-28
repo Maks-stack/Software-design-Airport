@@ -12,3 +12,5 @@ Dom checking in
 Sophie clone / push test 2
 
 Óscar
+
+why do we write our names here? Lucy
