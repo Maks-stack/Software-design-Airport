@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.Random;
 
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
@@ -22,10 +23,15 @@ public class PilotView extends JFrame {
 		 	
 	    	JPanel panel = new JPanel();
 	    	
+	    	Random rand = new Random(); 
+	    	int value = rand.nextInt(1000); 
+	    	System.out.println(value);
+	    	
 	    	this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    	
-	    	this.setSize(600,200);
+	    	this.setSize(200,200);
 	    	this.setTitle("PilotView");
+	    	this.setLocation(value,  200);
 	    	
 	    	panel.add(requestRefuelServiceButton);
 	    	panel.add(requestCleaningService);

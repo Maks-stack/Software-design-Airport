@@ -13,9 +13,9 @@ import com.emse.Airport_System.model.Plane;
 
 public class ServiceManagerView extends JFrame {
 	
-	private JList<ServiceEnum> ServiceList;
+	private JList<String> ServiceList;
 	
-	DefaultListModel<ServiceEnum> listModel = new DefaultListModel<>();
+	DefaultListModel<String> listModel = new DefaultListModel<>();
 
     
 	public ServiceManagerView() {
@@ -48,7 +48,7 @@ public class ServiceManagerView extends JFrame {
 	
 	public void AddService(Plane plane, ServiceEnum service) {
 
-        listModel.addElement(service);
+        listModel.addElement("Flight: " + plane.getModel() + " Requested Service: " + service.toString());
         this.repaint();
 	}
 	

@@ -23,8 +23,8 @@ public class App {
     	// line added by Luis to test commit from Eclipse.....
         //SpringApplication.run(App.class, Args);
 
-		PlaneList.add(new Plane("test", new InAir()));
-		PlaneList.add(new Plane("test", new InAir()));
+		PlaneList.add(new Plane("NEW YORK - MADRID", new InAir()));
+		PlaneList.add(new Plane("LONDON - MADRID", new InAir()));
 		
 		for(Plane currentPlane : PlaneList) {
 			ServiceManagerController.getInstance().RequestService(currentPlane, ServiceEnum.REFUEL);
