@@ -1,17 +1,34 @@
 package com.emse.Airport_System.ServiceManager.ServiceManagerView;
 
-import org.springframework.stereotype.Controller;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import java.awt.BorderLayout;
+import java.awt.GridLayout;
+import java.awt.event.ActionListener;
 
-@Controller
-public class ServiceManagerView {
-	 @RequestMapping("/ServiceManager")
-	    public String ServiceManagerView() {
-		 
-		 	
-		 	
-		 
-	        return "ServiceManager.jsp";
-	    } 
+import javax.swing.*;
+
+public class ServiceManagerView extends JFrame {
+	
+	private JButton requestRefuelServiceButton = new JButton("Request Refuel");    
+	private JButton requestCleaningService = new JButton("Request Cleaning");    
+	
+	public ServiceManagerView() {
+		
+    	JPanel panel = new JPanel();
+    	
+    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	
+    	this.setSize(600,200);
+    	this.setTitle("ServiceManager");
+    	
+    	panel.add(requestRefuelServiceButton);
+    	panel.add(requestCleaningService);
+    	this.add(panel);	    
+	    			
+	}
+	
+	public void addButtonListeners(ActionListener listener) {
+		
+		requestRefuelServiceButton.addActionListener(listener);
+		requestCleaningService.addActionListener(listener);	
+	}
 }
