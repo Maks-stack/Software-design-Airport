@@ -25,12 +25,11 @@ public class PilotView extends JFrame {
 	    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 	    	
 	    	this.setSize(600,200);
-	    	this.setTitle("ServiceManager");
+	    	this.setTitle("PilotView");
 	    	
 	    	panel.add(requestRefuelServiceButton);
 	    	panel.add(requestCleaningService);
 	    	this.add(panel);	
-		 	
 	    } 
 	    
 	    public void addButtonListeners(ActionListener listener) {

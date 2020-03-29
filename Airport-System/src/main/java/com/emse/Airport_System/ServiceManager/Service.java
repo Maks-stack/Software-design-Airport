@@ -1,12 +1,9 @@
 package com.emse.Airport_System.ServiceManager;
 
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.sql.Date;
+import com.emse.Airport_System.model.Plane;
+
 import java.util.Timer;
 import java.util.TimerTask;
-
-import com.emse.Airport_System.MockPlane.Plane;
 
 public class Service {
 
@@ -17,13 +14,13 @@ public class Service {
 		
 	}
 	
-	protected void CarryOutService(Plane plane) {
+	public void CarryOutService(Plane plane) {
 		System.out.println("Start Service: " + ServiceName);
 		DoCarryOutService(plane);
 	}
 	
 	public void OnServiceFinished(Plane plane) {
-		plane.RemoveService(this);
+		plane.removeService(this);
 	}
 	
 	protected void DoCarryOutService(Plane plane) {

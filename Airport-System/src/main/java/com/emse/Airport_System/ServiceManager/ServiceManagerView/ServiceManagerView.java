@@ -3,32 +3,57 @@ package com.emse.Airport_System.ServiceManager.ServiceManagerView;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionListener;
+import java.util.List;
 
 import javax.swing.*;
 
+import com.emse.Airport_System.ServiceManager.Service;
+import com.emse.Airport_System.ServiceManager.ServiceManagerController.ServiceEnum;
+import com.emse.Airport_System.model.Plane;
+
 public class ServiceManagerView extends JFrame {
 	
-	private JButton requestRefuelServiceButton = new JButton("Request Refuel");    
-	private JButton requestCleaningService = new JButton("Request Cleaning");    
+	private JList<ServiceEnum> ServiceList;
 	
+	DefaultListModel<ServiceEnum> listModel = new DefaultListModel<>();
+
+    
 	public ServiceManagerView() {
 		
     	JPanel panel = new JPanel();
+    	JLabel label = new JLabel("Requested Services");
+        
     	
-    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    	//create the model and add elements
+       
+        //create the list
     	
+        ServiceList = new JList<>(listModel);
+        
+        add(ServiceList);
+        
+        panel.add(label);
+        
+        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
+        this.setSize(600,200);
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
+        
     	this.setSize(600,200);
     	this.setTitle("ServiceManager");
     	
-    	panel.add(requestRefuelServiceButton);
-    	panel.add(requestCleaningService);
-    	this.add(panel);	    
-	    			
+    	
+    	this.add(panel);				
+	}
+	
+	public void AddService(Plane plane, ServiceEnum service) {
+
+        listModel.addElement(service);
+        this.repaint();
 	}
 	
 	public void addButtonListeners(ActionListener listener) {
 		
-		requestRefuelServiceButton.addActionListener(listener);
-		requestCleaningService.addActionListener(listener);	
+			
 	}
 }
