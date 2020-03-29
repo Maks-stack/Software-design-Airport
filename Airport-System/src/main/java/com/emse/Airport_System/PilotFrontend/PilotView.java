@@ -22,7 +22,7 @@ public class PilotView extends JFrame {
 		 	
 	    	JPanel panel = new JPanel();
 	    	
-	    	this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+	    	this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    	
 	    	this.setSize(600,200);
 	    	this.setTitle("PilotView");

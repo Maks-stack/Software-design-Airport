@@ -24,6 +24,7 @@ public class App {
         //SpringApplication.run(App.class, Args);
 
 		PlaneList.add(new Plane("test", new InAir()));
+		PlaneList.add(new Plane("test", new InAir()));
 		
 		for(Plane currentPlane : PlaneList) {
 			ServiceManagerController.getInstance().RequestService(currentPlane, ServiceEnum.REFUEL);
