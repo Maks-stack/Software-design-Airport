@@ -3,7 +3,11 @@ package com.emse.Airport_System.model;
 import com.emse.Airport_System.PilotFrontend.PilotView;
 import com.emse.Airport_System.PlaneManager.states.State;
 import com.emse.Airport_System.ServiceManager.Service;
+import com.emse.Airport_System.ServiceManager.ServiceManagerController;
+import com.emse.Airport_System.ServiceManager.ServiceManagerController.ServiceEnum;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Plane {
@@ -16,8 +20,9 @@ public class Plane {
   public Plane(String model, State state) {
     this.model = model;
     this.state = state;
-    this.view = new PilotView();
+    this.view = new PilotView(model);
     this.view.setVisible(true);
+    this.view.addButtonListeners(new ServiceListener(this));
   }
 
   public void setState(State state) {
@@ -55,5 +60,25 @@ public class Plane {
   public void removeService(Service service) {
     services.remove(service);
   }
+  
+  public class ServiceListener implements ActionListener {
+	  
+	  	Plane thisPlane;
+	  	
+	  	ServiceListener(Plane callingPlane){
+	  		thisPlane = callingPlane;
+	  	}
 
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			
+			if(e.paramString().contains("Refuel")) {
+				ServiceManagerController.getInstance().RequestService(thisPlane, ServiceEnum.REFUEL);
+			}
+			if(e.paramString().contains("Cleaning")) {
+				ServiceManagerController.getInstance().RequestService(thisPlane, ServiceEnum.CLEANING);
+			}
+			System.out.println(e.paramString());
+		}	
+	}
 }

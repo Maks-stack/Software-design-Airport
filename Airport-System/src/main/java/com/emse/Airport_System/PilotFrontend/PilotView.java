@@ -14,12 +14,14 @@ import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
 
+import com.emse.Airport_System.model.Plane;
+
 public class PilotView extends JFrame { 
-	
+		
 	private JButton requestRefuelServiceButton = new JButton("Request Refuel");    
 	private JButton requestCleaningService = new JButton("Request Cleaning");
 	 
-	    public PilotView() {
+	    public PilotView(String Title) {
 		 	
 	    	JPanel panel = new JPanel();
 	    	
@@ -30,7 +32,7 @@ public class PilotView extends JFrame {
 	    	this.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
 	    	
 	    	this.setSize(200,200);
-	    	this.setTitle("PilotView");
+	    	this.setTitle(Title);
 	    	this.setLocation(value,  200);
 	    	
 	    	panel.add(requestRefuelServiceButton);

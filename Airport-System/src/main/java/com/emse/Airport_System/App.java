@@ -26,9 +26,6 @@ public class App {
 		PlaneList.add(new Plane("NEW YORK - MADRID", new InAir()));
 		PlaneList.add(new Plane("LONDON - MADRID", new InAir()));
 		
-		for(Plane currentPlane : PlaneList) {
-			ServiceManagerController.getInstance().RequestService(currentPlane, ServiceEnum.REFUEL);
-			ServiceManagerController.getInstance().RequestService(currentPlane, ServiceEnum.CLEANING);
-		}
+		ServiceManagerController.getInstance();
     }
 }
