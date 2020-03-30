@@ -71,6 +71,7 @@ public class ServiceManagerController {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			e.getSource();
+			System.out.println(e.paramString() + "     " + theView.GetSelectedValue());
 		}
 		
 	}

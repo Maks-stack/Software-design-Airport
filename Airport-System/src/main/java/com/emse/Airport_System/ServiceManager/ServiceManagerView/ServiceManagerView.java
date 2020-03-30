@@ -17,6 +17,8 @@ public class ServiceManagerView extends JFrame {
 	
 	DefaultListModel<String> listModel = new DefaultListModel<>();
 
+	JButton assignRefuelService = new JButton("Assign Refuel Service");
+	JButton assignCleaningService = new JButton("Assign Cleaning Service");
     
 	public ServiceManagerView() {
 		
@@ -30,20 +32,25 @@ public class ServiceManagerView extends JFrame {
     	
         ServiceList = new JList<>(listModel);
         
-        add(ServiceList);
+        JScrollPane pane = new JScrollPane(ServiceList);
         
         panel.add(label);
         
+        panel.setLayout(new BorderLayout());
+        
         this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);    
-        this.setSize(600,200);
+        this.setSize(400,300);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
         
-    	this.setSize(600,200);
+    	
     	this.setTitle("ServiceManager");
     	
-    	
-    	this.add(panel);				
+    	panel.add(pane, BorderLayout.NORTH);
+    	panel.add(assignRefuelService, BorderLayout.EAST);
+        panel.add(assignCleaningService, BorderLayout.WEST);
+        
+    	this.add(panel);	
 	}
 	
 	public void AddService(Plane plane, ServiceEnum service) {
@@ -53,7 +60,11 @@ public class ServiceManagerView extends JFrame {
 	}
 	
 	public void addButtonListeners(ActionListener listener) {
-		
-			
+		assignRefuelService.addActionListener(listener);
+		assignCleaningService.addActionListener(listener);
+	}
+	
+	public String GetSelectedValue() {
+		return ServiceList.getSelectedValue();
 	}
 }
