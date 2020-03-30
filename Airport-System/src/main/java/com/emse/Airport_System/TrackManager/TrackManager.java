@@ -4,12 +4,13 @@ import com.emse.Airport_System.MockPlane.Plane;
 import com.emse.Airport_System.ServiceManager.Service;
 import jdk.nashorn.internal.ir.Assignment;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class TrackManager {
 
 
-    private List<Track> tracks;
+    private List<Track> tracks = new ArrayList<Track>();
 
     private static TrackManager firstInstance = null;
 
@@ -53,7 +54,9 @@ public class TrackManager {
                 }
             }
         }
-        System.out.println("No free tracks found. ");
+        else {
+            System.out.println("No free tracks found. ");
+        }
         return freeTrack;
     }
 
@@ -62,6 +65,7 @@ public class TrackManager {
         TrackState state = new Assigned();
         freeTrack.setState(state);
         //plane.AssignTrack(freeTrack);
+        System.out.println("Assigned track: " + freeTrack.toString());
     }
 
 }

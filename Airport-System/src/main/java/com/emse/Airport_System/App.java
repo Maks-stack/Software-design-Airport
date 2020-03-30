@@ -35,6 +35,7 @@ public class App {
 			ServiceManager.getInstance().AssignService(currentPlane, new RefuelService());
 			ServiceManager.getInstance().AssignService(currentPlane, new CleaningService());
 
+			TrackManager.getInstance().addTrack(track);
 			TrackManager.getInstance().AssignTrack(currentPlane);
 		}
     }
