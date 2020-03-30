@@ -16,16 +16,14 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 import org.springframework.web.servlet.view.JstlView;
 
 @Configuration
-@EnableWebMvc
-@ComponentScan(basePackages = "com.emse.Airport_System")
-public class AppConfig {
+public class AppConfig  {
     @Bean
-        public ViewResolver viewResolver() {
-            InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
-            viewResolver.setViewClass(JstlView.class);
-            viewResolver.setPrefix("/WEB-INF/jsp/");
-            viewResolver.setSuffix(".jsp");
+    public ViewResolver viewResolver() {
+        InternalResourceViewResolver viewResolver = new InternalResourceViewResolver();
+        viewResolver.setViewClass(JstlView.class);
+        viewResolver.setPrefix("/WEB-INF/jsp/");
+        viewResolver.setSuffix(".jsp");
 
-            return viewResolver;
+        return viewResolver;
     }
 }

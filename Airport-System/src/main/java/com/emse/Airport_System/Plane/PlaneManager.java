@@ -3,6 +3,7 @@ package com.emse.Airport_System.Plane;
 import com.emse.Airport_System.Service.ServiceManager;
 
 import java.util.ArrayList;
+import java.util.concurrent.TimeUnit;
 
 public class PlaneManager {
     public static void mainloop() {
@@ -33,7 +34,13 @@ public class PlaneManager {
 
         ServiceManager SM = ServiceManager.getInstance();
         SM.initializeServices();
-        SM.printAllServices();
+        try {
+            TimeUnit.SECONDS.sleep(5);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+        SM.assignService("gate1");
+        System.out.println("service assigned to gate 1");
 
 
     }

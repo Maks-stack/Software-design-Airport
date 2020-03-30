@@ -1,23 +1,16 @@
 package com.emse.Airport_System.Service;
 
-public class ServiceGate extends Service {
-
+public class ServiceRefuel extends Service {
     String name;
     Boolean available;
 
-    public ServiceGate(String name){
+    public ServiceRefuel(String name){
             this.available = Boolean.TRUE;
             this.name = name;
     }
 
-    public ServiceGate(String name, Boolean available){
-        this.available = available;
-        this.name = name;
-    }
-
     @Override
     public void carryOutService() {
-
     }
 
     @Override
@@ -39,8 +32,6 @@ public class ServiceGate extends Service {
     public Boolean getAvailable() {
         return this.available;
     }
-
-
 
 
 }
