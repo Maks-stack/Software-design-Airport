@@ -32,12 +32,12 @@ public class TrackManager {
     }
 
     public void addTrack(Track track) {
-        getTracks().add(track);
+        tracks.add(track);
         System.out.println("Added track: " + track.toString());
     }
 
-    public void removeTrack(Plane plane, Track track) {
-        getTracks().remove(track);
+    public void removeTrack(Track track) {
+        tracks.remove(track);
         System.out.println("Removed track: " + track.toString());
     }
 
@@ -60,12 +60,11 @@ public class TrackManager {
         return freeTrack;
     }
 
-    public void AssignTrack(Plane plane) {
+    public Track AssignTrack() {
         Track freeTrack = getFreeTrack();
         TrackState state = new Assigned();
         freeTrack.setState(state);
-        //plane.AssignTrack(freeTrack);
         System.out.println("Assigned track: " + freeTrack.toString());
+        return freeTrack;
     }
-
 }
