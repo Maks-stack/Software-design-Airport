@@ -1,6 +1,6 @@
 package com.emse.Airport_System.Service;
 
-public class ServiceGate extends Service {
+public class ServiceGate extends PlaneService {
 
     String name;
     Boolean available;

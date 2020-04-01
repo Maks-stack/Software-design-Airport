@@ -12,4 +12,12 @@ public class ServiceRequest {
 
         System.out.println("Service request created");
     }
+
+    public Plane getPlane() {
+        return plane;
+    }
+
+    public String getServiceRequested() {
+        return serviceRequested;
+    }
 }

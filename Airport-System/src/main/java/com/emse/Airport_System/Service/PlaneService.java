@@ -2,7 +2,7 @@ package com.emse.Airport_System.Service;
 
 import javax.validation.constraints.Null;
 
-public abstract class Service{
+public abstract class PlaneService {
 
     public abstract void carryOutService();
     public abstract void setAvailable();

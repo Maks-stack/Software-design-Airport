@@ -1,9 +1,11 @@
 package com.emse.Airport_System.Service;
 
 import com.emse.Airport_System.Plane.Plane;
+import org.springframework.stereotype.Service;
 
 import java.util.*;
 
+@Service
 public class ServiceManager {
     Map<String, Object> services  = new HashMap<>();
     List<ServiceRequest> newServiceRequests = new ArrayList<ServiceRequest>();
@@ -11,10 +13,6 @@ public class ServiceManager {
     List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
 
     private static ServiceManager instance = null;
-
-    private ServiceManager() {
-        // Exists only to defeat instantiation.
-    }
 
     public static ServiceManager getInstance() {
         if(instance == null) {
@@ -55,7 +53,7 @@ public class ServiceManager {
     }
 
     public void assignService(String serviceId){
-        Service sv = (Service) services.get(serviceId);
+        PlaneService sv = (PlaneService) services.get(serviceId);
         sv.setNotAvailable();
     }
 
@@ -73,6 +71,7 @@ public class ServiceManager {
 
     public void registerNewRequest(Plane plane, String ServiceName){
         newServiceRequests.add(new ServiceRequest(plane, ServiceName));
+        System.out.println(newServiceRequests);
     }
 
 }

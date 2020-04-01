@@ -66,4 +66,8 @@ public class Plane implements Observable {
     public void notifyObservers() {
         observers.forEach(obj -> obj.update());
     }
+
+    public String getPlaneId() {
+        return planeId;
+    }
 }
