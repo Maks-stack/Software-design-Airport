@@ -41,7 +41,6 @@ public class PilotView extends JFrame {
 	    } 
 	    
 	    public void addButtonListeners(ActionListener listener) {
-			
 			requestRefuelServiceButton.addActionListener(listener);
 			requestCleaningService.addActionListener(listener);	
 		}
