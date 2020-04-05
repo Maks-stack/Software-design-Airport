@@ -51,5 +51,10 @@ public class ServiceController {
         this.template.convertAndSend("/services/updates", "Test");
     }
 
+    public void notifyServiceSubscribers(Object obj) {
+        this.template.convertAndSend("/services/updates", obj);
+
+    }
+
 
 }

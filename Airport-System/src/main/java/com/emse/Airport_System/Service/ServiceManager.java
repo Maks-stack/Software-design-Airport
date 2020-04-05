@@ -49,11 +49,11 @@ public class ServiceManager implements Observable{
     public void assignService(String serviceId){
         PlaneService sv = (PlaneService) services.get(serviceId);
         sv.setNotAvailable();
+        notifyObservers(sv);
     }
 
     public void assignRandomService(){
-        this.assignService("gate1");
-        notifyObservers();
+        this.assignService("gate"+new Random().nextInt(10));
     }
 
     public void registerNewRequest(Plane plane, String ServiceName){
@@ -78,5 +78,10 @@ public class ServiceManager implements Observable{
     @Override
     public void notifyObservers() {
         observers.forEach(obj -> obj.update());
+    }
+
+    @Override
+    public void notifyObservers(Object obj) {
+        observers.forEach(observer -> observer.update(obj));
     }
 }

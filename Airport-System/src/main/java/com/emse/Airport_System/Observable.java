@@ -8,4 +8,5 @@ public interface Observable {
 
     //method to notify observers of change
     public void notifyObservers();
+    public void notifyObservers(Object obj);
 }

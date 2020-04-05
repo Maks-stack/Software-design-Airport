@@ -30,23 +30,13 @@
             <th>Service available</th>
         </tr>
         <c:forEach items="${gateServices}" var="service">
-                <tr>
+                <tr id="${service.name}">
                     <td>${service.name}</td>
                     <td>${service.available}</td>
                 </tr>
     </c:forEach>
     </table>
     </c:if>
-    </div>
-
-    <div id="RefuelServices" class="ServicesWidget">
-        <h2>Refuel Services (populated via javascript)</h2>
-        <table id="refuelServices" class="greyGridTable" style="width: 300px">
-            <tr>
-                <th>Service ID</th>
-                <th>Service available</th>
-            </tr>
-        </table>
     </div>
 </div>
 
@@ -85,26 +75,25 @@
        stompClient = Stomp.over(socket);
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
-          stompClient.subscribe('/services/updates', function (updates) {
-             console.log(updates)
+          stompClient.subscribe('/services/updates', function (update) {
+             updateServiceStatus(JSON.parse(update.body))
           });
        });
+    }
+
+    function updateServiceStatus(update){
+            $('tr').each(function(){
+                if($(this).attr('id') == update.name){
+                    $(this).html("<td>"+update.name+"</td><td>"+update.available+"</td>");
+                }
+            })
     }
 
     document.getElementById("assignservice").onclick = function () {
      $.ajax({
                         type : "GET",
                         contentType : 'application/json; charset=utf-8',
-                        url : "http://localhost:8080/assignservice",
-                        success : function(result) {
-                            console.log("SUCCESS");
-                        },
-                         error: function(e){
-                             console.log("ERROR: ", e);
-                         },
-                         done : function(e) {
-                             console.log("DONE");
-                         }
+                        url : "http://localhost:8080/assignservice"
             });
     };
 
@@ -113,16 +102,7 @@
         $.ajax({
                     type : "GET",
                     contentType : 'application/json; charset=utf-8',
-                    url : "http://localhost:8080/mockplanerequest",
-                    success : function(result) {
-                        console.log("SUCCESS");
-                    },
-                    error: function(e){
-                        console.log("ERROR: ", e);
-                    },
-                    done : function(e) {
-                        console.log("DONE");
-                    }
+                    url : "http://localhost:8080/mockplanerequest"
             });
     };
 </script>

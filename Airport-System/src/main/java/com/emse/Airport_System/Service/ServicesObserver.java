@@ -21,6 +21,11 @@ public class ServicesObserver implements Observer {
     }
 
     @Override
+    public void update(Object obj) {
+        this.serviceController.notifyServiceSubscribers(obj);
+    }
+
+    @Override
     public void setObservable(Observable serviceManager) {
         this.serviceManager = serviceManager;
     }
