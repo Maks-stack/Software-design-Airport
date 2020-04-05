@@ -1,27 +1,21 @@
 package com.emse.Airport_System.Service;
 
-import com.emse.Airport_System.Plane.Plane;
+import com.emse.Airport_System.Observable;
+import com.emse.Airport_System.Observer;
+import com.emse.Airport_System.model.Plane;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
-public class ServiceManager {
+public class ServiceManager implements Observable{
     Map<String, Object> services  = new HashMap<>();
     List<ServiceRequest> newServiceRequests = new ArrayList<ServiceRequest>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
     List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
+    List<Observer> observers = new ArrayList<Observer>();
 
-    private static ServiceManager instance = null;
-
-    public static ServiceManager getInstance() {
-        if(instance == null) {
-            instance = new ServiceManager();
-        }
-        return instance;
-    }
-
-    public void initializeServices(){
+    {
         for (int i = 0; i < 10; i++) {
             String name = "Gate "  + i;
             services.put("gate"+i, new ServiceGate(name));
@@ -57,16 +51,9 @@ public class ServiceManager {
         sv.setNotAvailable();
     }
 
-    public List<ServiceRequest> getNewServiceRequests(){
-        return newServiceRequests;
-    }
-
-    public List<ServiceRequest> getServiceRequestsInProgress(){
-        return serviceRequestsInProgress;
-    }
-
-    public List<ServiceRequest> getServiceRequestsCompleted(){
-        return serviceRequestsCompleted;
+    public void assignRandomService(){
+        this.assignService("gate1");
+        notifyObservers();
     }
 
     public void registerNewRequest(Plane plane, String ServiceName){
@@ -74,4 +61,22 @@ public class ServiceManager {
         System.out.println(newServiceRequests);
     }
 
+    public List<ServiceRequest> getNewServiceRequests(){
+        return newServiceRequests;
+    }
+
+    @Override
+    public void register(Observer obj) {
+        observers.add(obj);
+    }
+
+    @Override
+    public void unregister(Observer obj) {
+        observers.remove(obj);
+    }
+
+    @Override
+    public void notifyObservers() {
+        observers.forEach(obj -> obj.update());
+    }
 }

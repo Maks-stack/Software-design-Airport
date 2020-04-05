@@ -4,13 +4,20 @@
 <head>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
 <link href="css/serviceManager.css" rel="stylesheet">
+<script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
+<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 </head>
 <body>
     <h1>Service manager</h1>
 
 <div id="planeMocker">
     <p>This button will create a new plane object and create a random service request</p>
-    <input id="mockplanerequest" type="button" value="Mock Plane Request" onclick="mockplanerequest();" />
+    <input id="mockplanerequest" type="button" value="Mock Plane Request" />
+</div>
+
+<div id="serviceAssigner">
+    <p>This button will change random service state and hopefully send update through websocket</p>
+    <input id="assignservice" type="button" value="Assign random service" />
 </div>
 
 <div id="ServicesPanel">
@@ -72,50 +79,41 @@
 </div>
 
 <script>
-    getRefuelServices()
-    window.setInterval(function(){
-        getRefuelServices();
-    }, 3000);
-
-    function getRefuelServices(){
-        $.ajax({
-            type : "GET",
-                contentType : 'application/json; charset=utf-8',
-                url : "http://localhost:8080/getrefuelservices",
-                success : function(services) {
-                        console.log(services);
-                        let t = document.getElementById("refuelServices");
-                        let tableBody = t.getElementsByTagName('tbody')[0];
-                        let tableRows = t.getElementsByTagName("tr");
-                        services.forEach(function (item, index) {
-                            let append = 1;
-
-                            console.log(item, index);
-                            for (var i = 0, row; row = t.rows[i]; i++) {
-                                if(row.cells[0].innerHTML == item[0]){
-                                    append = 0;
-                                }
-                            }
-                            if (append){
-                                var newRow = tableBody.insertRow(tableBody.rows.length);
-                                newRow.innerHTML = "<tr><td>"+item[0]+"</td><td>"+item[1]+"</td></tr>";
-                            }
-                        });
-                    },
-                error: function(e){
-                    console.log("ERROR: ", e);
-                },
-                done : function(e) {
-                    console.log("DONE");
-                }
-        });
+    connectServicesWebsocket();
+    function connectServicesWebsocket() {
+       var socket = new SockJS('/services-websocket');
+       stompClient = Stomp.over(socket);
+       stompClient.connect({}, function (frame) {
+          //console.log('Connected: ' + frame);
+          stompClient.subscribe('/services/updates', function (updates) {
+             console.log(updates)
+          });
+       });
     }
+
+    document.getElementById("assignservice").onclick = function () {
+     $.ajax({
+                        type : "GET",
+                        contentType : 'application/json; charset=utf-8',
+                        url : "http://localhost:8080/assignservice",
+                        success : function(result) {
+                            console.log("SUCCESS");
+                        },
+                         error: function(e){
+                             console.log("ERROR: ", e);
+                         },
+                         done : function(e) {
+                             console.log("DONE");
+                         }
+            });
+    };
+
 
     document.getElementById("mockplanerequest").onclick = function () {
         $.ajax({
                     type : "GET",
                     contentType : 'application/json; charset=utf-8',
-                    url : "http://localhost:8080/mockplanerequest.html",
+                    url : "http://localhost:8080/mockplanerequest",
                     success : function(result) {
                         console.log("SUCCESS");
                     },
