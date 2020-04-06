@@ -117,7 +117,13 @@
      $.ajax({
                         type : "GET",
                         contentType : 'application/json; charset=utf-8',
-                        url : "http://localhost:8080/assignservice"
+                        url : "http://localhost:8080/assignservice",
+                        statusCode: {
+                            409: function(xhr) {
+                              console.log(xhr);
+                              alert ("Service not available");
+                            }
+                          }
             });
     };
 
