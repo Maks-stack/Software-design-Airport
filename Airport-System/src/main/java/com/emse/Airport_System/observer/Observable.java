@@ -1,4 +1,4 @@
-package com.emse.Airport_System;
+package com.emse.Airport_System.observer;
 
 public interface Observable {
 

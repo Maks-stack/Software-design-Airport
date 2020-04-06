@@ -1,7 +1,7 @@
-package com.emse.Airport_System.ServiceManager;
+package com.emse.Airport_System.ServiceManager.model;
 
 
-import com.emse.Airport_System.model.Plane;
+import com.emse.Airport_System.PlaneManager.model.Plane;
 
 public class ServiceRequest {
     Plane plane;

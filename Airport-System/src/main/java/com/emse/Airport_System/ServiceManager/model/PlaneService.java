@@ -1,4 +1,4 @@
-package com.emse.Airport_System.ServiceManager;
+package com.emse.Airport_System.ServiceManager.model;
 
 public interface PlaneService extends Runnable{
 

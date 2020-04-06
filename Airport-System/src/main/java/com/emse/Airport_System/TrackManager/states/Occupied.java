@@ -1,4 +1,4 @@
-package com.emse.Airport_System.TrackManager;
+package com.emse.Airport_System.TrackManager.states;
 
 public class Occupied extends TrackState {
     public Occupied() {

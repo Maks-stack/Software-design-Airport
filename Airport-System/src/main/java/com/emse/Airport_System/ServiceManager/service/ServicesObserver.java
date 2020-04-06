@@ -1,10 +1,11 @@
-package com.emse.Airport_System.ServiceManager;
+package com.emse.Airport_System.ServiceManager.service;
 
-import com.emse.Airport_System.Observable;
-import com.emse.Airport_System.Observer;
-import org.springframework.stereotype.Component;
+import com.emse.Airport_System.observer.Observable;
+import com.emse.Airport_System.observer.Observer;
+import com.emse.Airport_System.ServiceManager.controller.ServiceController;
+import org.springframework.stereotype.Service;
 
-@Component
+@Service
 public class ServicesObserver implements Observer {
 
     private Observable serviceManager;

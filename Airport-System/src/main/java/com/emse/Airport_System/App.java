@@ -1,16 +1,12 @@
 package com.emse.Airport_System;
 
-import com.emse.Airport_System.ServiceManager.ServiceManager;
-import com.emse.Airport_System.ServiceManager.ServicesObserver;
-import org.junit.Test;
+import com.emse.Airport_System.ServiceManager.service.ServiceManager;
+import com.emse.Airport_System.ServiceManager.service.ServicesObserver;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
-import org.springframework.context.event.ContextStartedEvent;
 import org.springframework.context.event.EventListener;
-
-import javax.annotation.PostConstruct;
 
 @SpringBootApplication
 public class App {

@@ -1,11 +1,11 @@
 package com.emse.Airport_System;
 import com.emse.Airport_System.PlaneManager.states.InAir;
-import com.emse.Airport_System.ServiceManager.ServiceManager;
-import com.emse.Airport_System.TrackManager.Available;
-import com.emse.Airport_System.TrackManager.Track;
-import com.emse.Airport_System.TrackManager.TrackManager;
-import com.emse.Airport_System.TrackManager.TrackState;
-import com.emse.Airport_System.model.Plane;
+import com.emse.Airport_System.ServiceManager.service.ServiceManager;
+import com.emse.Airport_System.TrackManager.states.Available;
+import com.emse.Airport_System.TrackManager.model.Track;
+import com.emse.Airport_System.TrackManager.service.TrackManager;
+import com.emse.Airport_System.TrackManager.states.TrackState;
+import com.emse.Airport_System.PlaneManager.model.Plane;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 

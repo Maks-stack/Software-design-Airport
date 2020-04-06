@@ -1,6 +1,6 @@
 package com.emse.Airport_System.PlaneManager.service.impl;
 
-import com.emse.Airport_System.model.Plane;
+import com.emse.Airport_System.PlaneManager.model.Plane;
 import com.emse.Airport_System.PlaneManager.states.State;
 import org.springframework.stereotype.Service;
 

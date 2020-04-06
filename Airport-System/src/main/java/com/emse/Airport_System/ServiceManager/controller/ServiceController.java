@@ -1,8 +1,11 @@
-package com.emse.Airport_System.ServiceManager;
+package com.emse.Airport_System.ServiceManager.controller;
 
 import com.emse.Airport_System.Exceptions.ServiceNotAvailableException;
 import com.emse.Airport_System.PlaneManager.states.InAir;
-import com.emse.Airport_System.model.Plane;
+import com.emse.Airport_System.PlaneManager.model.Plane;
+import com.emse.Airport_System.ServiceManager.model.PlaneService;
+import com.emse.Airport_System.ServiceManager.model.ServiceRequest;
+import com.emse.Airport_System.ServiceManager.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

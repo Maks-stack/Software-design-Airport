@@ -1,8 +1,6 @@
-package com.emse.Airport_System.model;
+package com.emse.Airport_System.PlaneManager.model;
 
 import com.emse.Airport_System.PlaneManager.states.State;
-
-import java.util.ArrayList;
 
 public class Plane {
   private String planeId;

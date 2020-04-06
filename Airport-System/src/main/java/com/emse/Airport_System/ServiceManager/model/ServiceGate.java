@@ -1,5 +1,7 @@
-package com.emse.Airport_System.ServiceManager;
+package com.emse.Airport_System.ServiceManager.model;
 
+
+import com.emse.Airport_System.ServiceManager.service.ServiceManager;
 
 public class ServiceGate implements PlaneService {
     String name;

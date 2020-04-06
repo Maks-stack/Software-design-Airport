@@ -1,4 +1,4 @@
-package com.emse.Airport_System;
+package com.emse.Airport_System.configuration;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,9 +1,13 @@
-package com.emse.Airport_System.ServiceManager;
+package com.emse.Airport_System.ServiceManager.service;
 
 import com.emse.Airport_System.Exceptions.ServiceNotAvailableException;
-import com.emse.Airport_System.Observable;
-import com.emse.Airport_System.Observer;
-import com.emse.Airport_System.model.Plane;
+import com.emse.Airport_System.observer.Observable;
+import com.emse.Airport_System.observer.Observer;
+import com.emse.Airport_System.PlaneManager.model.Plane;
+import com.emse.Airport_System.ServiceManager.model.PlaneService;
+import com.emse.Airport_System.ServiceManager.model.ServiceGate;
+import com.emse.Airport_System.ServiceManager.model.ServiceRefuel;
+import com.emse.Airport_System.ServiceManager.model.ServiceRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;

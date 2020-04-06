@@ -1,4 +1,6 @@
-package com.emse.Airport_System.TrackManager;
+package com.emse.Airport_System.TrackManager.model;
+
+import com.emse.Airport_System.TrackManager.states.TrackState;
 
 public class Track {
 
