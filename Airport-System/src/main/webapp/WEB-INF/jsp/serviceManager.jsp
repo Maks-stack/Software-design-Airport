@@ -2,11 +2,12 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en">
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+<script src="/webjars/jquery/3.1.1-1/jquery.min.js"></script>
+<script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"></script>
 <link href="css/serviceManager.css" rel="stylesheet">
 <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-</head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"</head>
 <body>
     <h1>Service manager</h1>
 
@@ -20,25 +21,44 @@
     <input id="assignservice" type="button" value="Assign random service" />
 </div>
 
-<div id="ServicesPanel">
-    <div id="GateServices" class="ServicesWidget">
-    <h2>Gate Services (populated via Spring model in jsp)</h2>
-    <c:if test="${not empty gateServices}">
-    <table id="gateServices" class="greyGridTable" style="width: 300px">
-        <tr>
-            <th>Service ID</th>
-            <th>Service available</th>
-        </tr>
-        <c:forEach items="${gateServices}" var="service">
-                <tr id="${service.name}">
-                    <td>${service.name}</td>
-                    <td>${service.available}</td>
-                </tr>
-    </c:forEach>
-    </table>
-    </c:if>
-    </div>
+<div id="tabs">
+  <ul>
+    <li><a href="#tabs-1">Gate Services</a></li>
+    <li><a href="#tabs-2">Refuel Services</a></li>
+    <li><a href="#tabs-3">Catering Services</a></li>
+  </ul>
+  <div id="tabs-1">
+        <div id="ServicesPanel">
+            <div id="GateServices" class="ServicesWidget">
+            <c:if test="${not empty gateServices}">
+                <table id="gateServices" class="greyGridTable" style="width: 300px">
+                    <tr>
+                        <th>Service ID</th>
+                        <th>Service available</th>
+                    </tr>
+                    <c:forEach items="${gateServices}" var="service">
+                        <tr id="${service.name}">
+                            <td>${service.name}</td>
+                            <td>${service.available}</td>
+                        </tr>
+                    </c:forEach>
+                </table>
+            </c:if>
+            </div>
+        </div>
+  </div>
+  <div id="tabs-2">
+    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
+  </div>
+  <div id="tabs-3">
+    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
+    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
+  </div>
 </div>
+
+
+
+
 
 <div id="newRequestsWidget">
        <h2>New requests</h2>
@@ -69,6 +89,10 @@
 </div>
 
 <script>
+      $( function() {
+        $( "#tabs" ).tabs();
+      } );
+
     connectServicesWebsocket();
     function connectServicesWebsocket() {
        var socket = new SockJS('/services-websocket');

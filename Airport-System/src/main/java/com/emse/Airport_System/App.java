@@ -15,12 +15,13 @@ public class App {
 	}
 
 	@Autowired
-	ServiceManager SM;
+	ServiceManager serviceManager;
+
 	@Autowired
-	ServicesObserver so;
+	ServicesObserver servicesObserver;
 
 	@EventListener(ApplicationReadyEvent.class)
 	public void setUpObservers() {
-		SM.register(so);
+		serviceManager.register(servicesObserver);
 	}
 }

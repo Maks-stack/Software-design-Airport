@@ -1,6 +1,6 @@
 package com.emse.Airport_System.Service;
 
-public class ServiceRefuel extends PlaneService {
+public class ServiceRefuel implements PlaneService {
     String name;
     Boolean available;
 
@@ -34,4 +34,8 @@ public class ServiceRefuel extends PlaneService {
     }
 
 
+    @Override
+    public void run() {
+
+    }
 }

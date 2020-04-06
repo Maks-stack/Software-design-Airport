@@ -2,13 +2,14 @@ package com.emse.Airport_System.Service;
 
 import javax.validation.constraints.Null;
 
-public abstract class PlaneService {
+public  interface PlaneService extends Runnable{
 
-    public abstract void carryOutService();
-    public abstract void setAvailable();
-    public abstract void setNotAvailable();
-    public abstract String getName();
-    public abstract Boolean getAvailable();
+    public  void carryOutService();
+    public  void setAvailable();
+    public  void setNotAvailable();
+    public  String getName();
+    public  Boolean getAvailable();
+
 
 
 }

@@ -8,6 +8,8 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
 import java.util.List;
 import java.util.Random;
 
@@ -34,6 +36,7 @@ public class ServiceController {
     }
 
     @RequestMapping("/mockplanerequest")
+    @ResponseBody
     public void mockPlaneRequest(Model model){
         System.out.println("Mocking plane request");
         Plane plane = new Plane("A777", new InAir(), "Test"+System.currentTimeMillis());
@@ -42,6 +45,7 @@ public class ServiceController {
     }
 
     @RequestMapping("/assignservice")
+    @ResponseBody
     public void assignservice(){
         SM.assignRandomService();
     }

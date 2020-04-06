@@ -18,7 +18,7 @@ public class ServiceManager implements Observable{
     {
         for (int i = 0; i < 10; i++) {
             String name = "Gate "  + i;
-            services.put("gate"+i, new ServiceGate(name));
+            services.put("gate"+i, new ServiceGate(name, this));
             name = "Refuel " + i;
             services.put("refuel"+i, new ServiceRefuel(name));
         }
@@ -47,9 +47,9 @@ public class ServiceManager implements Observable{
     }
 
     public void assignService(String serviceId){
-        PlaneService sv = (PlaneService) services.get(serviceId);
-        sv.setNotAvailable();
-        notifyObservers(sv);
+        PlaneService service = (PlaneService) services.get(serviceId);
+        Thread t = new Thread(service);
+        t.start();
     }
 
     public void assignRandomService(){
@@ -58,7 +58,6 @@ public class ServiceManager implements Observable{
 
     public void registerNewRequest(Plane plane, String ServiceName){
         newServiceRequests.add(new ServiceRequest(plane, ServiceName));
-        System.out.println(newServiceRequests);
     }
 
     public List<ServiceRequest> getNewServiceRequests(){
