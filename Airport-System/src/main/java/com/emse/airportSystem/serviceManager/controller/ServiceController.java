@@ -51,14 +51,9 @@ public class ServiceController {
 
     @RequestMapping("/assignservice")
     @ResponseBody
-    public ResponseEntity<?> assignservice(){
-    try{
+    public ResponseEntity<?> assignservice() throws ServiceNotAvailableException{
         SM.assignRandomService();
         return new ResponseEntity<>(HttpStatus.OK);
-    } catch (Exception e){
-        System.out.println(e);
-        return new ResponseEntity<ServiceNotAvailableException>(HttpStatus.CONFLICT);
-    }
     }
 
 
