@@ -10,20 +10,26 @@ public class Service {
 	protected float duration;
 	public String ServiceName = "";
 	
-	public Service() {
-		
+	private ServiceEvent ie;
+
+    public Service() {
+    	
+    }
+    
+	public Service(ServiceEvent event) {
+		ie = event; 
 	}
 	
-	public void CarryOutService(Plane plane) {
+	public void CarryOutService() {
 		System.out.println("Start Service: " + ServiceName);
-		DoCarryOutService(plane);
+		DoCarryOutService();
 	}
 	
-	public void OnServiceFinished(Plane plane) {
-		plane.removeService(this);
+	public void OnServiceFinished() {
+		 ie.interestingEvent(this);
 	}
 	
-	protected void DoCarryOutService(Plane plane) {
+	protected void DoCarryOutService() {
 		
 		Timer timer = new Timer();
 		
@@ -32,9 +38,11 @@ public class Service {
 			@Override
 			public void run() {
 				System.out.println("Finished task: " + ServiceName);
-				OnServiceFinished(plane);
-				
+				OnServiceFinished();
 			}
 		}, (long) (duration*1000));
 	}
+
+
+    
 }
