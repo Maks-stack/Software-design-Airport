@@ -32,7 +32,16 @@ public class ServiceGate implements PlaneService {
         this.available = Boolean.TRUE;
         serviceManager.notifyObservers(this);
     }
-
+    
+    @Override
+    public void cancelService() {
+    	this.available = Boolean.TRUE;
+        serviceManager.notifyObservers(this);
+        Thread.currentThread().interrupt();
+        return;
+    }
+    
+    
     @Override
     public void setAvailable() {
         this.available = Boolean.TRUE;

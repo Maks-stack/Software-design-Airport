@@ -60,6 +60,11 @@ public class ServiceManager implements Observable{
             throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
         }
     }
+    
+    public void cancelService(String serviceId) {
+        PlaneService service = (PlaneService) services.get(serviceId);
+        service.cancelService();
+    }
 
     public void assignRandomService() throws ServiceNotAvailableException {
         try{

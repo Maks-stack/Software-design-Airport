@@ -88,7 +88,54 @@
                </c:if>
 </div>
 
+<div id="activeServices">
+  <h2>Active Services</h2>
+
+  <div>
+  	<c:if test="${not empty gateServices}">
+                <table id="activeServicesTable" class="greyGridTable" style="width: 300px">
+	                    <tr>
+	                        <th>Service ID</th>
+	                        <th>Service available</th>
+	                    </tr>
+	                    <c:forEach items="${gateServices}" var="service">
+		                     <c:if test="${not service.available}">
+		                        <tr id="${service.name}">
+		                            <td>${service.name}</td>
+		                            <td>${service.available}</td>
+		                        </tr>
+		                    
+	                    	</c:if>	
+	                    </c:forEach>
+	                    <c:forEach items="${refuelServices}" var="service">
+		                    <c:if test="${not service.available}">
+		                        <tr id="${service.name}">
+		                            <td>${service.name}</td>
+		                            <td>${service.available}</td>
+		                        </tr>
+	                        </c:if>
+	                    </c:forEach>
+                </table>
+    </c:if>
+    
+  
+ </div>
+
 <script>
+
+
+	var serviceRow = function(update, cancelCallBack){
+		
+		var output = 
+		'<tr>' +
+        '<td>' + update.name + '</td> ' +
+        '<td>'+ update.available + '</td> ' +
+        '<td><button id="cancelServiceButton" onclick="'+ cancelCallBack() + '">Cancel</button></td>'
+        '</tr>'
+		
+		return output
+	}
+
       $( function() {
         $( "#tabs" ).tabs();
       } );
@@ -111,6 +158,29 @@
                     $(this).html("<td>"+update.name+"</td><td>"+update.available+"</td>");
                 }
             })
+            console.log(serviceRow(update, function(){
+    			console.log("cancel" + update)
+    		}))
+            
+           $('#activeServicesTable').empty(); 
+           if(update.available === false){
+	            $('#activeServicesTable').append(
+            		serviceRow(update, 
+            				function(){
+		            			$.ajax({
+		                            type : "GET",
+		                            contentType : 'application/json; charset=utf-8',
+		                            url : "http://localhost:8080/cancelService",
+		                            statusCode: {
+		                                409: function(xhr) {
+		                                  console.log(xhr);
+		                                  alert ("Service not available");
+		                                }
+		                              }
+		                		});
+            		})
+	            );
+    		}
     }
 
     document.getElementById("assignservice").onclick = function () {

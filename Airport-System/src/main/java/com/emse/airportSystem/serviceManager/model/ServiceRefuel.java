@@ -12,7 +12,7 @@ public class ServiceRefuel implements PlaneService {
     @Override
     public void carryOutService() {
     }
-
+   
     @Override
     public void setAvailable() {
         this.available = Boolean.TRUE;
@@ -38,4 +38,11 @@ public class ServiceRefuel implements PlaneService {
     public void run() {
 
     }
+
+	@Override
+	public void cancelService() { 
+    	
+        return;
+		
+	}
 }
