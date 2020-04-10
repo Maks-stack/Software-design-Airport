@@ -124,13 +124,13 @@
 <script>
 
 
-	var serviceRow = function(update, cancelCallBack){
+	var serviceRow = function(update, cancelService){
 		
 		var output = 
 		'<tr>' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
-        '<td><button id="cancelServiceButton" onclick="'+ cancelCallBack() + '">Cancel</button></td>'
+        '<td><button id="cancelServiceButton" onclick="'+ cancelService() + '">Cancel</button></td>'
         '</tr>'
 		
 		return output
@@ -158,9 +158,6 @@
                     $(this).html("<td>"+update.name+"</td><td>"+update.available+"</td>");
                 }
             })
-            console.log(serviceRow(update, function(){
-    			console.log("cancel" + update)
-    		}))
             
            $('#activeServicesTable').empty(); 
            if(update.available === false){
@@ -176,7 +173,8 @@
 		                                  console.log(xhr);
 		                                  alert ("Service not available");
 		                                }
-		                              }
+		                              },
+		                            data : { serviceId: update.name },
 		                		});
             		})
 	            );

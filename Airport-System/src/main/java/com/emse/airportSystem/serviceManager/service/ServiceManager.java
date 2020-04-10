@@ -20,6 +20,8 @@ public class ServiceManager implements Observable{
     List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
     List<Observer> observers = new ArrayList<Observer>();
 
+    List<PlaneService> activeServices = new ArrayList<PlaneService>();
+    
     {
         for (int i = 0; i < 10; i++) {
             String name = "Gate "  + i;
@@ -59,11 +61,17 @@ public class ServiceManager implements Observable{
         } else {
             throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
         }
+        activeServices.add(service);
     }
     
     public void cancelService(String serviceId) {
-        PlaneService service = (PlaneService) services.get(serviceId);
-        service.cancelService();
+    	System.out.println("cancel: " + serviceId);
+    	for(PlaneService currentService : activeServices) {
+    		if(currentService.getName().contains(serviceId)) {
+    			activeServices.remove(currentService);
+    			break;
+    		}
+    	}
     }
 
     public void assignRandomService() throws ServiceNotAvailableException {
