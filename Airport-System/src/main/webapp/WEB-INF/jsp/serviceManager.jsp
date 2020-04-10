@@ -256,18 +256,24 @@
 
     $("body").on( "click", ".button-newRequest", function(){
 
-        $.post("http://localhost:8080/assignservice",
-          {
-            PlaneID : $(this).closest('tr').find('td:eq(0)').html(),
-            ServiceRequested : $(this).closest('tr').find('td:eq(1)').html(),
-            ServiceSelected : $(this).closest('tr').find('td:eq(2) :selected').text()
-          },
-          function(data, status){
-             //Remenber the alert ("Service not available"); !!
+        $.ajax({
+            type: "POST",
+            url:  "http://localhost:8080/assignservice",
+            data: {
+                PlaneID : $(this).closest('tr').find('td:eq(0)').html(),
+                ServiceRequested : $(this).closest('tr').find('td:eq(1)').html(),
+                ServiceSelected : $(this).closest('tr').find('td:eq(2) :selected').text()
+              },
+            statusCode: {
+                409: function(xhr) {
+                console.log(xhr);
+                alert ("Service not available");
+                }
+            }
+        }).done(function(data){
              $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
              $( "#activeServicesWidget" ).load(window.location.href + " #activeServicesWidget" );
-
-          });
+        });
 
     });
     document.getElementById("mockplanerequest").onclick = function () {
@@ -276,6 +282,7 @@
                     contentType : 'application/json; charset=utf-8',
                     url : "http://localhost:8080/mockplanerequest"
             });
+            $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
     };
 </script>
 
