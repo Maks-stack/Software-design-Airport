@@ -56,12 +56,12 @@ public class ServiceController {
         return new ResponseEntity<>(HttpStatus.OK);
     }
     
-    @RequestMapping("/cancelService")
+    /*@RequestMapping("/cancelService")
     @ResponseBody
     public ResponseEntity<?> assignservice() throws ServiceNotAvailableException{
         SM.assignRandomService();
         return new ResponseEntity<>(HttpStatus.OK);
-    }
+    }*/
 
 
     public void notifyServiceSubscribers() {

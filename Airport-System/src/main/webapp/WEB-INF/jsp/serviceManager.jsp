@@ -88,6 +88,37 @@
                </c:if>
 </div>
 
+<div id="overwiewOfServices">
+       <h2>Overview of the available services</h2>
+       	   <c:set var="nbGate" scope="session" value="0"/>
+       	   <c:set var="nbRefuel" scope="session" value="0"/>
+           <table class="greyGridTable" style="width: 300px">
+               <tr>
+                   <th>Service</th>
+                   <th>Number of available teams</th>
+               </tr>
+                <c:forEach items="${gateServices}" var="service">
+                	<c:if test="${service.available}">
+                    	<c:set var="nbGate" value="${nbGate + 1}"/>
+            		</c:if>	
+                </c:forEach>
+                <c:forEach items="${refuelServices}" var="service">
+                    <c:if test="${service.available}">
+                        <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
+                    </c:if>
+                </c:forEach>
+                
+               <tr>
+                   <th>Gate</th>
+                   <th id="gate">${nbGate}</th>
+               </tr>
+               <tr>
+                   <th>Refuel</th>
+                   <th id="refuel">${nbRefuel}</th>
+               </tr>
+           </table>
+</div>
+
 <div id="activeServices">
   <h2>Active Services</h2>
 
@@ -195,7 +226,25 @@
                             }
                           }
             });
+            
+        <c:set var="nbGates" scope="session" value="0"/>
+   	   	<c:set var="nbRefuels" scope="session" value="0"/>
+   	   	
+   	   	<c:forEach items="${gateServices}" var="service">
+        	<c:if test="${service.available}">
+            	<c:set var="nbGates" value="${nbGates + 1}"/>
+    		</c:if>	
+        </c:forEach>
+        <c:forEach items="${refuelServices}" var="service">
+            <c:if test="${service.available}">
+                <c:set var="nbRefuels" value="${nbRefuels + 1}"/>
+            </c:if>
+        </c:forEach>
+        
+        document.getElementById("gate").innerHTML = ${nbGates};
+        document.getElementById("refuel").innerHTML = ${nbRefuels};
     };
+    
 
 
     document.getElementById("mockplanerequest").onclick = function () {
