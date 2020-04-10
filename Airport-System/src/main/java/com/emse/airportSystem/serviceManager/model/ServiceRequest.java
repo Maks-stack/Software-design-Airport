@@ -11,7 +11,7 @@ public class ServiceRequest {
         this.plane = plane;
         this.serviceRequested = serviceRequested;
 
-        System.out.println("Service request created");
+        System.out.println("Service request created: "+serviceRequested);
     }
     
     public Plane getPlane() {

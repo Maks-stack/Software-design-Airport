@@ -1,6 +1,7 @@
 package com.emse.airportSystem.serviceManager.service;
 
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
+import com.emse.airportSystem.exceptions.RequestNotAvailableException;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
@@ -83,6 +84,31 @@ public class ServiceManager implements Observable{
 
     }
 
+    public void registerServiceRequestsInProgress(String PlaneID, String ServiceRequested ) throws RequestNotAvailableException {
+
+        ServiceRequest NewServiceInProgress = null;
+
+        //Detect the request
+        for(ServiceRequest service : newServiceRequests) {
+            if(service.getServiceRequested().equals(ServiceRequested) && service.getPlane().getPlaneId().equals(PlaneID)) {
+
+                NewServiceInProgress = service;
+                break;
+            }
+        }
+        if (NewServiceInProgress != null){
+
+            serviceRequestsInProgress.add(NewServiceInProgress);
+            newServiceRequests.remove(NewServiceInProgress);
+
+        }else{
+            throw new RequestNotAvailableException("That request is not available");
+        }
+
+
+
+    }
+
     public void registerNewRequest(Plane plane, String ServiceName){
         newServiceRequests.add(new ServiceRequest(plane, ServiceName));
     }
@@ -90,6 +116,8 @@ public class ServiceManager implements Observable{
     public List<ServiceRequest> getNewServiceRequests(){
         return newServiceRequests;
     }
+
+    public List<ServiceRequest> getServiceRequestsInProgress(){ return serviceRequestsInProgress; }
 
     @Override
     public void register(Observer obj) {

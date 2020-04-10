@@ -18,7 +18,7 @@
 
 <div id="serviceAssigner">
     <p>This button will change random service state and hopefully send update through websocket</p>
-    <input id="assignservice" type="button" value="Assign random service" />
+    <input id="mockassignservice" type="button" value="Assign random service" />
 </div>
 
 <div id="tabs">
@@ -65,27 +65,68 @@
        <c:if test="${not empty newServiceRequests}">
                <table class="greyGridTable" style="width: 300px">
                    <tr>
-                       <th>Plane ID</th>
-                       <th>Service requested</th>
-                       <th>Available services</th>
+                       <th id="NR_PlaneID">Plane ID</th>
+                       <th id="NR_ServiceRequested">Service requested</th>
+                       <th id="NR_AvailableServices">Available services</th>
+                       <th id="NR_Button">Test</th>
                    </tr>
                    <c:forEach items="${newServiceRequests}" var="request">
                            <tr>
-                               <td>${request.plane.planeId}</td>
-                               <td>${request.serviceRequested}</td>
-                               <td ALIGN="center">
+                               <td headers="NR_PlaneID">${request.plane.planeId}</td>
+                               <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
+                               <td ALIGN="center" headers="NR_AvailableServices">
                                   <select>
-                                      <c:forEach items="${refuelServices}" var="service">
-                                           <option value=${service.name}>${service.name}</option>
-                                      </c:forEach>
-
-                                      </select>
+                                      <c:choose>
+                                          <c:when test="${request.serviceRequested=='Gate'}">
+                                              <c:forEach items="${gateServices}" var="service">
+                                                   <option value=${service.name}>${service.name}</option>
+                                              </c:forEach>
+                                          </c:when>
+                                          <c:when test="${request.serviceRequested=='Refuel'}">
+                                              <c:forEach items="${refuelServices}" var="service">
+                                                   <option value=${service.name}>${service.name}</option>
+                                              </c:forEach>
+                                          </c:when>
+                                       </c:choose>
+                                   </select>
 
                                </TD>
+                               <td headers="NR_Button"><div class="button-newRequest"><button> Click Me </button></div>
                            </tr>
                </c:forEach>
                </table>
                </c:if>
+</div>
+
+<div id="overwiewOfServices">
+       <h2>Overview of the available services</h2>
+       	   <c:set var="nbGate" scope="session" value="0"/>
+       	   <c:set var="nbRefuel" scope="session" value="0"/>
+           <table class="greyGridTable" style="width: 300px">
+               <tr>
+                   <th>Service</th>
+                   <th>Number of available teams</th>
+               </tr>
+                <c:forEach items="${gateServices}" var="service">
+                	<c:if test="${service.available}">
+                    	<c:set var="nbGate" value="${nbGate + 1}"/>
+            		</c:if>	
+                </c:forEach>
+                <c:forEach items="${refuelServices}" var="service">
+                    <c:if test="${service.available}">
+                        <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
+                    </c:if>
+                </c:forEach>
+                
+               <tr>
+                   <th>Gate</th>
+                   <th id="gate">${nbGate}</th>
+               </tr>
+               <tr>
+                   <th>Refuel</th>
+                   <th id="refuel">${nbRefuel}</th>
+               </tr>
+           </table>
 </div>
 
 <div id="activeServices">
@@ -174,18 +215,18 @@
 		                                  alert ("Service not available");
 		                                }
 		                              },
-		                            data : { serviceId: update.name },
+		            				data : { serviceId: update.name },
 		                		});
             		})
 	            );
     		}
     }
 
-    document.getElementById("assignservice").onclick = function () {
+    document.getElementById("mockassignservice").onclick = function () {
      $.ajax({
                         type : "GET",
                         contentType : 'application/json; charset=utf-8',
-                        url : "http://localhost:8080/assignservice",
+                        url : "http://localhost:8080/mockassignservice",
                         statusCode: {
                             409: function(xhr) {
                               console.log(xhr);
@@ -193,9 +234,42 @@
                             }
                           }
             });
+            
+        <c:set var="nbGates" scope="session" value="0"/>
+   	   	<c:set var="nbRefuels" scope="session" value="0"/>
+   	   	
+   	   	<c:forEach items="${gateServices}" var="service">
+        	<c:if test="${service.available}">
+            	<c:set var="nbGates" value="${nbGates + 1}"/>
+    		</c:if>	
+        </c:forEach>
+        <c:forEach items="${refuelServices}" var="service">
+            <c:if test="${service.available}">
+                <c:set var="nbRefuels" value="${nbRefuels + 1}"/>
+            </c:if>
+        </c:forEach>
+        
+        document.getElementById("gate").innerHTML = ${nbGates};
+        document.getElementById("refuel").innerHTML = ${nbRefuels};
     };
+    
 
+    $("body").on( "click", ".button-newRequest", function(){
 
+        $.post("http://localhost:8080/assignservice",
+          {
+            PlaneID : $(this).closest('tr').find('td:eq(0)').html(),
+            ServiceRequested : $(this).closest('tr').find('td:eq(1)').html(),
+            ServiceSelected : $(this).closest('tr').find('td:eq(2) :selected').text()
+          },
+          function(data, status){
+             //Remenber the alert ("Service not available"); !!
+             $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
+             $( "#activeServicesWidget" ).load(window.location.href + " #activeServicesWidget" );
+
+          });
+
+    });
     document.getElementById("mockplanerequest").onclick = function () {
         $.ajax({
                     type : "GET",
