@@ -3,12 +3,12 @@ package com.emse.airportSystem.trackManager.states;
 public class Available extends TrackState {
 
     public Available() {
-        boolean isAvailable = true;
-        String state = "available";
+        this.setAvailable(true);
+        this.setState("available");
     }
 
-    public void proceedToNextStep() {
-        this.setState("assigned");
+    public TrackState proceedToNextStep() {
         System.out.println("Next Step: " + this.getState());
+        return new Assigned();
     }
 }

@@ -63,8 +63,5 @@ public class ServiceController {
 
     public void notifyServiceSubscribers(Object obj) {
         this.template.convertAndSend("/services/updates", obj);
-
     }
-
-
 }

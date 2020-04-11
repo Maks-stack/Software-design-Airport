@@ -3,11 +3,12 @@ package com.emse.airportSystem.trackManager.model;
 import com.emse.airportSystem.planeManager.model.Plane;
 
 public class TrackRequest {
-    Track trackRequested;
-    Plane plane;
+    private TrackType trackRequested;
+    private Plane plane;
 
-    public TrackRequest(Plane plane){
+    public TrackRequest(Plane plane, TrackType trackRequested){
         this.plane = plane;
+        this.trackRequested = trackRequested;
 
         System.out.println("Plane track request created");
     }
@@ -16,7 +17,7 @@ public class TrackRequest {
         return plane;
     }
 
-    public Track getTrackRequested() {
+    public TrackType getTrackRequested() {
         return trackRequested;
     }
 }

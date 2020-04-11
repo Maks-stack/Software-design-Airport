@@ -1,31 +1,29 @@
 package com.emse.airportSystem.trackManager.states;
 
-public class TrackState {
+public abstract class TrackState {
 
-    private boolean isAvailable = true;
-    private String state = "available";
+  private boolean isAvailable = true;
+  private String state = "available";
 
-    public TrackState() {
+  public TrackState() {
 
-    }
+  }
 
-    public boolean isAvailable() {
-        return isAvailable;
-    }
+  public boolean isAvailable() {
+    return isAvailable;
+  }
 
-    public void setAvailable(boolean available) {
-        isAvailable = available;
-    }
+  public void setAvailable(boolean available) {
+    isAvailable = available;
+  }
 
-    public void setState(String state) {
-        this.state = state;
-    }
+  public void setState(String state) {
+    this.state = state;
+  }
 
-    public String getState() {
-        return state;
-    }
+  public String getState() {
+    return state;
+  }
 
-    public void proceedToNextStep() {
-        System.out.println("Current Step: " + state);
-    }
+  public abstract TrackState proceedToNextStep();
 }

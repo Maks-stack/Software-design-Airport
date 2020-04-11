@@ -12,28 +12,23 @@ import org.springframework.context.event.EventListener;
 
 @SpringBootApplication
 public class App {
-	@Autowired
-	TestContext testContext;
 
 	@Autowired
-	ServiceManager serviceManager;
+	private ServiceManager serviceManager;
 
 	@Autowired
-	TrackManager trackManager;
+	private TrackManager trackManager;
 
 	@Autowired
-	ServicesObserver servicesObserver;
+	private ServicesObserver servicesObserver;
 
 	@Autowired
-	TracksObserver tracksObserver;
+	private TracksObserver tracksObserver;
 
 	@EventListener(ApplicationReadyEvent.class)
 	private void setUpObservers() {
 		serviceManager.register(servicesObserver);
 		trackManager.register(tracksObserver);
-
-		//I have put this here as quick workaround for running test, but it requires starting spring app
-		testContext.runTest();
 	}
 
 	public static void main(String Args[]) {

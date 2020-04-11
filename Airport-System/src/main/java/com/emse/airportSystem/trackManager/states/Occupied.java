@@ -6,8 +6,8 @@ public class Occupied extends TrackState {
         String state = "occupied";
     }
 
-    public void proceedToNextStep() {
-        this.setState("available");
+    public TrackState proceedToNextStep() {
         System.out.println("Next Step: " + this.getState());
+        return new Available();
     }
 }
