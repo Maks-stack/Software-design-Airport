@@ -1,5 +1,8 @@
 package com.emse.airportSystem.serviceManager.model;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
 public class PlaneService implements Runnable{
@@ -7,6 +10,8 @@ public class PlaneService implements Runnable{
     Boolean available;
     ServiceManager serviceManager;
     Boolean cancelled = false;
+    LocalDateTime timeCreated;
+    long duration;
 
     public void cancelService() {
         setAvailable();
@@ -19,7 +24,7 @@ public class PlaneService implements Runnable{
         this.available = Boolean.FALSE;
         serviceManager.notifyObservers(this);
         try {
-            Thread.sleep(10000);
+            Thread.sleep(duration);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -42,7 +47,15 @@ public class PlaneService implements Runnable{
     public Boolean getAvailable() {
         return this.available;
     }
+    
+    public LocalDateTime getTimeCreated() {
+        return this.timeCreated;
+    }
 
+    public long getDuration() {
+        return this.duration;
+    }
+    
     @Override
     public void run() {
         this.carryOutService();

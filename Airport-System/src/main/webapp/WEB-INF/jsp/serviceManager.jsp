@@ -168,13 +168,40 @@
 
 	var serviceRow = function(update){
 		
+		var timeLeft = parseInt(update.duration)/1000
+		
+		/*
+		var dateCreated = new Date(update.timeCreated);
+		
+		console.log(dateCreated + "    " + Date.now())
+	
+		*/
+		
 		var output = 
 		'<tr id="' + update.name + '">' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
-        '<td><button id="cancelService' + update.name + '">Cancel</button></td>'
-        '</tr>' 
-		
+        '<td><button id="cancelService' + update.name + '">Cancel</button></td>' +
+        '<td>timeCreated:' + update.timeCreated + '</td>' +
+        '<td id="counter'+update.name + '">time left: ' + timeLeft + ' sec</td>' +
+        '</tr>'
+        
+        var updateCounter = setInterval(function() {		
+    		
+    		timeLeft--		   	
+    		console.log("Tick: " + timeLeft)
+		   	// var difference = (dateCreated - Date.now())/1000;
+		   	
+		   	if(document.getElementById("counter"+update.name)){
+		   		document.getElementById("counter"+update.name).innerHTML = ("time left: " + timeLeft + " sec")
+		   	}
+		   	
+		   	if(timeLeft < 0){
+		   		console.log("clearInterval")
+		   		clearInterval(updateCounter);
+		   	}
+		 }, 1000)
+        	
 		return output
 	}
 
@@ -196,11 +223,7 @@
        });
     }
 
-    function updateServiceStatus(update){
-    	
-    		console.log("UPDATE!!!!")
-    		console.log(update)
-    		
+    function updateServiceStatus(update){    		
     		/*
             $('tr').each(function(){
                 if($(this).attr('id') == update.name){
@@ -213,8 +236,7 @@
 	            $('#activeServicesTable').append(serviceRow(update))
             	
 	            document.getElementById("cancelService"+update.name).onclick  = function(){
-           			
-       				console.log("#cancelService"+update.name +" clicked!!!!!!!!!")            			
+           			            			
            			$.ajax({
                            type : "GET",
                            contentType : 'application/json; charset=utf-8',
@@ -230,8 +252,6 @@
            		}
     		}
            else if(update.available || update.cancelled){
-    			console.log("cancelled")
-    			
     			$('#activeServicesTable > tbody').children().each(function(index,element){
 	    				if($(element).attr("id") === update.name){
 	    					$(element).remove()
