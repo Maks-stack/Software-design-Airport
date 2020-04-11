@@ -134,7 +134,7 @@
 
   <div>
   	<c:if test="${not empty gateServices}">
-                <table id="activeServicesTable" class="greyGridTable" style="width: 300px">
+                <table id="activeServicesTable" class="greyGridTable">
 	                    <tr>
 	                        <th>Service ID</th>
 	                        <th>Service available</th>
