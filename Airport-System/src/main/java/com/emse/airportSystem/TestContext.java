@@ -38,7 +38,7 @@ public class TestContext {
             //serviceManager.assignService(currentPlane, new CleaningService());
 
             this.trackManager.addTrack(track);
-            this.trackManager.AssignTrack();
+            this.trackManager.assignTrack();
         }
         
         //Other tests - Sophie
