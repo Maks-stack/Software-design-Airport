@@ -229,8 +229,14 @@
                		});
            		}
     		}
-    		if(update.available){
-    			document.getElementById(update.name).remove()
+           else if(update.available || update.cancelled){
+    			console.log("cancelled")
+    			
+    			$('#activeServicesTable > tbody').children().each(function(index,element){
+	    				if($(element).attr("id") === update.name){
+	    					$(element).remove()
+	    				}	
+    				})
     		}
     }
 
