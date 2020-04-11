@@ -28,7 +28,7 @@ public class ServiceManager implements Observable{
             String name = "Gate "  + i;
             services.put("gate"+i, new ServiceGate(name, this));
             name = "Refuel " + i;
-            services.put("refuel"+i, new ServiceRefuel(name));
+            services.put("refuel"+i, new ServiceRefuel(name, this));
         }
     }
 

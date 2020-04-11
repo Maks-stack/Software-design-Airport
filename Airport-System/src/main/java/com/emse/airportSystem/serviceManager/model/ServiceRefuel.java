@@ -1,48 +1,19 @@
 package com.emse.airportSystem.serviceManager.model;
 
-public class ServiceRefuel implements PlaneService {
-    String name;
-    Boolean available;
+import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
-    public ServiceRefuel(String name){
-            this.available = Boolean.TRUE;
-            this.name = name;
-    }
-
-    @Override
-    public void carryOutService() {
-    }
-   
-    @Override
-    public void setAvailable() {
+public class ServiceRefuel extends PlaneService {
+    public ServiceRefuel(String name, ServiceManager serviceManager) {
         this.available = Boolean.TRUE;
+        this.serviceManager = serviceManager;
+        this.name = name;
+        this.cancelled = Boolean.FALSE;
     }
 
-    @Override
-    public void setNotAvailable() {
-        this.available = Boolean.FALSE;
+    public ServiceRefuel(String name, ServiceManager serviceManager, Boolean available) {
+        this.available = available;
+        this.serviceManager = serviceManager;
+        this.name = name;
+        this.cancelled = Boolean.FALSE;
     }
-
-    @Override
-    public String getName() {
-        return this.name;
-    }
-
-    @Override
-    public Boolean getAvailable() {
-        return this.available;
-    }
-
-
-    @Override
-    public void run() {
-
-    }
-
-	@Override
-	public void cancelService() { 
-    	
-        return;
-		
-	}
 }
