@@ -74,8 +74,9 @@ table.greyGridTable tfoot td {
     height: 20em;
 }
 
-.activeServicesTable {
+#activeServicesTable {
 	margin: 0;
+	width: 100%;
 }
 .progressBar {
   width: 100px;
