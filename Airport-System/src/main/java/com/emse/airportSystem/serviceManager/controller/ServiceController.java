@@ -86,13 +86,13 @@ public class ServiceController {
         }
     }
     
-    /*@RequestMapping("/cancelService")
+    @RequestMapping("/cancelService")
     @ResponseBody
     public ResponseEntity<?> cancelService(@RequestParam String serviceId) {
     	System.out.println("cancelService");
         SM.cancelService(serviceId);
         return new ResponseEntity<>(HttpStatus.OK);
-    }*/
+    }
 
     public void notifyServiceSubscribers() {
         this.template.convertAndSend("/services/updates", "Test");
@@ -102,6 +102,4 @@ public class ServiceController {
         this.template.convertAndSend("/services/updates", obj);
 
     }
-
-
 }

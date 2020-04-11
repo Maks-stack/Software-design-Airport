@@ -139,23 +139,24 @@
 	                        <th>Service ID</th>
 	                        <th>Service available</th>
 	                    </tr>
+	                    <!-- 
 	                    <c:forEach items="${gateServices}" var="service">
-		                     <c:if test="${not service.available}">
+		                     <c:if test ="${ not service.available}">
 		                        <tr id="${service.name}">
 		                            <td>${service.name}</td>
 		                            <td>${service.available}</td>
 		                        </tr>
-		                    
 	                    	</c:if>	
 	                    </c:forEach>
 	                    <c:forEach items="${refuelServices}" var="service">
-		                    <c:if test="${not service.available}">
+		                    <c:if test="${ not service.available}">
 		                        <tr id="${service.name}">
 		                            <td>${service.name}</td>
 		                            <td>${service.available}</td>
 		                        </tr>
 	                        </c:if>
 	                    </c:forEach>
+	                     -->
                 </table>
     </c:if>
     
@@ -165,14 +166,14 @@
 <script>
 
 
-	var serviceRow = function(update, cancelService){
+	var serviceRow = function(update){
 		
 		var output = 
-		'<tr>' +
+		'<tr id="' + update.name + '">' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
-        '<td><button id="cancelServiceButton" onclick="'+ cancelService() + '">Cancel</button></td>'
-        '</tr>'
+        '<td><button id="cancelService' + update.name + '">Cancel</button></td>'
+        '</tr>' 
 		
 		return output
 	}
@@ -189,36 +190,47 @@
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/services/updates', function (update) {
              updateServiceStatus(JSON.parse(update.body))
+            console.log(JSON.parse(update.body))	 
+            
           });
        });
     }
 
     function updateServiceStatus(update){
+    	
+    		console.log("UPDATE!!!!")
+    		console.log(update)
+    		
+    		/*
             $('tr').each(function(){
                 if($(this).attr('id') == update.name){
                     $(this).html("<td>"+update.name+"</td><td>"+update.available+"</td>");
                 }
             })
+            */
             
-           $('#activeServicesTable').empty(); 
            if(update.available === false){
-	            $('#activeServicesTable').append(
-            		serviceRow(update, 
-            				function(){
-		            			$.ajax({
-		                            type : "GET",
-		                            contentType : 'application/json; charset=utf-8',
-		                            url : "http://localhost:8080/cancelService",
-		                            statusCode: {
-		                                409: function(xhr) {
-		                                  console.log(xhr);
-		                                  alert ("Service not available");
-		                                }
-		                              },
-		            				data : { serviceId: update.name },
-		                		});
-            		})
-	            );
+	            $('#activeServicesTable').append(serviceRow(update))
+            	
+	            document.getElementById("cancelService"+update.name).onclick  = function(){
+           			
+       				console.log("#cancelService"+update.name +" clicked!!!!!!!!!")            			
+           			$.ajax({
+                           type : "GET",
+                           contentType : 'application/json; charset=utf-8',
+                           url : "http://localhost:8080/cancelService",
+                           statusCode: {
+                               409: function(xhr) {
+                                 console.log(xhr);
+                                 alert ("Service not available");
+                               }
+                             },
+           				data : { serviceId: update.name },
+               		});
+           		}
+    		}
+    		if(update.available){
+    			document.getElementById(update.name).remove()
     		}
     }
 

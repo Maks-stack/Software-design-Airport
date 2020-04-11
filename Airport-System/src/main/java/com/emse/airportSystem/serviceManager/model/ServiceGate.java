@@ -7,17 +7,20 @@ public class ServiceGate implements PlaneService {
     String name;
     Boolean available;
     ServiceManager serviceManager;
+    Boolean cancelled = false;
 
     public ServiceGate(String name, ServiceManager serviceManager){
         this.available = Boolean.TRUE;
         this.serviceManager = serviceManager;
         this.name = name;
+        this.cancelled = Boolean.FALSE;
     }
 
     public ServiceGate(String name, ServiceManager serviceManager, Boolean available){
         this.available = available;
         this.serviceManager = serviceManager;
         this.name = name;
+        this.cancelled = Boolean.FALSE;
     }
 
     @Override
@@ -25,7 +28,7 @@ public class ServiceGate implements PlaneService {
         this.available = Boolean.FALSE;
         serviceManager.notifyObservers(this);
         try {
-            Thread.sleep(4000);
+            Thread.sleep(10000);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
@@ -35,9 +38,9 @@ public class ServiceGate implements PlaneService {
     
     @Override
     public void cancelService() {
-    	this.available = Boolean.TRUE;
+    	setAvailable();
+    	this.cancelled = Boolean.TRUE;
         serviceManager.notifyObservers(this);
-        Thread.currentThread().interrupt();
         return;
     }
     

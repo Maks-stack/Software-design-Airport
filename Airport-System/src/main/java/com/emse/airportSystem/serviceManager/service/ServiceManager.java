@@ -69,6 +69,7 @@ public class ServiceManager implements Observable{
     	System.out.println("cancel: " + serviceId);
     	for(PlaneService currentService : activeServices) {
     		if(currentService.getName().contains(serviceId)) {
+    			currentService.cancelService();
     			activeServices.remove(currentService);
     			break;
     		}
