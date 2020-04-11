@@ -11,7 +11,7 @@ public class PlaneService implements Runnable{
     ServiceManager serviceManager;
     Boolean cancelled = false;
     LocalDateTime timeCreated;
-    long duration;
+    long duration = 10000;
 
     public void cancelService() {
         setAvailable();

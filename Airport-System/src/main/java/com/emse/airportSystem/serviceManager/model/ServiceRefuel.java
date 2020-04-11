@@ -1,5 +1,7 @@
 package com.emse.airportSystem.serviceManager.model;
 
+import java.time.LocalDateTime;
+
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
 public class ServiceRefuel extends PlaneService {
@@ -8,6 +10,8 @@ public class ServiceRefuel extends PlaneService {
         this.serviceManager = serviceManager;
         this.name = name;
         this.cancelled = Boolean.FALSE;
+        this.timeCreated = LocalDateTime.now();
+        this.duration = 15000;
     }
 
     public ServiceRefuel(String name, ServiceManager serviceManager, Boolean available) {
@@ -15,5 +19,7 @@ public class ServiceRefuel extends PlaneService {
         this.serviceManager = serviceManager;
         this.name = name;
         this.cancelled = Boolean.FALSE;
+        this.timeCreated = LocalDateTime.now();
+        this.duration = 15000;
     }
 }
