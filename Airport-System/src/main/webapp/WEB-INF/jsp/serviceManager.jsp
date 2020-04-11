@@ -139,6 +139,11 @@
 	                        <th>Service ID</th>
 	                        <th>Service available</th>
 	                    </tr>
+	                    <tr id="noServicesWarning">
+	                    	<td>
+	                    		<h2>No ActiveServics</h2>
+                    		</td>
+          				</tr>
 	                    <!-- 
 	                    <c:forEach items="${gateServices}" var="service">
 		                     <c:if test ="${ not service.available}">
@@ -168,7 +173,8 @@
 
 	var serviceRow = function(update){
 		
-		var timeLeft = parseInt(update.duration)/1000
+		var startingTime = parseInt(update.duration)/1000 
+		var timeLeft = startingTime
 		
 		/*
 		var dateCreated = new Date(update.timeCreated);
@@ -181,14 +187,31 @@
 		'<tr id="' + update.name + '">' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
-        '<td><button id="cancelService' + update.name + '">Cancel</button></td>' +
         '<td>timeCreated:' + update.timeCreated + '</td>' +
         '<td id="counter'+update.name + '">time left: ' + timeLeft + ' sec</td>' +
+        '<td style="width:50px">' +
+        '	<div class="progressBar">' +
+        ' 		<div id="progressIndicator' + update.name + '" class="progressBarIndicator"></div>' +
+       	'	</div>'+
+        '</td>'+
+        '<td><button class="cancelServiceButton" id="cancelService' + update.name + '">Cancel &#9888;</button></td>' +
         '</tr>'
         
-        var updateCounter = setInterval(function() {		
+        var progressIndicatorWidth = 1
+        
+        var updateCounter = setInterval(function() {
+        	
+        	var element =  document.getElementById("counter"+update.name)
+        	if (element == null)
+        	{
+        		clearInterval(updateCounter);
+        		return
+        	}
+        	
+    		timeLeft--	
     		
-    		timeLeft--		   	
+    		progressIndicatorWidth = 100 - (timeLeft / startingTime)*100
+    		
     		console.log("Tick: " + timeLeft)
 		   	// var difference = (dateCreated - Date.now())/1000;
 		   	
@@ -196,10 +219,10 @@
 		   		document.getElementById("counter"+update.name).innerHTML = ("time left: " + timeLeft + " sec")
 		   	}
 		   	
-		   	if(timeLeft < 0){
-		   		console.log("clearInterval")
-		   		clearInterval(updateCounter);
-		   	}
+		   	document.getElementById("progressIndicator" + update.name).style.width = progressIndicatorWidth + "%"
+		   	
+		   	
+		   	
 		 }, 1000)
         	
 		return output
@@ -258,6 +281,12 @@
 	    				}	
     				})
     		}
+           
+           if($('#activeServicesTable > tbody').children().length > 1) {
+        	   $("#noServicesWarning").hide()
+           }else{
+        	   $("#noServicesWarning").show()
+           }
     }
 
     document.getElementById("mockassignservice").onclick = function () {
