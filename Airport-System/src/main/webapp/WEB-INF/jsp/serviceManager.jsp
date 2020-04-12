@@ -144,24 +144,40 @@
 	                    		<h2>No ActiveServics</h2>
                     		</td>
           				</tr>
-	                    <!-- 
+	                    
 	                    <c:forEach items="${gateServices}" var="service">
 		                     <c:if test ="${ not service.available}">
 		                        <tr id="${service.name}">
-		                            <td>${service.name}</td>
-		                            <td>${service.available}</td>
-		                        </tr>
+        							<td>${service.name}</td>
+						        <td>${service.available}</td> 
+						        <td>timeCreated:${service.timeCreated}</td>
+						        <td id="counter${service.name}">time left: ${service.duration}</td>
+						        <td style="width:50px">
+						        	<div class="progressBar">
+						         		<div id="progressIndicator${service.name}" data-duration="${service.duration}" class="progressBarIndicator"></div>' +
+						       		</div>
+						        </td>
+						        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
+						        </tr>
 	                    	</c:if>	
 	                    </c:forEach>
 	                    <c:forEach items="${refuelServices}" var="service">
-		                    <c:if test="${ not service.available}">
+		                    <c:if test ="${ not service.available}">
 		                        <tr id="${service.name}">
-		                            <td>${service.name}</td>
-		                            <td>${service.available}</td>
-		                        </tr>
-	                        </c:if>
+        							<td>${service.name}</td>
+						        <td>${service.available}</td> 
+						        <td>timeCreated:${service.timeCreated}</td>
+						        <td id="counter${service.name}">time left: ${service.duration}</td>
+						        <td style="width:50px">
+						        	<div class="progressBar">
+						         		<div id="progressIndicator${service.name}" data-duration="${service.duration}" class="progressBarIndicator"></div>' +
+						       		</div>
+						        </td>
+						        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
+						        </tr>
+	                    	</c:if>	
 	                    </c:forEach>
-	                     -->
+	                    
                 </table>
     </c:if>
     
@@ -170,6 +186,75 @@
 
 <script>
 
+	$( document ).ready(function() {
+		var tableBody = $("#activeServicesTable > tbody")
+		console.log(tableBody.children().length)
+		
+		if(tableBody.children().length > 1){
+		
+			tableBody.children().each(function(){
+				
+				var serviceID = $(this).attr("id")
+				
+				console.log(serviceID)
+				
+				var button = document.getElementById("cancelService"+serviceID) 
+				
+				if(button){
+					button.onclick  = function(){
+	           			$.ajax({
+	                           type : "GET",
+	                           contentType : 'application/json; charset=utf-8',
+	                           url : "http://localhost:8080/cancelService",
+	                           statusCode: {
+	                               409: function(xhr) {
+	                                 console.log(xhr);
+	                                 alert ("Service not available");
+	                               }
+	                             },
+	           				data : { serviceId: serviceID},
+	               		});
+	           		}
+					
+					console.log("#progressIndicator"+serviceID)
+					console.log($("#progressIndicator"+serviceID).data("duration"))
+					
+					var startingTime = parseInt($("#progressIndicator"+serviceID).data("duration"))/1000 
+					var timeLeft = startingTime
+					
+					var progressIndicatorWidth = 1
+			        
+		        	var updateCounter = setInterval(function() {
+		        	
+		        	var element =  document.getElementById("counter"+serviceID)
+		        	if (element == null)
+		        	{
+		        		clearInterval(updateCounter);
+		        		return
+		        	}
+		        	
+		    		timeLeft--	
+		    		
+		    		progressIndicatorWidth = 100 - (timeLeft / startingTime)*100
+		    		
+		    		console.log("Tick: " + timeLeft)
+				   	// var difference = (dateCreated - Date.now())/1000;
+				   	
+				   	if(document.getElementById("counter"+serviceID)){
+				   		document.getElementById("counter"+serviceID).innerHTML = ("time left: " + timeLeft + " sec")
+				   	}
+				   	
+				   	document.getElementById("progressIndicator" + serviceID).style.width = progressIndicatorWidth + "%"
+				   	
+				   	
+				   	
+				 }, 1000)
+				}
+			})
+			
+		}
+		
+	});
 
 	var serviceRow = function(update){
 		
