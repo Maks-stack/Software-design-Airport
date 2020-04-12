@@ -16,4 +16,6 @@ public interface IPlaneManager {
   void proceedToNextState(Plane plane);
 
   Plane findPlane(String id);
+
+  Plane getRandomPlane();
 }

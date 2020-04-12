@@ -8,6 +8,6 @@ public class Assigned extends TrackState {
 
     public TrackState proceedToNextStep() {
         System.out.println("Next Step: " + this.getState());
-        return new Occupied();
+        return new Available();
     }
 }

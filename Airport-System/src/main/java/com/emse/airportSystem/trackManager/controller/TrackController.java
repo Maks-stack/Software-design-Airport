@@ -2,6 +2,7 @@ package com.emse.airportSystem.trackManager.controller;
 
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.model.Plane;
+import com.emse.airportSystem.planeManager.service.IPlaneManager;
 import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.trackManager.model.LandingTrack;
 import com.emse.airportSystem.trackManager.model.Track;
@@ -21,8 +22,9 @@ import java.util.Random;
 @Controller
 public class TrackController {
 
-    @Autowired
-    private TrackManager TM;
+    @Autowired private TrackManager TM;
+
+    @Autowired private IPlaneManager planeManager;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -43,16 +45,22 @@ public class TrackController {
     }
 
     @PatchMapping("/assigntrack/{id}")
-    public ResponseEntity<?> assigntrack(@PathVariable int id) throws ServiceNotAvailableException {
-        TM.assignTrack(id);
+    public ResponseEntity<?> assigntrack(@PathVariable int id, @RequestParam("plane_id") String planeId) throws ServiceNotAvailableException {
+        TM.assignTrack(id, planeId);
+        return new ResponseEntity<>(HttpStatus.OK);
+    }
+
+    @PatchMapping("/unassigntrack/{id}")
+    public ResponseEntity<?> unassigntrack(@PathVariable int id) throws ServiceNotAvailableException {
+        TM.unassignTrack(id);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @GetMapping("/mocktrackrequest")
     public ResponseEntity mockPlaneRequest(Model model){
         System.out.println("Mocking track request");
-        Plane plane = new Plane("A777", new InAir(), "Test"+System.currentTimeMillis());
-        TM.registerNewRequest(plane, new LandingTrack());
+
+        TM.registerNewRequest(planeManager.getRandomPlane(), new LandingTrack());
 
         return ResponseEntity.ok().build();
     }

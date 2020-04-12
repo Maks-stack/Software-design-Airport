@@ -3,6 +3,7 @@ package com.emse.airportSystem.trackManager.service;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
+import com.emse.airportSystem.planeManager.service.IPlaneManager;
 import com.emse.airportSystem.serviceManager.model.ServiceGate;
 import com.emse.airportSystem.serviceManager.model.ServiceRefuel;
 import com.emse.airportSystem.serviceManager.model.ServiceRequest;
@@ -10,6 +11,7 @@ import com.emse.airportSystem.trackManager.model.*;
 import com.emse.airportSystem.trackManager.states.Assigned;
 import com.emse.airportSystem.trackManager.states.Available;
 import com.emse.airportSystem.trackManager.states.TrackState;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -17,6 +19,8 @@ import java.util.List;
 
 @Service
 public class TrackManager implements Observable {
+
+    @Autowired private IPlaneManager planeManager;
 
     private List<Track> tracks = new ArrayList<Track>();
     List<Observer> observers = new ArrayList<Observer>();
@@ -64,22 +68,37 @@ public class TrackManager implements Observable {
         return availableTracks;
     }
 
-    public Track assignTrack(int id) {
+    public void assignTrack(int id, String planeId) {
         Track freeTrack = getFreeTracks().stream().parallel()
             .filter(track -> track.getTrackID() == id)
             .findAny()
             .orElseThrow(RuntimeException::new);
 
         freeTrack.setState(freeTrack.getState().proceedToNextStep());
-        //deleteTrackRequest(78);
+        freeTrack.setAssignedPlane(planeManager.findPlane(planeId));
+        deleteTrackRequest(planeId);
         notifyObservers(freeTrack);
-        notifyObservers();
         System.out.println("Assigned track: " + freeTrack.toString());
-        return freeTrack;
     }
 
-    private void deleteTrackRequest(int planeId) {
+    public void unassignTrack(int id) {
+        Track assignedTrack = tracks.stream().parallel()
+            .filter(track -> track.getTrackID() == id)
+            .findAny()
+            .orElseThrow(RuntimeException::new);
+        assignedTrack.setState(assignedTrack.getState().proceedToNextStep());
+        assignedTrack.setAssignedPlane(null);
+        notifyObservers(assignedTrack);
+        System.out.println("Assigned track: " + assignedTrack.toString());
+    }
 
+    private void deleteTrackRequest(String planeId) {
+        TrackRequest request = newTrackRequests.stream().parallel()
+            .filter(trackRequest -> trackRequest.getPlane().getPlaneId().equals(planeId))
+            .findAny()
+            .orElseThrow(RuntimeException::new);
+
+        newTrackRequests.remove(request);
     }
 
     public void registerNewRequest(Plane plane, TrackType trackRequested){

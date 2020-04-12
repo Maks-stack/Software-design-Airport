@@ -18,48 +18,51 @@
 
 <div id="newRequestsWidget">
        <h2>Incoming requests</h2>
-       <c:if test="${not empty newTrackRequests}">
-               <table class="greyGridTable" style="width: 300px">
+       <table class="greyGridTable" style="width: 300px">
+           <tr>
+               <th>Plane ID</th>
+               <th>Track requested</th>
+               <th>Available tracks</th>
+               <th></th>
+           </tr>
+           <c:forEach items="${newTrackRequests}" var="request">
                    <tr>
-                       <th>Plane ID</th>
-                       <th>Track requested</th>
-                       <th>Available tracks</th>
+                       <td>${request.plane.planeId}</td>
+                       <td>${request.trackRequested.type}</td>
+                       <td ALIGN="center">
+                          <select>
+                              <c:forEach items="${availableTracks}" var="track">
+                                   <option>${track.trackID}</option>
+                              </c:forEach>
+                          </select>
+                       </td>
+                       <td><input onclick="assignTrack(this);" type="button" value="Assign track" />
                    </tr>
-                   <c:forEach items="${newTrackRequests}" var="request">
-                           <tr>
-                               <td>${request.plane.planeId}</td>
-                               <td>${request.trackRequested.type}</td>
-                               <td ALIGN="center">
-                                  <select onchange="assignTrack(value);">
-                                      <c:forEach items="${availableTracks}" var="track">
-                                           <option value=${track.trackID}>Assign track ${track.trackID}</option>
-                                      </c:forEach>
-                                  </select>
-                               </td>
-                           </tr>
-               </c:forEach>
-               </table>
-       </c:if>
+       </c:forEach>
+       </table>
 </div>
 
 <div id="TrackPanel">
+    <h2>Tracks list</h2>
     <div id="TracksList" class="TracksWidget">
-        <c:if test="${not empty allTracks}">
-            <table id="allTracks" class="greyGridTable" style="width: 300px">
+            <table id="TracksTable" class="greyGridTable" style="width: 300px">
                 <tr>
                     <th>Track ID</th>
                     <th>Track type</th>
                     <th>Track available</th>
+                    <th>Assigned Plane</th>
+                    <th></th>
                 </tr>
                 <c:forEach items="${allTracks}" var="track">
                     <tr id="${track.trackID}">
-                        <td>${track.trackID}</td>
+                        <td value=${track.trackID}>${track.trackID}</td>
                         <td>${track.type.type}</td>
                         <td>${track.state.state}</td>
+                        <td>${track.assignedPlane.planeId}</td>
+                        <td><input onclick="unassignTrack(this)" type="button" value="Unassign track" /></td>
                     </tr>
                 </c:forEach>
             </table>
-        </c:if>
     </div>
 </div>
 
@@ -84,11 +87,32 @@
             })
     }
 
-    function assignTrack($i) {
+    function assignTrack(param){
+       var planeId = $(param).parent().siblings(":first").text();
+       var trackId = $(param).parent().closest('tr').find('td:nth-child(3)').children(":first").children("option:selected").val();
+       $.ajax({
+                  type : "PATCH",
+                  contentType : 'application/json; charset=utf-8',
+                  url : "http://localhost:8080/assigntrack/" + trackId + "?plane_id=" + planeId,
+                  complete: function(data) {
+                          window.location.reload();
+                      },
+                  statusCode: {
+                      409: function(xhr) {
+                        console.log(xhr);
+                        alert ("Track not available");
+                      }
+                    }
+              });
+    };
+
+    function unassignTrack(param) {
+         var trackId = $(param).parent().siblings(":first").text();
+
          $.ajax({
                     type : "PATCH",
                     contentType : 'application/json; charset=utf-8',
-                    url : "http://localhost:8080/assigntrack/" + $i,
+                    url : "http://localhost:8080/unassigntrack/" + trackId,
                     complete: function(data) {
                             window.location.reload();
                         },
