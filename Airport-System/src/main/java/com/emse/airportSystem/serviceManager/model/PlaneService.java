@@ -61,6 +61,6 @@ public class PlaneService implements Runnable{
         this.carryOutService();
     }
 
-    public Boolean getCancelled(){return this.cancelled;}
+    public Boolean getCancelled(){ return this.cancelled; }
 
 }

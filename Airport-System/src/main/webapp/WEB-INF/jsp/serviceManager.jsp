@@ -136,6 +136,7 @@
   	<c:if test="${not empty gateServices}">
                 <table id="activeServicesTable" class="greyGridTable">
 	                    <tr>
+	                    	<th>Plane ID</th>
 	                        <th>Service ID</th>
 	                        <th>Service available</th>
 	                    </tr>
@@ -148,7 +149,8 @@
 	                    <c:forEach items="${gateServices}" var="service">
 		                     <c:if test ="${ not service.available}">
 		                        <tr id="${service.name}">
-        							<td>${service.name}</td>
+		                        <td> Plane ID </td>
+       							<td>${service.name}</td>       							
 						        <td>${service.available}</td> 
 						        <td>timeCreated:${service.timeCreated}</td>
 						        <td id="counter${service.name}">time left: ${service.duration}</td>
@@ -163,8 +165,9 @@
 	                    </c:forEach>
 	                    <c:forEach items="${refuelServices}" var="service">
 		                    <c:if test ="${ not service.available}">
+		                        <td> Plane ID </td>
 		                        <tr id="${service.name}">
-        							<td>${service.name}</td>
+        						<td>${service.name}</td>
 						        <td>${service.available}</td> 
 						        <td>timeCreated:${service.timeCreated}</td>
 						        <td id="counter${service.name}">time left: ${service.duration}</td>
@@ -270,6 +273,7 @@
 		
 		var output = 
 		'<tr id="' + update.name + '">' +
+		'<td> Plane ID </td>' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
         '<td>timeCreated:' + update.timeCreated + '</td>' +
@@ -324,9 +328,8 @@
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/services/updates', function (update) {
-             updateServiceStatus(JSON.parse(update.body))
+            updateServiceStatus(JSON.parse(update.body))
             console.log(JSON.parse(update.body))	 
-            
           });
        });
     }

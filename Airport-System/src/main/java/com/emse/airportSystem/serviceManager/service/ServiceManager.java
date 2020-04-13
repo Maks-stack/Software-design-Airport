@@ -6,7 +6,7 @@ import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
-import com.emse.airportSystem.serviceManager.model.ServiceGate;
+import com.emse.airportSystem.serviceManager.model.ServiceBus;
 import com.emse.airportSystem.serviceManager.model.ServiceRefuel;
 import com.emse.airportSystem.serviceManager.model.ServiceRequest;
 import org.springframework.stereotype.Service;
@@ -18,7 +18,7 @@ public class ServiceManager implements Observable{
     Map<String, Object> services  = new HashMap<>();
     List<ServiceRequest> newServiceRequests = new ArrayList<ServiceRequest>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
-    List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
+    //List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
     List<Observer> observers = new ArrayList<Observer>();
 
     List<PlaneService> activeServices = new ArrayList<PlaneService>();
@@ -26,20 +26,20 @@ public class ServiceManager implements Observable{
     {
         for (int i = 0; i < 10; i++) {
             String name = "Gate "  + i;
-            services.put("gate"+i, new ServiceGate(name, this));
+            services.put("gate"+i, new ServiceBus(name, this));
             name = "Refuel " + i;
             services.put("refuel"+i, new ServiceRefuel(name, this));
         }
     }
 
-    public List<ServiceGate> getGateServices() {
-        List<ServiceGate> returnList = new ArrayList<ServiceGate>();
+    public List<ServiceBus> getGateServices() {
+        List<ServiceBus> returnList = new ArrayList<ServiceBus>();
         for (Map.Entry<String, Object> entry : services.entrySet()) {
             if (entry.getKey().startsWith("gate")){
-                returnList.add((ServiceGate)entry.getValue());
+                returnList.add((ServiceBus)entry.getValue());
             }
         }
-        returnList.sort(Comparator.comparing(ServiceGate::getName));
+        returnList.sort(Comparator.comparing(ServiceBus::getName));
         return returnList;
     }
 
@@ -109,8 +109,12 @@ public class ServiceManager implements Observable{
 
 
     }
+    
+    public List<PlaneService> getActiveServices() {
+    	return activeServices;
+    }
 
-    public void registerNewRequest(Plane plane, String ServiceName){
+    public void registerNewServiceRequest(Plane plane, String ServiceName){
         newServiceRequests.add(new ServiceRequest(plane, ServiceName));
     }
 
@@ -121,12 +125,12 @@ public class ServiceManager implements Observable{
     public List<ServiceRequest> getServiceRequestsInProgress(){ return serviceRequestsInProgress; }
 
     @Override
-    public void register(Observer obj) {
+    public void registerObserver(Observer obj) {
         observers.add(obj);
     }
 
     @Override
-    public void unregister(Observer obj) {
+    public void unregisterObserver(Observer obj) {
         observers.remove(obj);
     }
 

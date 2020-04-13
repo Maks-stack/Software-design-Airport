@@ -7,9 +7,9 @@ import java.time.LocalDateTime;
 
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
-public class ServiceGate extends PlaneService {
+public class ServiceBus extends PlaneService {
 
-    public ServiceGate(String name, ServiceManager serviceManager){
+    public ServiceBus(String name, ServiceManager serviceManager){
         this.available = Boolean.TRUE;
         this.serviceManager = serviceManager;
         this.name = name;
@@ -18,7 +18,7 @@ public class ServiceGate extends PlaneService {
         this.duration = 10000;
     }
 
-    public ServiceGate(String name, ServiceManager serviceManager, Boolean available){
+    public ServiceBus(String name, ServiceManager serviceManager, Boolean available){
         this.available = available;
         this.serviceManager = serviceManager;
         this.name = name;
