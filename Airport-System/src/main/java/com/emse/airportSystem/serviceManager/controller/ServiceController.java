@@ -50,7 +50,7 @@ public class ServiceController {
         System.out.println("Mocking plane request");
         Plane plane = new Plane("A777", new InAir(), "Test"+System.currentTimeMillis());
         String[] optionsArray = {"Gate", "Refuel"};
-        SM.registerNewRequest(plane, optionsArray[(new Random()).nextInt(optionsArray.length)]);
+        SM.registerNewServiceRequest(plane, optionsArray[(new Random()).nextInt(optionsArray.length)]);
     }
 
     @RequestMapping("/assignservice")

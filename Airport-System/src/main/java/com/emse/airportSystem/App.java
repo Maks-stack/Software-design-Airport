@@ -29,8 +29,8 @@ public class App {
 
 	@EventListener(ApplicationReadyEvent.class)
 	private void setUpObservers() {
-		serviceManager.register(servicesObserver);
-		trackManager.register(tracksObserver);
+		serviceManager.registerObserver(servicesObserver);
+		trackManager.registerObserver(tracksObserver);
 
 		//I have put this here as quick workaround for running test, but it requires starting spring app
 		testContext.runTest();
