@@ -59,7 +59,7 @@
                         <td>${track.type.type}</td>
                         <td>${track.state.state}</td>
                         <td>${track.assignedPlane.planeId}</td>
-                        <td><input onclick="unassignTrack(this)" type="button" value="Unassign track" /></td>
+                        <td><input onclick="unassignTrack(this)" type="button" ${ track.state.state eq "assigned"? '' : 'disabled="disabled"'} value="Unassign track" /></td>
                     </tr>
                 </c:forEach>
             </table>
