@@ -7,7 +7,7 @@ Max
 
 .. Luis
 
-Dom checking in
+Dom checking in.
 
 Sophie clone / push test 2
 
