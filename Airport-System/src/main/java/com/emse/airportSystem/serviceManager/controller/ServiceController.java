@@ -1,5 +1,6 @@
 package com.emse.airportSystem.serviceManager.controller;
 
+import com.emse.airportSystem.exceptions.RequestNotAvailableException;
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.planeManager.model.Plane;
@@ -55,41 +56,26 @@ public class ServiceController {
 
     @RequestMapping("/assignservice")
     @ResponseBody
-    public ResponseEntity<?> assignservice(@RequestParam String PlaneID, @RequestParam String ServiceRequested, @RequestParam String ServiceSelected  ){
-        //Test
-        System.out.println(PlaneID);
-        System.out.println(ServiceRequested);
-        System.out.println(ServiceSelected);
-
+    public ResponseEntity<?> assignservice(@RequestParam String PlaneID, @RequestParam String ServiceRequested, @RequestParam String ServiceSelected  )
+    throws ServiceNotAvailableException, RequestNotAvailableException {
         ServiceSelected = ServiceSelected.replaceAll("\\s+","").toLowerCase();
 
-        try{
-            SM.assignService(ServiceSelected);
+            SM.assignService(ServiceSelected, PlaneID);
             SM.registerServiceRequestsInProgress(PlaneID, ServiceRequested);
 
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<ServiceNotAvailableException>(HttpStatus.CONFLICT);
-        }
     }
 
     @RequestMapping("/mockassignservice")
     @ResponseBody
-    public ResponseEntity<?> mockAssignservice(){
-        try{
-            SM.assignRandomService();
+    public ResponseEntity<?> mockAssignservice() throws ServiceNotAvailableException{
+            //SM.assignRandomService();
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<ServiceNotAvailableException>(HttpStatus.CONFLICT);
-        }
     }
     
     @RequestMapping("/cancelService")
     @ResponseBody
     public ResponseEntity<?> cancelService(@RequestParam String serviceId) {
-    	System.out.println("cancelService");
         SM.cancelService(serviceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

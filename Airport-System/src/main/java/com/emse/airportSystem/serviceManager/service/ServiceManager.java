@@ -5,22 +5,25 @@ import com.emse.airportSystem.exceptions.RequestNotAvailableException;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
+import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
 import com.emse.airportSystem.serviceManager.model.ServiceGate;
 import com.emse.airportSystem.serviceManager.model.ServiceRefuel;
 import com.emse.airportSystem.serviceManager.model.ServiceRequest;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
 
 @Service
 public class ServiceManager implements Observable{
+    @Autowired
+    PlaneManager planeManager;
+
     Map<String, Object> services  = new HashMap<>();
     List<ServiceRequest> newServiceRequests = new ArrayList<ServiceRequest>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
-    List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
     List<Observer> observers = new ArrayList<Observer>();
-
     List<PlaneService> activeServices = new ArrayList<PlaneService>();
     
     {
@@ -54,7 +57,7 @@ public class ServiceManager implements Observable{
         return returnList;
     }
 
-    public void assignService(String serviceId) throws ServiceNotAvailableException {
+    public void assignService(String serviceId, String planeId) throws ServiceNotAvailableException {
         PlaneService service = (PlaneService) services.get(serviceId);
         if (service.getAvailable()) {
             Thread t = new Thread(service);
@@ -63,6 +66,7 @@ public class ServiceManager implements Observable{
             throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
         }
         activeServices.add(service);
+        planeManager.notifyObservers(Arrays.asList(planeId, serviceId));
     }
     
     public void cancelService(String serviceId) {
@@ -76,6 +80,7 @@ public class ServiceManager implements Observable{
     	}
     }
 
+    /*
     public void assignRandomService() throws ServiceNotAvailableException {
         try{
             this.assignService("gate"+new Random().nextInt(10));
@@ -84,6 +89,8 @@ public class ServiceManager implements Observable{
         }
 
     }
+    */
+
 
     public void registerServiceRequestsInProgress(String PlaneID, String ServiceRequested ) throws RequestNotAvailableException {
 

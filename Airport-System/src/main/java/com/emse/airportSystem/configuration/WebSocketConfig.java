@@ -11,11 +11,12 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/services");
+        config.enableSimpleBroker("/services","/planes");
         config.setApplicationDestinationPrefixes("/app");
     }
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         registry.addEndpoint("/services-websocket").withSockJS();
+        registry.addEndpoint("/planes-websocket").withSockJS();
     }
 }

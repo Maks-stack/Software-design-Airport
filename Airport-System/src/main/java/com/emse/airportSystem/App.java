@@ -1,5 +1,7 @@
 package com.emse.airportSystem;
 
+import com.emse.airportSystem.plane.PlanesObserver;
+import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 import com.emse.airportSystem.serviceManager.service.ServicesObserver;
 import com.emse.airportSystem.trackManager.service.TrackManager;
@@ -19,10 +21,16 @@ public class App {
 	ServiceManager serviceManager;
 
 	@Autowired
+	PlaneManager planeManager;
+
+	@Autowired
 	TrackManager trackManager;
 
 	@Autowired
 	ServicesObserver servicesObserver;
+
+	@Autowired
+	PlanesObserver planesObserver;
 
 	@Autowired
 	TracksObserver tracksObserver;
@@ -30,9 +38,8 @@ public class App {
 	@EventListener(ApplicationReadyEvent.class)
 	private void setUpObservers() {
 		serviceManager.register(servicesObserver);
+		planeManager.register(planesObserver);
 		trackManager.register(tracksObserver);
-
-		//I have put this here as quick workaround for running test, but it requires starting spring app
 		testContext.runTest();
 	}
 
