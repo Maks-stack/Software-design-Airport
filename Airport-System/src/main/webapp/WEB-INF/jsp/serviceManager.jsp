@@ -163,7 +163,7 @@
     		
     		progressIndicatorWidth = 100 - (timeLeft / startingTime)*100
     		
-    		console.log("Tick: " + timeLeft)
+    		//console.log("Tick: " + timeLeft)
 		   	// var difference = (dateCreated - Date.now())/1000;
 		   	
 		   	if(document.getElementById("counter"+update.name)){
@@ -203,7 +203,7 @@
                            url : "http://"+window.location.hostname+":8080/cancelService",
                            statusCode: {
                                409: function(xhr) {
-                                 alert ("Service not available");
+                                alert(xhr.responseJSON.error.message);
                                }
                              },
            				data : { serviceId: update.id },
@@ -232,8 +232,7 @@
         url : "http://"+window.location.hostname+":8080/mockassignservice",
         statusCode: {
             409: function(xhr) {
-              console.log(xhr);
-              alert ("Service not available");
+              alert(xhr.responseJSON.error.message);
             }
           }
      });
@@ -268,8 +267,7 @@
               },
             statusCode: {
                 409: function(xhr) {
-                console.log(xhr);
-                alert ("Service not available");
+                    alert(xhr.responseJSON.error.message);
                 }
             }
         }).done(function(data){
