@@ -21,45 +21,6 @@
     <input id="mockassignservice" type="button" value="Assign random service" />
 </div>
 
-<div id="tabs">
-  <ul>
-    <li><a href="#tabs-1">Gate Services</a></li>
-    <li><a href="#tabs-2">Refuel Services</a></li>
-    <li><a href="#tabs-3">Catering Services</a></li>
-  </ul>
-  <div id="tabs-1">
-        <div id="ServicesPanel">
-            <div id="GateServices" class="ServicesWidget">
-            <c:if test="${not empty gateServices}">
-                <table id="gateServices" class="greyGridTable" style="width: 300px">
-                    <tr>
-                        <th>Service ID</th>
-                        <th>Service available</th>
-                    </tr>
-                    <c:forEach items="${gateServices}" var="service">
-                        <tr id="${service.name}">
-                            <td>${service.name}</td>
-                            <td>${service.available}</td>
-                        </tr>
-                    </c:forEach>
-                </table>
-            </c:if>
-            </div>
-        </div>
-  </div>
-  <div id="tabs-2">
-    <p>Morbi tincidunt, dui sit amet facilisis feugiat, odio metus gravida ante, ut pharetra massa metus id nunc. Duis scelerisque molestie turpis. Sed fringilla, massa eget luctus malesuada, metus eros molestie lectus, ut tempus eros massa ut dolor. Aenean aliquet fringilla sem. Suspendisse sed ligula in ligula suscipit aliquam. Praesent in eros vestibulum mi adipiscing adipiscing. Morbi facilisis. Curabitur ornare consequat nunc. Aenean vel metus. Ut posuere viverra nulla. Aliquam erat volutpat. Pellentesque convallis. Maecenas feugiat, tellus pellentesque pretium posuere, felis lorem euismod felis, eu ornare leo nisi vel felis. Mauris consectetur tortor et purus.</p>
-  </div>
-  <div id="tabs-3">
-    <p>Mauris eleifend est et turpis. Duis id erat. Suspendisse potenti. Aliquam vulputate, pede vel vehicula accumsan, mi neque rutrum erat, eu congue orci lorem eget lorem. Vestibulum non ante. Class aptent taciti sociosqu ad litora torquent per conubia nostra, per inceptos himenaeos. Fusce sodales. Quisque eu urna vel enim commodo pellentesque. Praesent eu risus hendrerit ligula tempus pretium. Curabitur lorem enim, pretium nec, feugiat nec, luctus a, lacus.</p>
-    <p>Duis cursus. Maecenas ligula eros, blandit nec, pharetra at, semper at, magna. Nullam ac lacus. Nulla facilisi. Praesent viverra justo vitae neque. Praesent blandit adipiscing velit. Suspendisse potenti. Donec mattis, pede vel pharetra blandit, magna ligula faucibus eros, id euismod lacus dolor eget odio. Nam scelerisque. Donec non libero sed nulla mattis commodo. Ut sagittis. Donec nisi lectus, feugiat porttitor, tempor ac, tempor vitae, pede. Aenean vehicula velit eu tellus interdum rutrum. Maecenas commodo. Pellentesque nec elit. Fusce in lacus. Vivamus a libero vitae lectus hendrerit hendrerit.</p>
-  </div>
-</div>
-
-
-
-
-
 <div id="newRequestsWidget">
        <h2>New requests</h2>
        <c:if test="${not empty newServiceRequests}">
@@ -71,31 +32,30 @@
                        <th id="NR_Button">Test</th>
                    </tr>
                    <c:forEach items="${newServiceRequests}" var="request">
-                           <tr>
-                               <td headers="NR_PlaneID">${request.plane.planeId}</td>
-                               <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
-                               <td ALIGN="center" headers="NR_AvailableServices">
-                                  <select>
-                                      <c:choose>
-                                          <c:when test="${request.serviceRequested=='Gate'}">
-                                              <c:forEach items="${gateServices}" var="service">
-                                                   <option value=${service.name}>${service.name}</option>
-                                              </c:forEach>
-                                          </c:when>
-                                          <c:when test="${request.serviceRequested=='Refuel'}">
-                                              <c:forEach items="${refuelServices}" var="service">
-                                                   <option value=${service.name}>${service.name}</option>
-                                              </c:forEach>
-                                          </c:when>
-                                       </c:choose>
-                                   </select>
-
-                               </TD>
-                               <td headers="NR_Button"><div class="button-newRequest"><button> Click Me </button></div>
-                           </tr>
-               </c:forEach>
+                       <tr>
+                           <td headers="NR_PlaneID">${request.plane.planeId}</td>
+                           <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
+                           <td ALIGN="center" headers="NR_AvailableServices">
+                              <select>
+                                  <c:choose>
+                                      <c:when test="${request.serviceRequested=='Gate'}">
+                                          <c:forEach items="${gateServices}" var="service">
+                                               <option value=${service.id}>${service.name}</option>
+                                          </c:forEach>
+                                      </c:when>
+                                      <c:when test="${request.serviceRequested=='Refuel'}">
+                                          <c:forEach items="${refuelServices}" var="service">
+                                               <option value=${service.id}>${service.name}</option>
+                                          </c:forEach>
+                                      </c:when>
+                                   </c:choose>
+                               </select>
+                           </td>
+                           <td headers="NR_Button"><div class="button-newRequest"><button> Click Me </button></div>
+                       </tr>
+                   </c:forEach>
                </table>
-               </c:if>
+       </c:if>
 </div>
 
 <div id="overwiewOfServices">
@@ -164,24 +124,13 @@
 	                     -->
                 </table>
     </c:if>
-    
-  
  </div>
 
 <script>
-
-
 	var serviceRow = function(update){
 		
 		var startingTime = parseInt(update.duration)/1000 
 		var timeLeft = startingTime
-		
-		/*
-		var dateCreated = new Date(update.timeCreated);
-		
-		console.log(dateCreated + "    " + Date.now())
-	
-		*/
 		
 		var output = 
 		'<tr id="' + update.name + '">' +
@@ -228,10 +177,6 @@
 		return output
 	}
 
-      $( function() {
-        $( "#tabs" ).tabs();
-      } );
-
     connectServicesWebsocket();
     function connectServicesWebsocket() {
        var socket = new SockJS('/services-websocket');
@@ -246,34 +191,23 @@
        });
     }
 
-    function updateServiceStatus(update){    		
-    		/*
-            $('tr').each(function(){
-                if($(this).attr('id') == update.name){
-                    $(this).html("<td>"+update.name+"</td><td>"+update.available+"</td>");
-                }
-            })
-            */
-            
+    function updateServiceStatus(update){
            if(update.available === false){
 	            $('#activeServicesTable').append(serviceRow(update))
-            	
 	            document.getElementById("cancelService"+update.name).onclick  = function(){
-           			            			
            			$.ajax({
                            type : "GET",
                            contentType : 'application/json; charset=utf-8',
                            url : "http://"+window.location.hostname+":8080/cancelService",
                            statusCode: {
                                409: function(xhr) {
-                                 console.log(xhr);
                                  alert ("Service not available");
                                }
                              },
-           				data : { serviceId: update.name },
+           				data : { serviceId: update.id },
                		});
            		}
-    		}
+    	   }
            else if(update.available || update.cancelled){
     			$('#activeServicesTable > tbody').children().each(function(index,element){
 	    				if($(element).attr("id") === update.name){
@@ -291,16 +225,16 @@
 
     document.getElementById("mockassignservice").onclick = function () {
      $.ajax({
-                        type : "GET",
-                        contentType : 'application/json; charset=utf-8',
-                        url : "http://"+window.location.hostname+":8080/mockassignservice",
-                        statusCode: {
-                            409: function(xhr) {
-                              console.log(xhr);
-                              alert ("Service not available");
-                            }
-                          }
-            });
+        type : "GET",
+        contentType : 'application/json; charset=utf-8',
+        url : "http://"+window.location.hostname+":8080/mockassignservice",
+        statusCode: {
+            409: function(xhr) {
+              console.log(xhr);
+              alert ("Service not available");
+            }
+          }
+     });
             
         <c:set var="nbGates" scope="session" value="0"/>
    	   	<c:set var="nbRefuels" scope="session" value="0"/>
@@ -329,7 +263,7 @@
             data: {
                 PlaneID : $(this).closest('tr').find('td:eq(0)').html(),
                 ServiceRequested : $(this).closest('tr').find('td:eq(1)').html(),
-                ServiceSelected : $(this).closest('tr').find('td:eq(2) :selected').text()
+                ServiceSelected : $(this).closest('tr').find('td:eq(2) :selected').val()
               },
             statusCode: {
                 409: function(xhr) {

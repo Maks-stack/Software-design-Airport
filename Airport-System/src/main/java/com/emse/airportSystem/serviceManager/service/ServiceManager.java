@@ -18,7 +18,6 @@ public class ServiceManager implements Observable{
     Map<String, Object> services  = new HashMap<>();
     List<ServiceRequest> newServiceRequests = new ArrayList<ServiceRequest>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
-    List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
     List<Observer> observers = new ArrayList<Observer>();
 
     List<PlaneService> activeServices = new ArrayList<PlaneService>();
@@ -26,9 +25,11 @@ public class ServiceManager implements Observable{
     {
         for (int i = 0; i < 10; i++) {
             String name = "Gate "  + i;
-            services.put("gate"+i, new ServiceGate(name, this));
+            String id = name.replace(" ","").toLowerCase();
+            services.put(id, new ServiceGate(name, id , this));
             name = "Refuel " + i;
-            services.put("refuel"+i, new ServiceRefuel(name, this));
+            id = name.replace(" ","").toLowerCase();
+            services.put(id, new ServiceRefuel(name, id, this));
         }
     }
 
@@ -55,14 +56,10 @@ public class ServiceManager implements Observable{
     }
     
     public void cancelService(String serviceId) {
-    	System.out.println("cancel: " + serviceId);
-    	for(PlaneService currentService : activeServices) {
-    		if(currentService.getName().contains(serviceId)) {
-    			currentService.cancelService();
-    			activeServices.remove(currentService);
-    			break;
-    		}
-    	}
+        System.out.println(serviceId);
+        PlaneService service = (PlaneService) services.get(serviceId);
+        service.cancelService();
+        activeServices.remove(service);
     }
 
     public void assignRandomService() throws ServiceNotAvailableException {

@@ -60,9 +60,7 @@ public class ServiceController {
         System.out.println(PlaneID);
         System.out.println(ServiceRequested);
         System.out.println(ServiceSelected);
-
-        ServiceSelected = ServiceSelected.replaceAll("\\s+","").toLowerCase();
-
+        
         try{
             SM.assignService(ServiceSelected);
             SM.registerServiceRequestsInProgress(PlaneID, ServiceRequested);
