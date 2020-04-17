@@ -95,10 +95,12 @@ public class ServiceController {
     }
 
     public void notifyServiceSubscribers() {
+    	System.out.println("NOTIFY SERVICE OBSERVERS");
         this.template.convertAndSend("/services/updates", "Test");
     }
 
     public void notifyServiceSubscribers(Object obj) {
+    	System.out.println("NOTIFY SERVICE OBSERVERS WITH OBJECT ARGUMENT");
         this.template.convertAndSend("/services/updates", obj);
 
     }

@@ -152,11 +152,11 @@
 		                        <td> Plane ID </td>
        							<td>${service.name}</td>       							
 						        <td>${service.available}</td> 
-						        <td>timeCreated:${service.timeCreated}</td>
+						        <td>timeStarted:${service.timeStarted}</td>
 						        <td id="counter${service.name}">time left: ${service.duration}</td>
 						        <td style="width:50px">
 						        	<div class="progressBar">
-						         		<div id="progressIndicator${service.name}" data-duration="${service.duration}" class="progressBarIndicator"></div>' +
+						         		<div id="progressIndicator${service.name}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
 						       		</div>
 						        </td>
 						        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
@@ -169,11 +169,11 @@
 		                        <tr id="${service.name}">
         						<td>${service.name}</td>
 						        <td>${service.available}</td> 
-						        <td>timeCreated:${service.timeCreated}</td>
+						        <td>timeStarted:${service.timeStarted}</td>
 						        <td id="counter${service.name}">time left: ${service.duration}</td>
 						        <td style="width:50px">
 						        	<div class="progressBar">
-						         		<div id="progressIndicator${service.name}" data-duration="${service.duration}" class="progressBarIndicator"></div>' +
+						         		<div id="progressIndicator${service.name}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
 						       		</div>
 						        </td>
 						        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
@@ -219,39 +219,36 @@
 	               		});
 	           		}
 					
-					console.log("#progressIndicator"+serviceID)
-					console.log($("#progressIndicator"+serviceID).data("duration"))
-					
-					var startingTime = parseInt($("#progressIndicator"+serviceID).data("duration"))/1000 
-					var timeLeft = startingTime
+				
+					var startingTime = new Date((document.getElementById("progressIndicator"+serviceID).getAttribute('data-timestarted'))).getTime()/1000
+					var duration = parseInt(document.getElementById("progressIndicator"+serviceID).getAttribute('data-duration'))/1000 
+					var timePassed = (new Date().getTime() / 1000) - startingTime
+					var timeLeft = Math.round(duration - timePassed)
 					
 					var progressIndicatorWidth = 1
 			        
 		        	var updateCounter = setInterval(function() {
 		        	
-		        	var element =  document.getElementById("counter"+serviceID)
-		        	if (element == null)
-		        	{
-		        		clearInterval(updateCounter);
-		        		return
-		        	}
-		        	
-		    		timeLeft--	
-		    		
-		    		progressIndicatorWidth = 100 - (timeLeft / startingTime)*100
-		    		
-		    		console.log("Tick: " + timeLeft)
-				   	// var difference = (dateCreated - Date.now())/1000;
+			        	var element =  document.getElementById("counter"+serviceID)
+			        	if (element == null)
+			        	{
+			        		clearInterval(updateCounter);
+			        		return
+			        	}
+			        	
+			    		timeLeft--	
+			    		
+			    		progressIndicatorWidth = 100 - (timeLeft / duration)*100
+			    		
+					   	var difference = (startingTime - Date.now())/1000;
+					   	
+					   	if(document.getElementById("counter"+serviceID)){
+					   		document.getElementById("counter"+serviceID).innerHTML = ("time left: " + timeLeft + " sec")
+					   	}
+					   	
+					   	document.getElementById("progressIndicator" + serviceID).style.width = progressIndicatorWidth + "%"
 				   	
-				   	if(document.getElementById("counter"+serviceID)){
-				   		document.getElementById("counter"+serviceID).innerHTML = ("time left: " + timeLeft + " sec")
-				   	}
-				   	
-				   	document.getElementById("progressIndicator" + serviceID).style.width = progressIndicatorWidth + "%"
-				   	
-				   	
-				   	
-				 }, 1000)
+				 	}, 1000)
 				}
 			})
 			
@@ -276,7 +273,8 @@
 		'<td> Plane ID </td>' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
-        '<td>timeCreated:' + update.timeCreated + '</td>' +
+        '<td>timeStarted:' + update.timeStarted
+        + '</td>' +
         '<td id="counter'+update.name + '">time left: ' + timeLeft + ' sec</td>' +
         '<td style="width:50px">' +
         '	<div class="progressBar">' +
@@ -301,7 +299,6 @@
     		
     		progressIndicatorWidth = 100 - (timeLeft / startingTime)*100
     		
-    		console.log("Tick: " + timeLeft)
 		   	// var difference = (dateCreated - Date.now())/1000;
 		   	
 		   	if(document.getElementById("counter"+update.name)){

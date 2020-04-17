@@ -10,7 +10,7 @@ public class PlaneService implements Runnable{
     Boolean available;
     ServiceManager serviceManager;
     Boolean cancelled = false;
-    LocalDateTime timeCreated;
+    LocalDateTime timeStarted;
     long duration = 10000;
 
     public void cancelService() {
@@ -23,6 +23,8 @@ public class PlaneService implements Runnable{
     public void carryOutService() {
         this.available = Boolean.FALSE;
         serviceManager.notifyObservers(this);
+        timeStarted = LocalDateTime.now();
+        System.out.println("TIMESTARTED: " + timeStarted);
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
@@ -48,8 +50,8 @@ public class PlaneService implements Runnable{
         return this.available;
     }
     
-    public LocalDateTime getTimeCreated() {
-        return this.timeCreated;
+    public LocalDateTime getTimeStarted() {
+        return this.timeStarted;
     }
 
     public long getDuration() {
