@@ -1,5 +1,6 @@
 package com.emse.airportSystem.serviceManager.controller;
 
+import com.emse.airportSystem.exceptions.RequestNotAvailableException;
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.planeManager.model.Plane;
@@ -17,6 +18,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Random;
 
@@ -35,7 +37,7 @@ public class ServiceController {
     public String index(Model model) {
         List<? extends PlaneService> gateServices = SM.getServicesByType("Gate");
         List<? extends PlaneService> refuelServices = SM.getServicesByType("Refuel");
-        List<ServiceRequest> newServiceRequests = SM.getNewServiceRequests();
+        Collection<ServiceRequest> newServiceRequests = SM.getNewServiceRequests();
         List<ServiceRequest> serviceRequestsInProgress = SM.getServiceRequestsInProgress();
         model.addAttribute("gateServices", gateServices);
         model.addAttribute("refuelServices", refuelServices);
@@ -55,39 +57,22 @@ public class ServiceController {
 
     @RequestMapping("/assignservice")
     @ResponseBody
-    public ResponseEntity<?> assignservice(@RequestParam String PlaneID, @RequestParam String ServiceRequested, @RequestParam String ServiceSelected  ){
-        //Test
-        System.out.println(PlaneID);
-        System.out.println(ServiceRequested);
-        System.out.println(ServiceSelected);
-        
-        try{
-            SM.assignService(ServiceSelected);
-            SM.registerServiceRequestsInProgress(PlaneID, ServiceRequested);
-
+    public ResponseEntity<?> assignservice(@RequestParam String requestId, @RequestParam String serviceSelected)
+    throws ServiceNotAvailableException, RequestNotAvailableException {
+            SM.assignService(requestId, serviceSelected);
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<ServiceNotAvailableException>(HttpStatus.CONFLICT);
-        }
     }
 
     @RequestMapping("/mockassignservice")
     @ResponseBody
-    public ResponseEntity<?> mockAssignservice(){
-        try{
+    public ResponseEntity<?> mockAssignservice() throws ServiceNotAvailableException, RequestNotAvailableException{
             SM.assignRandomService();
             return new ResponseEntity<>(HttpStatus.OK);
-        } catch (Exception e){
-            System.out.println(e);
-            return new ResponseEntity<ServiceNotAvailableException>(HttpStatus.CONFLICT);
-        }
     }
     
     @RequestMapping("/cancelService")
     @ResponseBody
     public ResponseEntity<?> cancelService(@RequestParam String serviceId) {
-    	System.out.println("cancelService");
         SM.cancelService(serviceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }

@@ -26,6 +26,7 @@
        <c:if test="${not empty newServiceRequests}">
                <table class="greyGridTable" style="width: 300px">
                    <tr>
+                       <th id="NR_ServiceRequestID">Request ID</th>
                        <th id="NR_PlaneID">Plane ID</th>
                        <th id="NR_ServiceRequested">Service requested</th>
                        <th id="NR_AvailableServices">Available services</th>
@@ -33,6 +34,7 @@
                    </tr>
                    <c:forEach items="${newServiceRequests}" var="request">
                        <tr>
+                           <td headers="NR_ServiceRequestID">${request.id}</td>
                            <td headers="NR_PlaneID">${request.plane.planeId}</td>
                            <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
                            <td ALIGN="center" headers="NR_AvailableServices">
@@ -261,9 +263,8 @@
             type: "POST",
             url:  "http://"+window.location.hostname+":8080/assignservice",
             data: {
-                PlaneID : $(this).closest('tr').find('td:eq(0)').html(),
-                ServiceRequested : $(this).closest('tr').find('td:eq(1)').html(),
-                ServiceSelected : $(this).closest('tr').find('td:eq(2) :selected').val()
+                requestId: $(this).closest('tr').find('td:eq(0)').html(),
+                serviceSelected : $(this).closest('tr').find('td:eq(3) :selected').val()
               },
             statusCode: {
                 409: function(xhr) {
