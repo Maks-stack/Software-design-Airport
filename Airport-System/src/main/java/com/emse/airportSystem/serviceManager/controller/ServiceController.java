@@ -33,8 +33,8 @@ public class ServiceController {
 
     @RequestMapping("/servicemanager")
     public String index(Model model) {
-        List<? extends PlaneService> gateServices = SM.getGateServices();
-        List<? extends PlaneService> refuelServices = SM.getRefuelServices();
+        List<? extends PlaneService> gateServices = SM.getServicesByType("Gate");
+        List<? extends PlaneService> refuelServices = SM.getServicesByType("Refuel");
         List<ServiceRequest> newServiceRequests = SM.getNewServiceRequests();
         List<ServiceRequest> serviceRequestsInProgress = SM.getServiceRequestsInProgress();
         model.addAttribute("gateServices", gateServices);

@@ -32,25 +32,14 @@ public class ServiceManager implements Observable{
         }
     }
 
-    public List<ServiceGate> getGateServices() {
-        List<ServiceGate> returnList = new ArrayList<ServiceGate>();
+    public List<PlaneService> getServicesByType(String serviceType) {
+        List<PlaneService> returnList = new ArrayList<PlaneService>();
         for (Map.Entry<String, Object> entry : services.entrySet()) {
-            if (entry.getKey().startsWith("gate")){
-                returnList.add((ServiceGate)entry.getValue());
+            if (entry.getKey().toLowerCase().startsWith(serviceType.toLowerCase())){
+                returnList.add((PlaneService)entry.getValue());
             }
         }
-        returnList.sort(Comparator.comparing(ServiceGate::getName));
-        return returnList;
-    }
-
-    public List<ServiceRefuel> getRefuelServices() {
-        List<ServiceRefuel> returnList = new ArrayList<ServiceRefuel>();
-        for (Map.Entry<String, Object> entry : services.entrySet()) {
-            if (entry.getKey().startsWith("refuel")){
-                returnList.add((ServiceRefuel)entry.getValue());
-            }
-        }
-        returnList.sort(Comparator.comparing(ServiceRefuel::getName));
+        returnList.sort(Comparator.comparing(PlaneService::getName));
         return returnList;
     }
 
