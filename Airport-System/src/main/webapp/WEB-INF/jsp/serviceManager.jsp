@@ -263,7 +263,7 @@
            			$.ajax({
                            type : "GET",
                            contentType : 'application/json; charset=utf-8',
-                           url : "http://localhost:8080/cancelService",
+                           url : "http://"+window.location.hostname+":8080/cancelService",
                            statusCode: {
                                409: function(xhr) {
                                  console.log(xhr);
@@ -293,7 +293,7 @@
      $.ajax({
                         type : "GET",
                         contentType : 'application/json; charset=utf-8',
-                        url : "http://localhost:8080/mockassignservice",
+                        url : "http://"+window.location.hostname+":8080/mockassignservice",
                         statusCode: {
                             409: function(xhr) {
                               console.log(xhr);
@@ -325,7 +325,7 @@
 
         $.ajax({
             type: "POST",
-            url:  "http://localhost:8080/assignservice",
+            url:  "http://"+window.location.hostname+":8080/assignservice",
             data: {
                 PlaneID : $(this).closest('tr').find('td:eq(0)').html(),
                 ServiceRequested : $(this).closest('tr').find('td:eq(1)').html(),
@@ -347,7 +347,7 @@
         $.ajax({
                     type : "GET",
                     contentType : 'application/json; charset=utf-8',
-                    url : "http://localhost:8080/mockplanerequest"
+                    url : "http://"+window.location.hostname+":8080/mockplanerequest"
             });
             $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
     };
