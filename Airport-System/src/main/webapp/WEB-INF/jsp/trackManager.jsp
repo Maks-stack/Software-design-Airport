@@ -88,9 +88,21 @@
     }
 
     function updateRequestList(update){
-        $('tr').each(function(){
-            if($(element).attr("id") === update.id){
-                $(element).remove()
+        var ids = [];
+        var requestTableIds = [];
+        for (request in update) {
+            ids.push(request.plane.planeId);
+        }
+        $('#requestsTable > tbody').children().each(function(index,element){{
+            requestTableIds.push($(element).attr("id"));
+
+            if(!ids.includes($(element).attr("id"))
+                $(element).remove();
+            }
+        }
+        for (request in update) {
+            if(!requestTableIds.includes(request.plane.planeId)) {
+                addRequestRow(request);
             }
         }
     }
