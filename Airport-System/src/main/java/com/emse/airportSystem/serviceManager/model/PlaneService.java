@@ -34,6 +34,7 @@ public class PlaneService implements Runnable{
             e.printStackTrace();
         }
         this.available = Boolean.TRUE;
+        planeId = "";
         serviceManager.notifyObservers(this);
     }
 
