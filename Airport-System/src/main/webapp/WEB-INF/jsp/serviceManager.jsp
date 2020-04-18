@@ -111,32 +111,32 @@
 	                    
 	                    <c:forEach items="${gateServices}" var="service">
 		                     <c:if test ="${ not service.available}">
-		                        <tr id="${service.name}">
+		                        <tr id="${service.id}">
 		                        <td> Plane ID </td>
        							<td>${service.name}</td>       							
 						        <td>${service.available}</td> 
 						        <td>timeStarted:${service.timeStarted}</td>
-						        <td id="counter${service.name}">time left: ${service.duration}</td>
+						        <td id="counter${service.id}">time left: ${service.duration}</td>
 						        <td style="width:50px">
 						        	<div class="progressBar">
-						         		<div id="progressIndicator${service.name}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
+						         		<div id="progressIndicator${service.id}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
 						       		</div>
 						        </td>
-						        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
+						        <td><button class="cancelServiceButton" id="cancelService${service.id}">Cancel &#9888;</button></td>
 						        </tr>
 	                    	</c:if>	
 	                    </c:forEach>
 	                    <c:forEach items="${refuelServices}" var="service">
 		                    <c:if test ="${ not service.available}">
 		                        <td> Plane ID </td>
-		                        <tr id="${service.name}">
+		                        <tr id="${service.id}">
         						<td>${service.name}</td>
 						        <td>${service.available}</td> 
 						        <td>timeStarted:${service.timeStarted}</td>
 						        <td id="counter${service.name}">time left: ${service.duration}</td>
 						        <td style="width:50px">
 						        	<div class="progressBar">
-						         		<div id="progressIndicator${service.name}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
+						         		<div id="progressIndicator${service.id}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
 						       		</div>
 						        </td>
 						        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
@@ -221,26 +221,26 @@
 		var timeLeft = startingTime
 		
 		var output = 
-		'<tr id="' + update.name + '">' +
+		'<tr id="' + update.id + '">' +
 		'<td> Plane ID </td>' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
         '<td>timeStarted:' + update.timeStarted
         + '</td>' +
-        '<td id="counter'+update.name + '">time left: ' + timeLeft + ' sec</td>' +
+        '<td id="counter'+update.id + '">time left: ' + timeLeft + ' sec</td>' +
         '<td style="width:50px">' +
         '	<div class="progressBar">' +
-        ' 		<div id="progressIndicator' + update.name + '" class="progressBarIndicator"></div>' +
+        ' 		<div id="progressIndicator' + update.id + '" class="progressBarIndicator"></div>' +
        	'	</div>'+
         '</td>'+
-        '<td><button class="cancelServiceButton" id="cancelService' + update.name + '">Cancel &#9888;</button></td>' +
+        '<td><button class="cancelServiceButton" id="cancelService' + update.id + '">Cancel &#9888;</button></td>' +
         '</tr>'
         
         var progressIndicatorWidth = 1
         
         var updateCounter = setInterval(function() {
         	
-        	var element =  document.getElementById("counter"+update.name)
+        	var element =  document.getElementById("counter"+update.id)
         	if (element == null)
         	{
         		clearInterval(updateCounter);
@@ -254,11 +254,11 @@
     		//console.log("Tick: " + timeLeft)
 		   	// var difference = (dateCreated - Date.now())/1000;
 		   	
-		   	if(document.getElementById("counter"+update.name)){
-		   		document.getElementById("counter"+update.name).innerHTML = ("time left: " + timeLeft + " sec")
+		   	if(document.getElementById("counter"+update.id)){
+		   		document.getElementById("counter"+update.id).innerHTML = ("time left: " + timeLeft + " sec")
 		   	}
 		   	
-		   	document.getElementById("progressIndicator" + update.name).style.width = progressIndicatorWidth + "%"
+		   	document.getElementById("progressIndicator" + update.id).style.width = progressIndicatorWidth + "%"
 		   	
 		   	
 		   	
@@ -283,7 +283,7 @@
     function updateServiceStatus(update){
            if(update.available === false){
 	            $('#activeServicesTable').append(serviceRow(update))
-	            document.getElementById("cancelService"+update.name).onclick  = function(){
+	            document.getElementById("cancelService"+update.id).onclick  = function(){
            			$.ajax({
                            type : "GET",
                            contentType : 'application/json; charset=utf-8',
@@ -299,7 +299,7 @@
     	   }
            else if(update.available || update.cancelled){
     			$('#activeServicesTable > tbody').children().each(function(index,element){
-	    				if($(element).attr("id") === update.name){
+	    				if($(element).attr("id") === update.id){
 	    					$(element).remove()
 	    				}	
     				})
