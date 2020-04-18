@@ -83,11 +83,6 @@ public class TrackManager implements Observable {
     }
 
     @Override
-    public void unregisterObserver(Observer obj) {
-        observers.remove(obj);
-    }
-
-    @Override
     public void notifyObservers() {
         observers.forEach(obj -> obj.update());
     }

@@ -7,11 +7,12 @@ import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
 public class PlaneService implements Runnable{
     String name;
+    String id;
     Boolean available;
     ServiceManager serviceManager;
     Boolean cancelled = false;
     LocalDateTime timeStarted;
-    long duration = 10000;
+    long duration = 50000;
 
     public void cancelService() {
         setAvailable();
@@ -45,6 +46,8 @@ public class PlaneService implements Runnable{
     public String getName() {
         return this.name;
     }
+
+    public String getId() { return this.id; }
 
     public Boolean getAvailable() {
         return this.available;

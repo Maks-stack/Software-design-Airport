@@ -5,6 +5,7 @@ import com.emse.airportSystem.exceptions.RequestNotAvailableException;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
+import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
 import com.emse.airportSystem.serviceManager.model.ServiceBus;
 import com.emse.airportSystem.serviceManager.model.ServiceRefuel;
@@ -16,47 +17,37 @@ import java.util.*;
 @Service
 public class ServiceManager implements Observable{
     Map<String, Object> services  = new HashMap<>();
-    List<ServiceRequest> newServiceRequests = new ArrayList<ServiceRequest>();
+    Map<String, ServiceRequest> newServiceRequests = new HashMap<>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
-    //List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
     List<Observer> observers = new ArrayList<Observer>();
-
     List<PlaneService> activeServices = new ArrayList<PlaneService>();
     
     {
         for (int i = 0; i < 10; i++) {
             String name = "Gate "  + i;
-            services.put("gate"+i, new ServiceBus(name, this));
+            String id = name.replace(" ","").toLowerCase();
+            services.put(id, new ServiceBus(name, id , this));
             name = "Refuel " + i;
-            services.put("refuel"+i, new ServiceRefuel(name, this));
+            id = name.replace(" ","").toLowerCase();
+            services.put(id, new ServiceRefuel(name, id, this));
         }
     }
 
-    public List<ServiceBus> getGateServices() {
-        List<ServiceBus> returnList = new ArrayList<ServiceBus>();
+    public List<PlaneService> getServicesByType(String serviceType) {
+        List<PlaneService> returnList = new ArrayList<PlaneService>();
         for (Map.Entry<String, Object> entry : services.entrySet()) {
-            if (entry.getKey().startsWith("gate")){
-                returnList.add((ServiceBus)entry.getValue());
+            if (entry.getKey().toLowerCase().startsWith(serviceType.toLowerCase())){
+                returnList.add((PlaneService)entry.getValue());
             }
         }
-        returnList.sort(Comparator.comparing(ServiceBus::getName));
+        returnList.sort(Comparator.comparing(PlaneService::getName));
         return returnList;
     }
 
-    public List<ServiceRefuel> getRefuelServices() {
-        List<ServiceRefuel> returnList = new ArrayList<ServiceRefuel>();
-        for (Map.Entry<String, Object> entry : services.entrySet()) {
-            if (entry.getKey().startsWith("refuel")){
-                returnList.add((ServiceRefuel)entry.getValue());
-            }
-        }
-        returnList.sort(Comparator.comparing(ServiceRefuel::getName));
-        return returnList;
-    }
-
-    public void assignService(String serviceId) throws ServiceNotAvailableException {
+    public void assignService(String requestId, String serviceId) throws ServiceNotAvailableException,RequestNotAvailableException {
         PlaneService service = (PlaneService) services.get(serviceId);
         if (service.getAvailable()) {
+            registerServiceRequestsInProgress(requestId);
             Thread t = new Thread(service);
             t.start();
         } else {
@@ -66,60 +57,40 @@ public class ServiceManager implements Observable{
     }
     
     public void cancelService(String serviceId) {
-    	System.out.println("cancel: " + serviceId);
-    	for(PlaneService currentService : activeServices) {
-    		if(currentService.getName().contains(serviceId)) {
-    			currentService.cancelService();
-    			activeServices.remove(currentService);
-    			break;
-    		}
-    	}
+        PlaneService service = (PlaneService) services.get(serviceId);
+        service.cancelService();
+        activeServices.remove(service);
     }
 
-    public void assignRandomService() throws ServiceNotAvailableException {
+
+    public void assignRandomService() throws ServiceNotAvailableException, RequestNotAvailableException {
         try{
-            this.assignService("gate"+new Random().nextInt(10));
+            Plane mockPlane = new Plane("Mock1",new InAir(),"Mock1");
+            ServiceRequest serviceRequest = new ServiceRequest(mockPlane,"Gate");
+            newServiceRequests.put(serviceRequest.getId(), serviceRequest);
+            this.assignService(serviceRequest.getId(), "gate"+new Random().nextInt(10));
         } catch (Exception e) {
             throw e;
         }
-
     }
 
-    public void registerServiceRequestsInProgress(String PlaneID, String ServiceRequested ) throws RequestNotAvailableException {
-
-        ServiceRequest NewServiceInProgress = null;
-
-        //Detect the request
-        for(ServiceRequest service : newServiceRequests) {
-            if(service.getServiceRequested().equals(ServiceRequested) && service.getPlane().getPlaneId().equals(PlaneID)) {
-
-                NewServiceInProgress = service;
-                break;
-            }
-        }
-        if (NewServiceInProgress != null){
-
-            serviceRequestsInProgress.add(NewServiceInProgress);
-            newServiceRequests.remove(NewServiceInProgress);
-
+    public void registerServiceRequestsInProgress(String requestId) throws RequestNotAvailableException {
+        ServiceRequest newServiceInProgress = newServiceRequests.get(requestId);
+        if (newServiceInProgress != null){
+            serviceRequestsInProgress.add(newServiceInProgress);
+            newServiceRequests.remove(newServiceInProgress.getId());
         }else{
-            throw new RequestNotAvailableException("That request is not available");
+            throw new RequestNotAvailableException("This request is not available");
         }
-
-
-
-    }
-    
-    public List<PlaneService> getActiveServices() {
-    	return activeServices;
     }
 
-    public void registerNewServiceRequest(Plane plane, String ServiceName){
-        newServiceRequests.add(new ServiceRequest(plane, ServiceName));
+    public void registerNewRequest(Plane plane, String ServiceName){
+        ServiceRequest serviceRequest = new ServiceRequest(plane, ServiceName);
+        newServiceRequests.put(serviceRequest.getId(), serviceRequest);
     }
 
-    public List<ServiceRequest> getNewServiceRequests(){
-        return newServiceRequests;
+    public Collection<ServiceRequest> getNewServiceRequests(){
+        return newServiceRequests.values();
     }
 
     public List<ServiceRequest> getServiceRequestsInProgress(){ return serviceRequestsInProgress; }
@@ -128,12 +99,6 @@ public class ServiceManager implements Observable{
     public void registerObserver(Observer obj) {
         observers.add(obj);
     }
-
-    @Override
-    public void unregisterObserver(Observer obj) {
-        observers.remove(obj);
-    }
-
     @Override
     public void notifyObservers() {
         observers.forEach(obj -> obj.update());
