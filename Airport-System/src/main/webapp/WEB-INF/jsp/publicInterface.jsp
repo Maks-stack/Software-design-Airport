@@ -11,31 +11,17 @@
 <body>
     <h1>Track manager</h1>
 
-<div id="requestMocker">
-    <p>This button will create a new plane object</p>
-    <input id="mockTrackRequest" type="button" value="Mock Track Request" />
-</div>
-
 <div id="newRequestsWidget">
-       <h2>Incoming requests</h2>
-       <table class="greyGridTable" style="width: 300px" id="requestsTable">
+       <h2>Planes</h2>
+       <table class="greyGridTable" style="width: 300px">
            <tr>
                <th>Plane ID</th>
-               <th>Track requested</th>
-               <th>Available tracks</th>
-               <th></th>
+               <th>Plane status</th>
            </tr>
-           <c:forEach items="${newTrackRequests}" var="request">
-                   <tr id="${request.plane.planeId}">
-                       <td>${request.plane.planeId}</td>
-                       <td ALIGN="center">
-                          <select>
-                              <c:forEach items="${availableTracks}" var="track">
-                                   <option>${track.trackID}</option>
-                              </c:forEach>
-                          </select>
-                       </td>
-                       <td><input onclick="assignTrack(this);" type="button" value="Assign track" />
+           <c:forEach items="${planeList}" var="plane">
+                   <tr>
+                       <td>${plane.planeId}</td>
+                       <td>${plane.}</td>
                    </tr>
        </c:forEach>
        </table>
@@ -47,6 +33,7 @@
             <table id="TracksTable" class="greyGridTable" style="width: 300px">
                 <tr>
                     <th>Track ID</th>
+                    <th>Track type</th>
                     <th>Track available</th>
                     <th>Assigned Plane</th>
                     <th></th>
@@ -54,9 +41,10 @@
                 <c:forEach items="${allTracks}" var="track">
                     <tr id="${track.trackID}">
                         <td value=${track.trackID}>${track.trackID}</td>
+                        <td>${track.type.type}</td>
                         <td>${track.state.state}</td>
                         <td>${track.assignedPlane.planeId}</td>
-                        <td><input onclick="unassignTrack(this)" type="button" ${ track.state.state eq "assigned"? '' : 'disabled="disabled"'} value="Unassign track" /></td>
+                        <td><input onclick="unassignTrack(this)" type="button" value="Unassign track" /></td>
                     </tr>
                 </c:forEach>
             </table>
@@ -73,26 +61,15 @@
           stompClient.subscribe('/tracks/updates', function (update) {
              updateTrackStatus(JSON.parse(update.body))
           });
-          stompClient.subscribe('/requests/updates', function (update) {
-            updateRequestList(JSON.parse(update.body))
-          });
-        });
+       });
     };
 
     function updateTrackStatus(update){
-        $('tr').each(function(){
-            if($(this).attr('id') == update.trackID){
-                $(this).html("<td>"+update.trackID+"</td><td>"+update.state.state+"</td>");
-            }
-        })
-    }
-
-    function updateRequestList(update){
-        $('tr').each(function(){
-            if($(element).attr("id") === update.id){
-                $(element).remove()
-            }
-        }
+            $('tr').each(function(){
+                if($(this).attr('id') == update.trackID){
+                    $(this).html("<td>"+update.trackID+"</td><td>"+update.type.type+"</td><td>"+update.state.state+"</td>");
+                }
+            })
     }
 
     function assignTrack(param){
@@ -102,6 +79,9 @@
                   type : "PATCH",
                   contentType : 'application/json; charset=utf-8',
                   url : "http://localhost:8080/assigntrack/" + trackId + "?plane_id=" + planeId,
+                  complete: function(data) {
+                          window.location.reload();
+                      },
                   statusCode: {
                       409: function(xhr) {
                         console.log(xhr);
@@ -134,7 +114,10 @@
         $.ajax({
                     type : "GET",
                     contentType : 'application/json; charset=utf-8',
-                    url : "http://localhost:8080/mocktrackrequest"
+                    url : "http://localhost:8080/mocktrackrequest",
+                    complete: function(data) {
+                            window.location.reload();
+                        }
             });
     };
 </script>

@@ -25,6 +25,10 @@ public class TracksObserver implements Observer {
         this.trackController.notifyServiceSubscribers(obj);
     }
 
+    public void updateRequest(Object obj) {
+        this.trackController.notifyRequestSubscribers(obj);
+    }
+
     @Override
     public void setObservable(Observable trackManager) {
         this.trackManager = trackManager;
