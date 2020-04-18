@@ -62,13 +62,14 @@
 
 <div id="overwiewOfServices">
        <h2>Overview of the available services</h2>
-       	   <c:set var="nbGate" scope="session" value="0"/>
-       	   <c:set var="nbRefuel" scope="session" value="0"/>
            <table class="greyGridTable" style="width: 300px">
                <tr>
                    <th>Service</th>
                    <th>Number of available teams</th>
                </tr>
+               <c:set var="nbGate" scope="session" value="0"/>
+			   <c:set var="nbRefuel" scope="session" value="0"/>
+				
                 <c:forEach items="${gateServices}" var="service">
                 	<c:if test="${service.available}">
                     	<c:set var="nbGate" value="${nbGate + 1}"/>
@@ -343,7 +344,6 @@
     
 
     $("body").on( "click", ".button-newRequest", function(){
-
         $.ajax({
             type: "POST",
             url:  "http://"+window.location.hostname+":8080/assignservice",
@@ -360,6 +360,19 @@
              $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
              $( "#activeServicesWidget" ).load(window.location.href + " #activeServicesWidget" );
         });
+        
+        var serviceReq = $(this).closest('tr').find('td:eq(1)').html();
+		console.log("CLICK ON CLICK HERE: "+serviceReq);
+		if(serviceReq.includes("Gate")) {
+			var numberOfGates = document.getElementById("gate").innerHTML;
+			numberOfGates = numberOfGates-1;
+		   document.getElementById("gate").innerHTML = numberOfGates;
+		}
+		if(serviceReq.includes("Refuel")) {
+		   var numberOfRefuels = document.getElementById("refuel").innerHTML;
+			numberOfRefuels = numberOfRefuels-1;
+		   document.getElementById("refuel").innerHTML = numberOfRefuels;
+		}
 
     });
     document.getElementById("mockplanerequest").onclick = function () {
