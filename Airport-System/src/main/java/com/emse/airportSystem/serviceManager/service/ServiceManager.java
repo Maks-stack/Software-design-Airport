@@ -1,7 +1,7 @@
 package com.emse.airportSystem.serviceManager.service;
 
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
-import com.emse.airportSystem.exceptions.RequestNotAvailableException;
+import com.emse.airportSystem.exceptions.RequestNotFoundException;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
@@ -13,7 +13,6 @@ import com.emse.airportSystem.serviceManager.model.ServiceRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 @Service
 public class ServiceManager implements Observable{
@@ -45,7 +44,7 @@ public class ServiceManager implements Observable{
         return returnList;
     }
 
-    public void assignService(String requestId, String serviceId) throws ServiceNotAvailableException,RequestNotAvailableException {
+    public void assignService(String requestId, String serviceId) throws ServiceNotAvailableException, RequestNotFoundException {
         PlaneService service = (PlaneService) services.get(serviceId);
         if (service.getAvailable()) {
             registerServiceRequestsInProgress(requestId);
@@ -56,7 +55,7 @@ public class ServiceManager implements Observable{
             if(originalServiceRequest != null) {
             	service.setPlaneId(originalServiceRequest.getPlane().getPlaneId());
             }else {
-            	throw new RequestNotAvailableException("This request is not available");
+            	throw new RequestNotFoundException(requestId);
             }
             
             Thread t = new Thread(service);
@@ -74,7 +73,7 @@ public class ServiceManager implements Observable{
     }
 
 
-    public void assignRandomService() throws ServiceNotAvailableException, RequestNotAvailableException {
+    public void assignRandomService() throws ServiceNotAvailableException, RequestNotFoundException {
         try{
             Plane mockPlane = new Plane("Mock1",new InAir(),"Mock1");
             ServiceRequest serviceRequest = new ServiceRequest(mockPlane,"Gate");
@@ -85,13 +84,13 @@ public class ServiceManager implements Observable{
         }
     }
 
-    public void registerServiceRequestsInProgress(String requestId) throws RequestNotAvailableException {
+    public void registerServiceRequestsInProgress(String requestId) throws RequestNotFoundException {
         ServiceRequest newServiceInProgress = newServiceRequests.get(requestId);
         if (newServiceInProgress != null){
             serviceRequestsInProgress.add(newServiceInProgress);
             newServiceRequests.remove(newServiceInProgress.getId());
         }else{
-            throw new RequestNotAvailableException("This request is not available");
+            throw new RequestNotFoundException(requestId);
         }
     }
 

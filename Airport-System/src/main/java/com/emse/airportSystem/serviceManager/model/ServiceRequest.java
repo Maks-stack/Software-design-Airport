@@ -1,9 +1,7 @@
 package com.emse.airportSystem.serviceManager.model;
 
 
-import com.emse.airportSystem.exceptions.RequestNotAvailableException;
 import com.emse.airportSystem.planeManager.model.Plane;
-import jdk.nashorn.internal.ir.RuntimeNode;
 
 public class ServiceRequest {
     String id;

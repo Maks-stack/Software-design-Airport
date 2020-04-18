@@ -1,6 +1,6 @@
 package com.emse.airportSystem;
 
-import com.emse.airportSystem.exceptions.RequestNotAvailableException;
+import com.emse.airportSystem.exceptions.RequestNotFoundException;
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 
 import org.springframework.http.HttpHeaders;
@@ -18,7 +18,7 @@ class GlobalControllerExceptionHandler {
         return new ResponseEntity<>(new BackendErrorResponse(ex), responseHeaders, HttpStatus.CONFLICT);
     }
 
-    @ExceptionHandler(RequestNotAvailableException.class)
+    @ExceptionHandler(RequestNotFoundException.class)
     public ResponseEntity<BackendErrorResponse> handleRequestNotAvailableException(Exception ex) {
         HttpHeaders responseHeaders = new HttpHeaders();
         return new ResponseEntity<>(new BackendErrorResponse(ex), responseHeaders, HttpStatus.CONFLICT);

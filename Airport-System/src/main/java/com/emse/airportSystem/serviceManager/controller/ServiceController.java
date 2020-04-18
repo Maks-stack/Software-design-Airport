@@ -1,6 +1,6 @@
 package com.emse.airportSystem.serviceManager.controller;
 
-import com.emse.airportSystem.exceptions.RequestNotAvailableException;
+import com.emse.airportSystem.exceptions.RequestNotFoundException;
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.planeManager.model.Plane;
@@ -16,7 +16,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.Collection;
 import java.util.List;
@@ -58,14 +57,14 @@ public class ServiceController {
     @RequestMapping("/assignservice")
     @ResponseBody
     public ResponseEntity<?> assignservice(@RequestParam String requestId, @RequestParam String serviceSelected)
-    throws ServiceNotAvailableException, RequestNotAvailableException {
+    throws ServiceNotAvailableException, RequestNotFoundException {
             SM.assignService(requestId, serviceSelected);
             return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping("/mockassignservice")
     @ResponseBody
-    public ResponseEntity<?> mockAssignservice() throws ServiceNotAvailableException, RequestNotAvailableException{
+    public ResponseEntity<?> mockAssignservice() throws ServiceNotAvailableException, RequestNotFoundException {
             SM.assignRandomService();
             return new ResponseEntity<>(HttpStatus.OK);
     }
