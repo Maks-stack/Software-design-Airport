@@ -295,6 +295,21 @@
                              },
            				data : { serviceId: update.id },
                		});
+               		
+               		var name = update.name;  
+               		if(name.startsWith("Gate")) {
+	               		var numberOfGate = document.getElementById("gate").innerHTML;
+	               		console.log("AVANT: "+numberOfGate);
+						numberOfGate = numberOfGate-(-1);
+						console.log("APRES: "+numberOfGate);
+			    		document.getElementById("gate").innerHTML = numberOfGate;
+               		}
+               		if(name.startsWith("Refuel")) {
+               			var numberOfRefuel = document.getElementById("refuel").innerHTML;
+						numberOfRefuel = numberOfRefuel-(-1);
+		    			document.getElementById("refuel").innerHTML = numberOfRefuel;
+               		}
+               		
            		}
     	   }
            else if(update.available || update.cancelled){
@@ -361,7 +376,7 @@
              $( "#activeServicesWidget" ).load(window.location.href + " #activeServicesWidget" );
         });
         
-        var serviceReq = $(this).closest('tr').find('td:eq(1)').html();
+        var serviceReq = $(this).closest('tr').find('td:eq(0)').html();
 		console.log("CLICK ON CLICK HERE: "+serviceReq);
 		if(serviceReq.includes("Gate")) {
 			var numberOfGates = document.getElementById("gate").innerHTML;
