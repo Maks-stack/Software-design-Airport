@@ -13,9 +13,11 @@ public class PlaneService implements Runnable{
     Boolean cancelled = false;
     LocalDateTime timeStarted;
     long duration = 50000;
+    String planeId = "";
 
     public void cancelService() {
         setAvailable();
+        planeId = "";
         this.cancelled = Boolean.TRUE;
         serviceManager.notifyObservers(this);
         return;
@@ -59,6 +61,12 @@ public class PlaneService implements Runnable{
 
     public long getDuration() {
         return this.duration;
+    }
+    public void setPlaneId(String id) {
+    	this.planeId = id;
+    }
+    public String getPlaneId() {
+    	return this.planeId;
     }
     
     @Override

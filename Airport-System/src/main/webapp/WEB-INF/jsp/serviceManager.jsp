@@ -112,7 +112,7 @@
 	                    <c:forEach items="${gateServices}" var="service">
 		                     <c:if test ="${ not service.available}">
 		                        <tr id="${service.id}">
-		                        <td> Plane ID </td>
+		                        <td> Plane ID: ${service.planeId} </td>
        							<td>${service.name}</td>       							
 						        <td>${service.available}</td> 
 						        <td>timeStarted:${service.timeStarted}</td>
@@ -128,7 +128,7 @@
 	                    </c:forEach>
 	                    <c:forEach items="${refuelServices}" var="service">
 		                    <c:if test ="${ not service.available}">
-		                        <td> Plane ID </td>
+		                        <td> Plane ID: ${service.planeId} </td>
 		                        <tr id="${service.id}">
         						<td>${service.name}</td>
 						        <td>${service.available}</td> 
@@ -222,7 +222,7 @@
 		
 		var output = 
 		'<tr id="' + update.id + '">' +
-		'<td> Plane ID </td>' +
+		'<td> Plane ID: ' + update.planeId +' </td>' +
         '<td>' + update.name + '</td> ' +
         '<td>'+ update.available + '</td> ' +
         '<td>timeStarted:' + update.timeStarted

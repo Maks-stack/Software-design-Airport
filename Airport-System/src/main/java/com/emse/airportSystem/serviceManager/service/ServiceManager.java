@@ -13,6 +13,7 @@ import com.emse.airportSystem.serviceManager.model.ServiceRequest;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class ServiceManager implements Observable{
@@ -48,6 +49,12 @@ public class ServiceManager implements Observable{
         PlaneService service = (PlaneService) services.get(serviceId);
         if (service.getAvailable()) {
             registerServiceRequestsInProgress(requestId);
+            
+            List<ServiceRequest> result = serviceRequestsInProgress.stream()
+            .filter(item -> item.getId().equals(requestId)).collect(Collectors.toList());
+            
+            service.setPlaneId(result.get(0).getPlane().getPlaneId());
+            
             Thread t = new Thread(service);
             t.start();
         } else {
