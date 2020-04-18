@@ -50,10 +50,14 @@ public class ServiceManager implements Observable{
         if (service.getAvailable()) {
             registerServiceRequestsInProgress(requestId);
             
-            List<ServiceRequest> result = serviceRequestsInProgress.stream()
-            .filter(item -> item.getId().equals(requestId)).collect(Collectors.toList());
+            ServiceRequest originalServiceRequest = serviceRequestsInProgress.stream()
+            .filter(item -> item.getId().equals(requestId)).findFirst().orElse(null);
             
-            service.setPlaneId(result.get(0).getPlane().getPlaneId());
+            if(originalServiceRequest != null) {
+            	service.setPlaneId(originalServiceRequest.getPlane().getPlaneId());
+            }else {
+            	throw new RequestNotAvailableException("This request is not available");
+            }
             
             Thread t = new Thread(service);
             t.start();
