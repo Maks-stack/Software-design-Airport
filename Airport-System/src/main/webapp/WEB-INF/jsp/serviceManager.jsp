@@ -7,7 +7,7 @@
 <link href="css/serviceManager.css" rel="stylesheet">
 <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"</head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></head>
 <body>
     <h1>Service manager</h1>
 
@@ -39,18 +39,13 @@
                            <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
                            <td ALIGN="center" headers="NR_AvailableServices">
                               <select>
-                                  <c:choose>
-                                      <c:when test="${request.serviceRequested=='Gate'}">
-                                          <c:forEach items="${gateServices}" var="service">
-                                               <option value=${service.id}>${service.name}</option>
-                                          </c:forEach>
-                                      </c:when>
-                                      <c:when test="${request.serviceRequested=='Refuel'}">
-                                          <c:forEach items="${refuelServices}" var="service">
-                                               <option value=${service.id}>${service.name}</option>
-                                          </c:forEach>
-                                      </c:when>
-                                   </c:choose>
+									<c:forEach items="${allServices}" var="PossibleServiceList">
+										<c:forEach items="${PossibleServiceList}" var="PossibleService">
+	                                  		<c:if test="${PossibleService.name.startsWith(request.serviceRequested) && PossibleService.available}">
+	                                         	<option value=${PossibleService.id}>${PossibleService.name}</option>
+											</c:if>	
+                                        </c:forEach>
+                                    </c:forEach>
                                </select>
                            </td>
                            <td headers="NR_Button"><div class="button-newRequest"><button> Click Me </button></div>
@@ -69,17 +64,25 @@
                </tr>
                <c:set var="nbGate" scope="session" value="0"/>
 			   <c:set var="nbRefuel" scope="session" value="0"/>
-				
-                <c:forEach items="${gateServices}" var="service">
-                	<c:if test="${service.available}">
-                    	<c:set var="nbGate" value="${nbGate + 1}"/>
-            		</c:if>	
+
+                
+                <c:forEach items="${allServices}" var="PossibleServiceList">
+                	<c:forEach items="${PossibleServiceList}" var="PossibleService">
+		                <c:choose>
+		                
+		                   <c:when test='${PossibleService.name.startsWith("Gate")}'>
+		                       <c:set var="nbGate" value="${nbGate + 1}"/>
+		                   </c:when>
+		                   <c:when test='${PossibleService.name.startsWith("Refuel")}'>
+		                       <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
+		                   </c:when>
+		                   
+		                   
+		                </c:choose>
+	                </c:forEach>
                 </c:forEach>
-                <c:forEach items="${refuelServices}" var="service">
-                    <c:if test="${service.available}">
-                        <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
-                    </c:if>
-                </c:forEach>
+                
+                
                 
                <tr>
                    <th>Gate</th>
@@ -108,41 +111,34 @@
 	                    		<h2>No ActiveServics</h2>
                     		</td>
           				</tr>
+
 	                    
-	                    <c:forEach items="${gateServices}" var="service">
-		                     <c:if test ="${ not service.available}">
-		                        <tr id="${service.id}">
-		                        <td> Plane ID: ${service.planeId} </td>
-       							<td>${service.name}</td>       							
-						        <td>${service.available}</td> 
-						        <td>timeStarted:${service.timeStarted}</td>
-						        <td id="counter${service.id}">time left: ${service.duration}</td>
-						        <td style="width:50px">
-						        	<div class="progressBar">
-						         		<div id="progressIndicator${service.id}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
-						       		</div>
-						        </td>
-						        <td><button class="cancelServiceButton" id="cancelService${service.id}">Cancel &#9888;</button></td>
-						        </tr>
-	                    	</c:if>	
-	                    </c:forEach>
-	                    <c:forEach items="${refuelServices}" var="service">
-		                    <c:if test ="${ not service.available}">
-		                        <td> Plane ID: ${service.planeId} </td>
-		                        <tr id="${service.id}">
-        						<td>${service.name}</td>
-						        <td>${service.available}</td> 
-						        <td>timeStarted:${service.timeStarted}</td>
-						        <td id="counter${service.name}">time left: ${service.duration}</td>
-						        <td style="width:50px">
-						        	<div class="progressBar">
-						         		<div id="progressIndicator${service.id}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
-						       		</div>
-						        </td>
-						        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
-						        </tr>
-	                    	</c:if>	
-	                    </c:forEach>
+	                <c:forEach items="${allServices}" var="PossibleServiceList">
+	                	<c:forEach items="${PossibleServiceList}" var="service">
+	                		<c:if test ="${ not service.available}">
+
+					                
+			                        <td> Plane ID: ${service.planeId} </td>
+			                        <tr id="${service.id}">
+	        						<td>${service.name}</td>
+							        <td>${service.available}</td> 
+							        <td>timeStarted:${service.timeStarted}</td>
+							        <td id="counter${service.name}">time left: ${service.duration}</td>
+							        <td style="width:50px">
+							        	<div class="progressBar">
+							         		<div id="progressIndicator${service.id}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
+							       		</div>
+							        </td>
+							        <td><button class="cancelServiceButton" id="cancelService${service.name}">Cancel &#9888;</button></td>
+							        </tr>
+					                   
+					                   
+
+			                </c:if>	
+		                </c:forEach>
+	                </c:forEach>
+		                    
+	                    
 	                    
                 </table>
     </c:if>
