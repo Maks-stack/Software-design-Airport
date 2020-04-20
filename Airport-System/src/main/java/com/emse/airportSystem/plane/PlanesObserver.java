@@ -9,7 +9,7 @@ import java.util.List;
 @Service
 public class PlanesObserver implements Observer {
 
-    private Observable serviceManager;
+    private Observable planeManager;
 
     private final PlaneController planeController;
     public PlanesObserver(PlaneController planeController){
@@ -27,7 +27,7 @@ public class PlanesObserver implements Observer {
     }
 
     @Override
-    public void setObservable(Observable serviceManager) {
-        this.serviceManager = serviceManager;
+    public void setObservable(Observable planeManager) {
+        this.planeManager = planeManager;
     }
 }

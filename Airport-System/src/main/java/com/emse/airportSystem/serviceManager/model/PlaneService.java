@@ -7,14 +7,17 @@ import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
 public class PlaneService implements Runnable{
     String name;
+    String id;
     Boolean available;
     ServiceManager serviceManager;
     Boolean cancelled = false;
-    LocalDateTime timeCreated;
-    long duration = 10000;
+    LocalDateTime timeStarted;
+    long duration = 50000;
+    String planeId = "";
 
     public void cancelService() {
         setAvailable();
+        planeId = "";
         this.cancelled = Boolean.TRUE;
         serviceManager.notifyObservers(this);
         return;
@@ -23,13 +26,19 @@ public class PlaneService implements Runnable{
     public void carryOutService() {
         this.available = Boolean.FALSE;
         serviceManager.notifyObservers(this);
+        timeStarted = LocalDateTime.now();
+        System.out.println("TIMESTARTED: " + timeStarted);
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
         this.available = Boolean.TRUE;
+        planeId = "";
         serviceManager.notifyObservers(this);
+        serviceManager.notifyServiceCompleted(this);
+
+
     }
 
     public void setAvailable() {
@@ -44,16 +53,24 @@ public class PlaneService implements Runnable{
         return this.name;
     }
 
+    public String getId() { return this.id; }
+
     public Boolean getAvailable() {
         return this.available;
     }
     
-    public LocalDateTime getTimeCreated() {
-        return this.timeCreated;
+    public LocalDateTime getTimeStarted() {
+        return this.timeStarted;
     }
 
     public long getDuration() {
         return this.duration;
+    }
+    public void setPlaneId(String id) {
+    	this.planeId = id;
+    }
+    public String getPlaneId() {
+    	return this.planeId;
     }
     
     @Override
@@ -61,6 +78,6 @@ public class PlaneService implements Runnable{
         this.carryOutService();
     }
 
-    public Boolean getCancelled(){return this.cancelled;}
+    public Boolean getCancelled(){ return this.cancelled; }
 
 }

@@ -21,25 +21,27 @@ public class App {
 	ServiceManager serviceManager;
 
 	@Autowired
-	PlaneManager planeManager;
+	TrackManager trackManager;
 
 	@Autowired
-	TrackManager trackManager;
+	PlaneManager planeManager;
 
 	@Autowired
 	ServicesObserver servicesObserver;
 
 	@Autowired
-	PlanesObserver planesObserver;
+	TracksObserver tracksObserver;
 
 	@Autowired
-	TracksObserver tracksObserver;
+	PlanesObserver planesObserver;
 
 	@EventListener(ApplicationReadyEvent.class)
 	private void setUpObservers() {
-		serviceManager.register(servicesObserver);
-		planeManager.register(planesObserver);
-		trackManager.register(tracksObserver);
+		serviceManager.registerObserver(servicesObserver);
+		trackManager.registerObserver(tracksObserver);
+		planeManager.registerObserver(planesObserver);
+
+		//I have put this here as quick workaround for running test, but it requires starting spring app
 		testContext.runTest();
 	}
 

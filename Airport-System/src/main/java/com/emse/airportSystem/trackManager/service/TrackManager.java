@@ -78,13 +78,8 @@ public class TrackManager implements Observable {
     }
 
     @Override
-    public void register(Observer obj) {
+    public void registerObserver(Observer obj) {
         observers.add(obj);
-    }
-
-    @Override
-    public void unregister(Observer obj) {
-        observers.remove(obj);
     }
 
     @Override

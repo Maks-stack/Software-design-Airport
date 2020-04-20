@@ -32,7 +32,7 @@
 
     document.getElementById("requestGateService").onclick = function () {
         let planeId = document.getElementById('planeid').innerHTML;
-        let data = {"planeId": planeId, "service":"Gate"};
+        let data = {"planeId": planeId, "service":"Bus"};
          $.ajax({
                             type : "POST",
                             data: JSON.stringify(data),

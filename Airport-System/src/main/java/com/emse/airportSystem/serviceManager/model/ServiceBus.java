@@ -1,29 +1,29 @@
 package com.emse.airportSystem.serviceManager.model;
 
-
-
-
 import java.time.LocalDateTime;
 
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
-public class ServiceGate extends PlaneService {
+public class ServiceBus extends PlaneService {
 
-    public ServiceGate(String name, ServiceManager serviceManager){
+    public ServiceBus(String name,String id, ServiceManager serviceManager){
         this.available = Boolean.TRUE;
         this.serviceManager = serviceManager;
         this.name = name;
+        this.id = id;        this.cancelled = Boolean.FALSE;
         this.cancelled = Boolean.FALSE;
-        this.timeCreated = LocalDateTime.now();
-        this.duration = 10000;
+	this.timeStarted = LocalDateTime.MAX;
+	this.duration = 30000;
+        
     }
 
-    public ServiceGate(String name, ServiceManager serviceManager, Boolean available){
+    public ServiceBus(String name, String id, ServiceManager serviceManager, Boolean available){
         this.available = available;
         this.serviceManager = serviceManager;
         this.name = name;
+        this.id = id;
         this.cancelled = Boolean.FALSE;
-        this.timeCreated = LocalDateTime.now();
-        this.duration = 10000;
+        this.duration = 30000;
+        this.timeStarted = LocalDateTime.MAX;
     }
 }

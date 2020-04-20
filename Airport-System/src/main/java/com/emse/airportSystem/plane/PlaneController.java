@@ -4,6 +4,7 @@ import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
 import com.emse.airportSystem.planeManager.states.InAir;
+import com.emse.airportSystem.serviceManager.model.PlaneService;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
@@ -30,12 +31,9 @@ public class PlaneController {
     @Autowired
     private SimpMessagingTemplate template;
 
-
-
     @RequestMapping("/plane/authorize")
     public String authorizePlane(){
         //authorization logic happens below.. return exception or redirect
-
         return "redirect:panel";
     }
 
@@ -54,11 +52,9 @@ public class PlaneController {
     public void requestService(@RequestBody String req){
         Object obj= JSONValue.parse(req);
         JSONObject jsonObject = (JSONObject) obj;
-        System.out.println(jsonObject.get("planeId").toString());
         try{
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
-            System.out.println(plane);
             serviceManager.registerNewRequest(plane, jsonObject.get("service").toString());
 
         } catch(Exception e){
@@ -66,17 +62,15 @@ public class PlaneController {
         }
     }
 
-
     public void notifyServiceSubscribers() {
         this.template.convertAndSend("/planes/updates", "Test");
     }
 
-
     public void notifyServiceSubscribers(Object obj) {
         List objList = (List) obj;
-        System.out.println("sending template to endpoint");
-        this.template.convertAndSend("/planes/"+objList.get(0)+"/updates", obj);
-
+        Plane plane = (Plane) objList.get(0);
+        PlaneService service = (PlaneService) objList.get(1);
+        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
     }
 
 
