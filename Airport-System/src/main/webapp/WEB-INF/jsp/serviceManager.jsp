@@ -356,6 +356,7 @@
     
 
     $("body").on( "click", ".button-newRequest", function(){
+    	var serviceReq = $(this).closest('tr').find('td:eq(3) :selected').val();
         $.ajax({
             type: "POST",
             url:  "http://"+window.location.hostname+":8080/assignservice",
@@ -371,20 +372,22 @@
         }).done(function(data){
              $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
              $( "#activeServicesWidget" ).load(window.location.href + " #activeServicesWidget" );
+             
+             console.log("CLICK ON CLICK HERE: "+serviceReq);
+			if(serviceReq.startsWith("gate")) {
+				var numberOfGates = document.getElementById("gate").innerHTML;
+				numberOfGates = numberOfGates-1;
+			   document.getElementById("gate").innerHTML = numberOfGates;
+			}
+			if(serviceReq.startsWith("refuel")) {
+			   var numberOfRefuels = document.getElementById("refuel").innerHTML;
+				numberOfRefuels = numberOfRefuels-1;
+			   document.getElementById("refuel").innerHTML = numberOfRefuels;
+			}
         });
         
-        var serviceReq = $(this).closest('tr').find('td:eq(0)').html();
-		console.log("CLICK ON CLICK HERE: "+serviceReq);
-		if(serviceReq.includes("Gate")) {
-			var numberOfGates = document.getElementById("gate").innerHTML;
-			numberOfGates = numberOfGates-1;
-		   document.getElementById("gate").innerHTML = numberOfGates;
-		}
-		if(serviceReq.includes("Refuel")) {
-		   var numberOfRefuels = document.getElementById("refuel").innerHTML;
-			numberOfRefuels = numberOfRefuels-1;
-		   document.getElementById("refuel").innerHTML = numberOfRefuels;
-		}
+        
+		
 
     });
     document.getElementById("mockplanerequest").onclick = function () {
