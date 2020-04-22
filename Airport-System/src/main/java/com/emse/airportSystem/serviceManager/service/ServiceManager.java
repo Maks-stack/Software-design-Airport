@@ -22,6 +22,13 @@ public class ServiceManager implements Observable{
     List<Observer> observers = new ArrayList<Observer>();
     List<PlaneService> activeServices = new ArrayList<PlaneService>();
     
+    Map<String,String> serviceCatalog = new HashMap<>();
+    
+    {
+    	serviceCatalog.put("gate", "Gate service");
+    	serviceCatalog.put("refuel", "Refuel service");
+    }
+
     {
         for (int i = 0; i < 10; i++) {
             String name = "Gate "  + i;
@@ -33,6 +40,8 @@ public class ServiceManager implements Observable{
         }
     }
 
+    public Map<String, String> getServiceCatalog() { return serviceCatalog; }
+    
     public List<PlaneService> getServicesByType(String serviceType) {
         List<PlaneService> returnList = new ArrayList<PlaneService>();
         for (Map.Entry<String, Object> entry : services.entrySet()) {

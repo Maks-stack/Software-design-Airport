@@ -40,15 +40,19 @@
                            <td ALIGN="center" headers="NR_AvailableServices">
                               <select>
 
-                                   
-								<c:forEach items="${allServices}" var="PossibleServiceList">
-										<c:forEach items="${PossibleServiceList}" var="PossibleService">
-	                                  		<c:if test="${PossibleService.name.startsWith(request.serviceRequested) && PossibleService.available}">
-	                                         	<option value=${PossibleService.id}>${PossibleService.name}</option>
-											</c:if>	
-                                        </c:forEach>
-                                 </c:forEach>
-                                   
+                                 
+                              <c:forEach items="${allServices}" var="serviceGroup">
+    							<c:if test="${serviceGroup.key eq request.serviceRequested.toLowerCase()}">
+          							
+						                 <c:forEach items="${serviceGroup.value}" var="service">
+						                	 <c:if test="${service.available}">
+						                    	<option value=${service.id}>${service.name}</option>
+						                    </c:if>
+						                 </c:forEach>
+						       		
+						    	</c:if>
+							</c:forEach>
+                    	               
                                    
                                </select>
                            </td>
@@ -69,20 +73,26 @@
                <c:set var="nbGate" scope="session" value="0"/>
 			   <c:set var="nbRefuel" scope="session" value="0"/>
 				
-            	<c:forEach items="${allServices}" var="PossibleServiceList">
-                	<c:forEach items="${PossibleServiceList}" var="PossibleService">
-		                <c:choose>
+            	<c:forEach items="${allServices}" var="serviceGroup">
+	                	<c:forEach items="${serviceGroup.value}" var="service">
+	                	
+	                		
+	                	
+			                <c:choose>
+	
+			                   <c:when test='${service.name.startsWith("Gate")}'>
+			                       <c:set var="nbGate" value="${nbGate + 1}"/>
+			                   </c:when>
+			                   <c:when test='${service.name.startsWith("Refuel")}'>
+			                       <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
+			                   </c:when>
+			                   
+			                   
+			                </c:choose>
+			                
+			                
+		                </c:forEach>
 
-		                   <c:when test='${PossibleService.name.startsWith("Gate")}'>
-		                       <c:set var="nbGate" value="${nbGate + 1}"/>
-		                   </c:when>
-		                   <c:when test='${PossibleService.name.startsWith("Refuel")}'>
-		                       <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
-		                   </c:when>
-		                   
-		                   
-		                </c:choose>
-	                </c:forEach>
 	             </c:forEach>
                 
                <tr>
@@ -114,7 +124,9 @@
           				</tr>
 	                    
                 <c:forEach items="${allServices}" var="PossibleServiceList">
-	                	<c:forEach items="${PossibleServiceList}" var="service">
+                	<c:if test="${serviceGroup.key eq request.serviceRequested.toLowerCase()}">
+                
+	                	<c:forEach items="${serviceGroup.value}" var="service">
 	                		<c:if test ="${ not service.available}">
 
 
@@ -135,11 +147,13 @@
 
 			                </c:if>	
 		                </c:forEach>
+		                </c:if>	
 	                </c:forEach>
 	                    
                 </table>
     </c:if>
  </div>
+
 
 <script>
 	$( document ).ready(function() {
@@ -288,8 +302,26 @@
                              },
            				data : { serviceId: update.id },
                		});
-               		
+           		 //console.log("CLICK ON CLICK HERE: "+serviceReq);
+	     			
            		}
+	            
+		            
+	     			
+	     			var name = update.name;  
+               		if(name.startsWith("Gate")) {
+	               		var numberOfGate = document.getElementById("gate").innerHTML;
+	               		console.log("AVANT: "+numberOfGate);
+						numberOfGate = numberOfGate-1;
+						console.log("APRES: "+numberOfGate);
+			    		document.getElementById("gate").innerHTML = numberOfGate;
+               		}
+               		if(name.startsWith("Refuel")) {
+               			var numberOfRefuel = document.getElementById("refuel").innerHTML;
+						numberOfRefuel = numberOfRefuel-1;
+		    			document.getElementById("refuel").innerHTML = numberOfRefuel;
+               		}
+	     			
     	   }
            else if(update.available || update.cancelled){
     			$('#activeServicesTable > tbody').children().each(function(index,element){
@@ -370,17 +402,7 @@
              $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
              $( "#activeServicesWidget" ).load(window.location.href + " #activeServicesWidget" );
              
-             console.log("CLICK ON CLICK HERE: "+serviceReq);
-			if(serviceReq.startsWith("gate")) {
-				var numberOfGates = document.getElementById("gate").innerHTML;
-				numberOfGates = numberOfGates-1;
-			   document.getElementById("gate").innerHTML = numberOfGates;
-			}
-			if(serviceReq.startsWith("refuel")) {
-			   var numberOfRefuels = document.getElementById("refuel").innerHTML;
-				numberOfRefuels = numberOfRefuels-1;
-			   document.getElementById("refuel").innerHTML = numberOfRefuels;
-			}
+            
         });
         
         

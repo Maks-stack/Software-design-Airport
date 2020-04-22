@@ -19,7 +19,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Random;
 
 @Controller
@@ -39,7 +41,14 @@ public class ServiceController {
         List<? extends PlaneService> refuelServices = SM.getServicesByType("Refuel");
         Collection<ServiceRequest> newServiceRequests = SM.getNewServiceRequests();
         List<ServiceRequest> serviceRequestsInProgress = SM.getServiceRequestsInProgress();
-        List<List<? extends PlaneService>> allServices = Arrays.asList(gateServices, refuelServices);
+        
+        Map<String, List<PlaneService>> allServices = new HashMap<>();
+        Map<String, String> serviceCatalog = SM.getServiceCatalog();
+        
+        for (Map.Entry<String, String> entry : serviceCatalog.entrySet()) {
+            allServices.put(entry.getKey(), SM.getServicesByType(entry.getKey()));
+        }
+        
         model.addAttribute("gateServices", gateServices);
         model.addAttribute("refuelServices", refuelServices);
         model.addAttribute("newServiceRequests", newServiceRequests);
