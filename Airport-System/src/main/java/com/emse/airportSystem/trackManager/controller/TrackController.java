@@ -57,6 +57,9 @@ public class TrackController {
         System.out.println("Mocking track request");
 
         TM.registerNewRequest(planeManager.getRandomPlane());
+        notifyServiceSubscribers("trackEndpointUpdate");
+
+        notifyRequestSubscribers("requestEndpointUpdate");
 
         return ResponseEntity.ok().build();
     }

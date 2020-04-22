@@ -73,6 +73,8 @@
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/tracks/updates', function (update) {
+             console.log("track update", update);
+
              updateTrackStatus(JSON.parse(update.body))
           });
         });
@@ -84,6 +86,7 @@
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/tracks/requests', function (update) {
+            console.log("request update", update);
             updateRequestList(JSON.parse(update.body))
           });
         });
