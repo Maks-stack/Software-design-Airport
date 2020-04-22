@@ -7,15 +7,13 @@ public class Track {
 
     private int trackID;
     private TrackState state;
-    private TrackType type;
     private Plane assignedPlane;
 
     public Track(){}
 
-    public Track (int trackID, TrackState state, TrackType type) {
+    public Track (int trackID, TrackState state) {
         this.trackID = trackID;
         this.state = state;
-        this.type = type;
     }
 
     public int getTrackID() {
@@ -32,14 +30,6 @@ public class Track {
 
     public void setState(TrackState state) {
         this.state = state;
-    }
-
-    public TrackType getType() {
-        return type;
-    }
-
-    public void setType(TrackType type) {
-        this.type = type;
     }
 
     public Plane getAssignedPlane() {

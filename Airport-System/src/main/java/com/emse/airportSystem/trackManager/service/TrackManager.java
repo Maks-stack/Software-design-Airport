@@ -28,10 +28,10 @@ public class TrackManager implements Observable {
 
     {
         for (int i = 0; i < 2; i++) {
-            tracks.add(new Track(i, new Available(), new LandingTrack()));
+            tracks.add(new Track(i, new Available()));
         }
         for (int i = 2; i < 4; i++) {
-            tracks.add(new Track(i, new Available(), new TakeOffTrack()));
+            tracks.add(new Track(i, new Available()));
         }
     }
 
@@ -78,6 +78,7 @@ public class TrackManager implements Observable {
         freeTrack.setAssignedPlane(planeManager.findPlane(planeId));
         deleteTrackRequest(planeId);
         notifyObservers(freeTrack);
+        notifyRequestObservers(newTrackRequests);
         System.out.println("Assigned track: " + freeTrack.toString());
     }
 
@@ -99,10 +100,12 @@ public class TrackManager implements Observable {
             .orElseThrow(RuntimeException::new);
 
         newTrackRequests.remove(request);
+        notifyRequestObservers(newTrackRequests);
     }
 
-    public void registerNewRequest(Plane plane, TrackType trackRequested){
-        newTrackRequests.add(new TrackRequest(plane, trackRequested));
+    public void registerNewRequest(Plane plane){
+        newTrackRequests.add(new TrackRequest(plane));
+        notifyRequestObservers(newTrackRequests);
     }
 
     public List<TrackRequest> getNewTrackRequests(){
@@ -127,5 +130,10 @@ public class TrackManager implements Observable {
     @Override
     public void notifyObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
+    }
+
+    @Override
+    public void notifyRequestObservers(Object obj) {
+        observers.forEach(observer -> observer.updateRequest(obj));
     }
 }
