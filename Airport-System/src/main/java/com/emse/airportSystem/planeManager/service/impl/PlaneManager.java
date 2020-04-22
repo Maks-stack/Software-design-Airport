@@ -16,7 +16,7 @@ public class PlaneManager  implements IPlaneManager {
 
     {
         for (int i = 0; i<10; i++) {
-            planes.add(new Plane("Boeing 737", new InAir(), "Plane " + i));
+            planes.add(new Plane("Boeing 737", new InAir(), "Plane_" + i));
         }
     }
 

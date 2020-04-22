@@ -18,7 +18,7 @@
 
 <div id="newRequestsWidget">
        <h2>Incoming requests</h2>
-       <table class="greyGridTable" style="width: 300px">
+       <table class="greyGridTable" style="width: 300px" id="requestsTable">
            <tr>
                <th>Plane ID</th>
                <th>Track requested</th>
@@ -26,9 +26,8 @@
                <th></th>
            </tr>
            <c:forEach items="${newTrackRequests}" var="request">
-                   <tr>
+                   <tr id="${request.plane.planeId}">
                        <td>${request.plane.planeId}</td>
-                       <td>${request.trackRequested.type}</td>
                        <td ALIGN="center">
                           <select>
                               <c:forEach items="${availableTracks}" var="track">
@@ -48,7 +47,6 @@
             <table id="TracksTable" class="greyGridTable" style="width: 300px">
                 <tr>
                     <th>Track ID</th>
-                    <th>Track type</th>
                     <th>Track available</th>
                     <th>Assigned Plane</th>
                     <th></th>
@@ -56,7 +54,6 @@
                 <c:forEach items="${allTracks}" var="track">
                     <tr id="${track.trackID}">
                         <td value=${track.trackID}>${track.trackID}</td>
-                        <td>${track.type.type}</td>
                         <td>${track.state.state}</td>
                         <td>${track.assignedPlane.planeId}</td>
                         <td><input onclick="unassignTrack(this)" type="button" ${ track.state.state eq "assigned"? '' : 'disabled="disabled"'} value="Unassign track" /></td>
@@ -76,27 +73,56 @@
           stompClient.subscribe('/tracks/updates', function (update) {
              updateTrackStatus(JSON.parse(update.body))
           });
-       });
+          stompClient.subscribe('/requests/updates', function (update) {
+            updateRequestList(JSON.parse(update.body))
+          });
+        });
     };
 
     function updateTrackStatus(update){
-            $('tr').each(function(){
-                if($(this).attr('id') == update.trackID){
-                    $(this).html("<td>"+update.trackID+"</td><td>"+update.type.type+"</td><td>"+update.state.state+"</td>");
-                }
-            })
+        $('tr').each(function(){
+            if($(this).attr('id') == update.trackID){
+                $(this).html("<td>"+update.trackID+"</td><td>"+update.state.state+"</td>");
+            }
+        })
+    }
+
+    function updateRequestList(update){
+        var ids = [];
+        var requestTableIds = [];
+        for (request in update) {
+            ids.push(request.plane.planeId);
+        }
+        $('#requestsTable > tbody').children().each(function(index,element) {
+            requestTableIds.push($(element).attr("id"));
+
+            if(!ids.includes($(element).attr("id"))) {
+                $(element).remove();
+            }
+        })
+        for (request in update) {
+            if(!requestTableIds.includes(request.plane.planeId)) {
+                $('#requestsTable').append(addRequestRow(request));
+            }
+        }
+    }
+
+    var addRequestRow = function(request){
+    	var output =
+    	'<tr id="' + request.plane.planeId + '">' +
+    	'<td>' + update.planeId +' </td>' +
+        '<td></td> ' +
+        '<td><input onclick="assignTrack(this);" type="button" value="Assign track" />' +
+        '</tr>'
     }
 
     function assignTrack(param){
        var planeId = $(param).parent().siblings(":first").text();
-       var trackId = $(param).parent().closest('tr').find('td:nth-child(3)').children(":first").children("option:selected").val();
+       var trackId = $(param).parent().closest('tr').find('td:nth-child(2)').children(":first").children("option:selected").val();
        $.ajax({
                   type : "PATCH",
                   contentType : 'application/json; charset=utf-8',
                   url : "http://localhost:8080/assigntrack/" + trackId + "?plane_id=" + planeId,
-                  complete: function(data) {
-                          window.location.reload();
-                      },
                   statusCode: {
                       409: function(xhr) {
                         console.log(xhr);
@@ -113,9 +139,6 @@
                     type : "PATCH",
                     contentType : 'application/json; charset=utf-8',
                     url : "http://localhost:8080/unassigntrack/" + trackId,
-                    complete: function(data) {
-                            window.location.reload();
-                        },
                     statusCode: {
                         409: function(xhr) {
                           console.log(xhr);
@@ -129,10 +152,7 @@
         $.ajax({
                     type : "GET",
                     contentType : 'application/json; charset=utf-8',
-                    url : "http://localhost:8080/mocktrackrequest",
-                    complete: function(data) {
-                            window.location.reload();
-                        }
+                    url : "http://localhost:8080/mocktrackrequest"
             });
     };
 </script>
