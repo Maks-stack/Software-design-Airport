@@ -13,6 +13,10 @@ body{
 	padding-bottom: 5%;
 }
 
+select.browser-default {
+	min-width: 90px;
+}
+
 table.greyGridTable {
   border: 2px solid #FFFFFF;
   width: 100%;
@@ -64,6 +68,11 @@ table.greyGridTable tfoot td {
 
 #planeMocker{
     display: inline-block;
+    width: 50%;
+}
+#serviceAssigner {
+	display: inline-block;
+	width: 49%;
 }
 
 #tabs-left-vertical .ui-tabs-nav {
