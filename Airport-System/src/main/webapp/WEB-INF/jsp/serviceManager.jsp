@@ -98,14 +98,6 @@
 	
 		             </c:forEach>
 	                
-	                
-	               
-	               <tr>
-	                   <th>test</th>
-	                   <th id="TestList">${nbTestList}</th>
-	               </tr>
-	               
-	               
 	               <tr>
 	                   <th>Gate</th>
 	                   <th id="gate">${nbGate}</th>
@@ -114,10 +106,7 @@
 	                   <th>Refuel</th>
 	                   <th id="refuel">${nbRefuel}</th>
 	               </tr>
-	               <tr>
-	                   <th>Test</th>
-	                   <th id="nbTest">${nbTest}</th>
-	               </tr>
+
 	           </table>
 	</div>
 	<hr>
@@ -367,10 +356,9 @@
     	      url : "http://"+window.location.hostname+":8080/overwiewOfServices",
     	      success: function(result){
     	        
-    	    	result = result.split("$");
-    	        alert(result);
-    	        document.getElementById("TestList").innerHTML = result;
-    			
+    	    	var newNumber = result.split("$");
+    	        document.getElementById("gate").innerHTML = newNumber[1];
+    			document.getElementById("refuel").innerHTML = newNumber[3];
     	        
     	      },
     	      

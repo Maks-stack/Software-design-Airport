@@ -63,7 +63,7 @@ public class ServiceManager implements Observable{
         }
         
     	//System.out.println("Gate: "+nbOfGate+" / Refuel : "+nbOfRefuel);
-    	NumberOfActiveServices = "Gate"+nbOfGate+"$Refuel"+nbOfRefuel+"$";
+    	NumberOfActiveServices = "Gate$"+nbOfGate+"$Refuel$"+nbOfRefuel+"$";
     	//NumberOfActiveServices = "Gate4$Refuel10$";
     	return NumberOfActiveServices; 
     }
