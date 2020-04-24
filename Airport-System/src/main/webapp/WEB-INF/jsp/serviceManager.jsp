@@ -79,6 +79,7 @@
 	               <c:set var="nbGate" scope="session" value="0"/>
 				   <c:set var="nbRefuel" scope="session" value="0"/>
 				   <c:set var="nbTest" scope="session" value="0"/>
+				   <c:set var="nbTestList" scope="session" value="${['Empty']}" />
 					
 	            	<c:forEach items="${allServices}" var="serviceGroup">
 		                	<c:forEach items="${serviceGroup.value}" var="service">	
@@ -97,6 +98,14 @@
 	
 		             </c:forEach>
 	                
+	                
+	               
+	               <tr>
+	                   <th>test</th>
+	                   <th id="TestList">${nbTestList}</th>
+	               </tr>
+	               
+	               
 	               <tr>
 	                   <th>Gate</th>
 	                   <th id="gate">${nbGate}</th>
@@ -285,12 +294,13 @@
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/services/updates', function (update) {
             updateServiceStatus(JSON.parse(update.body))
+            updateOverwiewOfServices()
             console.log(JSON.parse(update.body))	 
           });
        });
     }
 
-    function updateServiceStatus2(update){
+    function updateServiceStatus(update){
            if(update.available === false){
 	            $('#activeServicesTable').append(serviceRow(update))
 	            document.getElementById("cancelService"+update.id).onclick  = function(){
@@ -350,15 +360,18 @@
     		}
     }
     
-	function updateServiceStatus(update){
+	function updateOverwiewOfServices(){
     	
     	$.ajax({
     	      type : "GET",
     	      url : "http://"+window.location.hostname+":8080/overwiewOfServices",
     	      success: function(result){
     	        
-    	
+    	    	result = result.split("$");
     	        alert(result);
+    	        document.getElementById("TestList").innerHTML = result;
+    			
+    	        
     	      },
     	      
     	      error : function(e) {
