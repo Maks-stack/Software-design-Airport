@@ -16,14 +16,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
-
-import javax.annotation.Resource;
 import java.util.*;
 
 @Controller
 public class ServiceController {
     @Autowired
-    private ServiceManager SM;
+    private ServiceManager serviceManager;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -33,15 +31,9 @@ public class ServiceController {
 
     @RequestMapping("/servicemanager")
     public String index(Model model) {
-        Map<String, List<PlaneService>> allServices = new HashMap<>();
-        Map<String, String> serviceCatalog = SM.getServiceCatalog();
-
-        for (Map.Entry<String, String> entry : serviceCatalog.entrySet()) {
-            allServices.put(entry.getKey(), SM.getServicesByType(entry.getKey()));
-        }
-
-        Collection<ServiceRequest> newServiceRequests = SM.getNewServiceRequests();
-        List<ServiceRequest> serviceRequestsInProgress = SM.getServiceRequestsInProgress();
+        Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
+        Collection<ServiceRequest> newServiceRequests = serviceManager.getNewServiceRequests();
+        List<ServiceRequest> serviceRequestsInProgress = serviceManager.getServiceRequestsInProgress();
         model.addAttribute("allServices", allServices);
         model.addAttribute("newServiceRequests", newServiceRequests);
         model.addAttribute("serviceRequestsInProgress", serviceRequestsInProgress);
@@ -54,43 +46,43 @@ public class ServiceController {
         System.out.println("Mocking plane request");
         Plane plane = new Plane("A777", new InAir(), "Test"+System.currentTimeMillis());
         String[] optionsArray = {"Bus", "Refuel"};
-        SM.registerNewRequest(plane, optionsArray[(new Random()).nextInt(optionsArray.length)]);
+        serviceManager.registerNewRequest(plane, optionsArray[(new Random()).nextInt(optionsArray.length)]);
     }
 
     @RequestMapping("/assignservice")
     @ResponseBody
     public ResponseEntity<?> assignservice(@RequestParam String requestId, @RequestParam String serviceSelected)
     throws ServiceNotAvailableException, RequestNotFoundException {
-            SM.assignService(requestId, serviceSelected);
+            serviceManager.assignService(requestId, serviceSelected);
             return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping("/mockassignservice")
     @ResponseBody
     public ResponseEntity<?> mockAssignservice() throws ServiceNotAvailableException, RequestNotFoundException {
-            SM.assignRandomService();
+            serviceManager.assignRandomService();
             return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @RequestMapping("/cancelService")
     @ResponseBody
     public ResponseEntity<?> cancelService(@RequestParam String serviceId) {
-        SM.cancelService(serviceId);
+        serviceManager.cancelService(serviceId);
         return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping("/getservicecatalog")
     @ResponseBody
     public Map<String, String> getServiceCatalog(){
-        return SM.getServiceCatalog();
+        return serviceManager.getServiceCatalog();
     }
 
     public void notifyServiceSubscribers() {
         this.template.convertAndSend("/services/updates", "Test");
     }
 
-    public void notifyServiceSubscribers(Object obj) {
-        this.template.convertAndSend("/services/updates", obj);
-
+    public void notifyServiceSubscribers(Object updatedService) {
+        Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
+        this.template.convertAndSend("/services/updates", Arrays.asList(updatedService, allServices));
     }
 }

@@ -25,9 +25,8 @@ public class PlaneService implements Runnable{
 
     public void carryOutService() {
         this.available = Boolean.FALSE;
-        serviceManager.notifyObservers(this);
         timeStarted = LocalDateTime.now();
-        System.out.println("TIMESTARTED: " + timeStarted);
+        serviceManager.notifyObservers(this);
         try {
             Thread.sleep(duration);
         } catch (InterruptedException e) {

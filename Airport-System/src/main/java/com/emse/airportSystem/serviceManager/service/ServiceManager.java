@@ -21,7 +21,6 @@ public class ServiceManager implements Observable{
 
     @Autowired
     PlaneManager planeManager;
-
     Map<String, Object> services  = new HashMap<>();
     Map<String, ServiceRequest> newServiceRequests = new HashMap<>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
@@ -53,6 +52,15 @@ public class ServiceManager implements Observable{
         return returnList;
     }
 
+    public Map<Map.Entry<String, String>, List<PlaneService>> getAllServicesMap(){
+        Map<Map.Entry<String, String>, List<PlaneService>> allServices = new HashMap<>();
+        Map<String, String> serviceCatalog = getServiceCatalog();
+
+        for (Map.Entry<String, String> entry : serviceCatalog.entrySet()) {
+            allServices.put(entry, getServicesByType(entry.getKey()));
+        }
+        return allServices;
+    }
 
     public void assignService(String requestId, String serviceId) throws ServiceNotAvailableException, RequestNotFoundException {
         PlaneService service = (PlaneService) services.get(serviceId);
@@ -84,7 +92,6 @@ public class ServiceManager implements Observable{
             throw e;
         }
     }
-
 
     public void registerServiceRequestsInProgress(String requestId) throws RequestNotFoundException {
         ServiceRequest newServiceInProgress = newServiceRequests.get(requestId);

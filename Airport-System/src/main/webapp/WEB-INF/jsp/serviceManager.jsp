@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
-<%@ taglib uri = "http://java.sun.com/jsp/jstl/functions" prefix = "fn" %>
-
+<%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <html lang="en">
 <head>
 <script src="/webjars/jquery/3.1.1-1/jquery.min.js"></script>
@@ -11,7 +10,7 @@
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"</head>
 <body>
-    <h1>Service manager</h1>
+<h1>Service manager</h1>
 
 <div id="planeMocker">
     <p>This button will create a new plane object and create a random service request</p>
@@ -41,7 +40,7 @@
                            <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
                            <td ALIGN="center" headers="NR_AvailableServices">
                            <c:forEach items="${allServices}" var="serviceGroup">
-                                <c:if test="${serviceGroup.key eq fn:toLowerCase(request.serviceRequested)}">
+                                <c:if test="${serviceGroup.key.key eq fn:toLowerCase(request.serviceRequested)}">
                                      <select>
                                             <c:forEach items="${serviceGroup.value}" var="service">
                                                <option value=${service.id}>${service.name}</option>
@@ -50,7 +49,7 @@
                                 </c:if>
                            </c:forEach>
                            </td>
-                           <td headers="NR_Button"><div class="button-newRequest"><button> Assign selected service </button></div>
+                           <td headers="NR_Button"><div class="button-newRequest"><button> Click Me </button></div>
                        </tr>
                    </c:forEach>
                </table>
@@ -59,41 +58,34 @@
 
 <div id="overwiewOfServices">
        <h2>Overview of the available services</h2>
-           <table class="greyGridTable" style="width: 300px">
+       <div id="overviewContainer">
+           <table class="greyGridTable" style="width: 300px" id="overviewTable">
                <tr>
                    <th>Service</th>
                    <th>Number of available teams</th>
                </tr>
-               <c:set var="nbGate" scope="session" value="0"/>
-			   <c:set var="nbRefuel" scope="session" value="0"/>
-				
-                <c:forEach items="${gateServices}" var="service">
-                	<c:if test="${service.available}">
-                    	<c:set var="nbGate" value="${nbGate + 1}"/>
-            		</c:if>	
-                </c:forEach>
-                <c:forEach items="${refuelServices}" var="service">
-                    <c:if test="${service.available}">
-                        <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
-                    </c:if>
-                </c:forEach>
-                
-               <tr>
-                   <th>Gate</th>
-                   <th id="gate">${nbGate}</th>
-               </tr>
-               <tr>
-                   <th>Refuel</th>
-                   <th id="refuel">${nbRefuel}</th>
-               </tr>
+
+               <c:forEach items="${allServices}" var="serviceGroup">
+               <c:set var = "countAvailable" value = "0"/>
+                   <c:forEach items="${serviceGroup.value}" var="service">
+                        <c:if test="${service.available}">
+                            <c:set var = "countAvailable" value = "${countAvailable +1}"/>
+                        </c:if>
+                   </c:forEach>
+                   <tr>
+                       <td>${serviceGroup.key.value}</td>
+                       <td id="${serviceGroup.key.key}">${countAvailable}</td>
+                   </tr>
+               </c:forEach>
            </table>
+       </div>
 </div>
 
 <div id="activeServices">
   <h2>Active Services</h2>
 
   <div>
-        <table id="activeServicesTable" class="greyGridTable">
+        <table id="activeServicesTable" class="greyGridTable" >
                 <tr>
                     <th>Plane ID</th>
                     <th>Service ID</th>
@@ -123,9 +115,7 @@
                         </tr>
                     </c:if>
                      </c:forEach>
-
                 </c:forEach>
-
         </table>
  </div>
 
@@ -133,17 +123,10 @@
 	$( document ).ready(function() {
 		var tableBody = $("#activeServicesTable > tbody")
 		console.log(tableBody.children().length)
-		
 		if(tableBody.children().length > 1){
-		
 			tableBody.children().each(function(){
-				
 				var serviceID = $(this).attr("id")
-				
-				console.log(serviceID)
-				
-				var button = document.getElementById("cancelService"+serviceID) 
-				
+				var button = document.getElementById("cancelService"+serviceID)
 				if(button){
 					button.onclick  = function(){
 	           			$.ajax({
@@ -165,22 +148,16 @@
 					var duration = parseInt(document.getElementById("progressIndicator"+serviceID).getAttribute('data-duration'))/1000 
 					var timePassed = (new Date().getTime() / 1000) - startingTime
 					var timeLeft = Math.round(duration - timePassed)
-					
 					var progressIndicatorWidth = 1
-			        
 		        	var updateCounter = setInterval(function() {
-		        	
 			        	var element =  document.getElementById("counter"+serviceID)
 			        	if (element == null)
 			        	{
 			        		clearInterval(updateCounter);
 			        		return
 			        	}
-			        	
-			    		timeLeft--	
-			    		
+			    		timeLeft--
 			    		progressIndicatorWidth = 100 - (timeLeft / duration)*100
-			    		
 					   	var difference = (startingTime - Date.now())/1000;
 					   	
 					   	if(document.getElementById("counter"+serviceID)){
@@ -188,7 +165,6 @@
 					   	}
 					   	
 					   	document.getElementById("progressIndicator" + serviceID).style.width = progressIndicatorWidth + "%"
-				   	
 				 	}, 1000)
 				}
 			})
@@ -228,21 +204,14 @@
         		return
         	}
         	
-    		timeLeft--	
-    		
+    		timeLeft--
     		progressIndicatorWidth = 100 - (timeLeft / startingTime)*100
-    		
-    		//console.log("Tick: " + timeLeft)
 		   	// var difference = (dateCreated - Date.now())/1000;
 		   	
 		   	if(document.getElementById("counter"+update.id)){
 		   		document.getElementById("counter"+update.id).innerHTML = ("time left: " + timeLeft + " sec")
 		   	}
-		   	
 		   	document.getElementById("progressIndicator" + update.id).style.width = progressIndicatorWidth + "%"
-		   	
-		   	
-		   	
 		 }, 1000)
         	
 		return output
@@ -255,17 +224,20 @@
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/services/updates', function (update) {
-            updateServiceStatus(JSON.parse(update.body))
-            console.log(JSON.parse(update.body))	 
+            updateObject = JSON.parse(update.body);
+            updateServiceStatus(updateObject)
+            updateOverview(updateObject)
+            //console.log(updateObject)
           });
        });
     }
 
-    function updateServiceStatus(update){
+    function updateServiceStatus(updateObject){
+        let update = updateObject[0] // Kind of hack, single updated service is first element in updateObject
            if(update.available === false){
 	            $('#activeServicesTable').append(serviceRow(update))
-	            document.getElementById("cancelService"+update.id).onclick  = function(){
-           			$.ajax({
+                document.getElementById("cancelService"+update.id).onclick  = function(){
+                    $.ajax({
                            type : "GET",
                            contentType : 'application/json; charset=utf-8',
                            url : "http://"+window.location.hostname+":8080/cancelService",
@@ -274,32 +246,16 @@
                                 alert(xhr.responseJSON.error.message);
                                }
                              },
-           				data : { serviceId: update.id },
-               		});
-           		}
+                        data : { serviceId: update.id },
+                    });
+                }
     	   }
-
            else if(update.available || update.cancelled){
     			$('#activeServicesTable > tbody').children().each(function(index,element){
 	    				if($(element).attr("id") === update.id){
 	    					$(element).remove()
-	    					
-	    					var name = update.name;  
-		               		if(name.startsWith("Gate")) {
-			               		var numberOfGate = document.getElementById("gate").innerHTML;
-			               		console.log("AVANT: "+numberOfGate);
-								numberOfGate = numberOfGate-(-1);
-								console.log("APRES: "+numberOfGate);
-					    		document.getElementById("gate").innerHTML = numberOfGate;
-		               		}
-		               		if(name.startsWith("Refuel")) {
-		               			var numberOfRefuel = document.getElementById("refuel").innerHTML;
-								numberOfRefuel = numberOfRefuel-(-1);
-				    			document.getElementById("refuel").innerHTML = numberOfRefuel;
-		               		}
-	    					
 	    				}	
-    				})
+    		    })
     		}
            
            if($('#activeServicesTable > tbody').children().length > 1) {
@@ -320,25 +276,7 @@
             }
           }
      });
-            
-        <c:set var="nbGates" scope="session" value="0"/>
-   	   	<c:set var="nbRefuels" scope="session" value="0"/>
-   	   	
-   	   	<c:forEach items="${gateServices}" var="service">
-        	<c:if test="${service.available}">
-            	<c:set var="nbGates" value="${nbGates + 1}"/>
-    		</c:if>	
-        </c:forEach>
-        <c:forEach items="${refuelServices}" var="service">
-            <c:if test="${service.available}">
-                <c:set var="nbRefuels" value="${nbRefuels + 1}"/>
-            </c:if>
-        </c:forEach>
-        
-        document.getElementById("gate").innerHTML = ${nbGates};
-        document.getElementById("refuel").innerHTML = ${nbRefuels};
     };
-    
 
     $("body").on( "click", ".button-newRequest", function(){
         $.ajax({
@@ -353,35 +291,40 @@
                     alert(xhr.responseJSON.error.message);
                 }
             }
-        }).done(function(data){
-             $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
-             $( "#activeServicesWidget" ).load(window.location.href + " #activeServicesWidget" );
-        });
-        
-        var serviceReq = $(this).closest('tr').find('td:eq(0)').html();
-		console.log("CLICK ON CLICK HERE: "+serviceReq);
-		if(serviceReq.includes("Gate")) {
-			var numberOfGates = document.getElementById("gate").innerHTML;
-			numberOfGates = numberOfGates-1;
-		   document.getElementById("gate").innerHTML = numberOfGates;
-		}
-		if(serviceReq.includes("Refuel")) {
-		   var numberOfRefuels = document.getElementById("refuel").innerHTML;
-			numberOfRefuels = numberOfRefuels-1;
-		   document.getElementById("refuel").innerHTML = numberOfRefuels;
-		}
-
+        })
     });
+
     document.getElementById("mockplanerequest").onclick = function () {
         $.ajax({
                     type : "GET",
                     contentType : 'application/json; charset=utf-8',
                     url : "http://"+window.location.hostname+":8080/mockplanerequest"
             });
-            $( "#newRequestsWidget" ).load(window.location.href + " #newRequestsWidget" );
     };
+
+    function updateOverview(updateObject){
+          html = "<table class='greyGridTable' style='width: 300px' id='overviewTable'>" +
+                  "<tr>" +
+                        "<th>Service</th>" +
+                        "<th>Number of available teams</th>" +
+                  "</tr>";
+          let services = updateObject[1] //List of services is second element in return array
+          for (serviceType in services) {
+                let countAvailable = 0;
+                for (var i = 0; i < services[serviceType].length; i++) {
+                    if(services[serviceType][i].available){
+                        countAvailable++;
+                    }
+                }
+          let serviceName = serviceType.split("=")[1] // this is a bit of a hack which I did not resolve. We should fix the backend to get nicer object, so stuff like this is not required
+          html+= "<tr>"+
+                    "<td>" +serviceName+ "</td>" +
+                    "<td>" +countAvailable+"</td>"+
+                 "</tr>";
+          }
+          document.getElementById("overviewContainer").innerHTML = html;
+    }
+
 </script>
-
 </body>
-
 </html>
