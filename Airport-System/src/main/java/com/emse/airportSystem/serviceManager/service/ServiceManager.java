@@ -42,6 +42,20 @@ public class ServiceManager implements Observable{
 
     public Map<String, String> getServiceCatalog() { return serviceCatalog; }
     
+    public String getNumberOfActiveServices() { 
+    	
+    	String NumberOfActiveServices;
+    	
+    	//Count number of active services
+    	
+    	//Transform the count into: Gate4$Refuel10$
+    
+    	
+    	NumberOfActiveServices = "Gate4$Refuel10$";
+    	
+    	return NumberOfActiveServices; 
+    }
+    
     public List<PlaneService> getServicesByType(String serviceType) {
         List<PlaneService> returnList = new ArrayList<PlaneService>();
         for (Map.Entry<String, Object> entry : services.entrySet()) {

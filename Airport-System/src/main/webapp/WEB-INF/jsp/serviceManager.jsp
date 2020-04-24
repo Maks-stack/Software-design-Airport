@@ -78,10 +78,10 @@
 	               </tr>
 	               <c:set var="nbGate" scope="session" value="0"/>
 				   <c:set var="nbRefuel" scope="session" value="0"/>
+				   <c:set var="nbTest" scope="session" value="0"/>
 					
 	            	<c:forEach items="${allServices}" var="serviceGroup">
-		                	<c:forEach items="${serviceGroup.value}" var="service">
-		                	
+		                	<c:forEach items="${serviceGroup.value}" var="service">	
 				                <c:choose>
 		
 				                   <c:when test='${service.name.startsWith("Gate")}'>
@@ -90,8 +90,6 @@
 				                   <c:when test='${service.name.startsWith("Refuel")}'>
 				                       <c:set var="nbRefuel" value="${nbRefuel + 1}"/>
 				                   </c:when>
-				                   
-				                   
 				                </c:choose>
 				                
 				                
@@ -107,6 +105,10 @@
 	                   <th>Refuel</th>
 	                   <th id="refuel">${nbRefuel}</th>
 	               </tr>
+	               <tr>
+	                   <th>Test</th>
+	                   <th id="nbTest">${nbTest}</th>
+	               </tr>
 	           </table>
 	</div>
 	<hr>
@@ -114,7 +116,7 @@
 	  <h4>Active Services</h4>
 	
 	  <div>
-	  	<c:if test="${not empty gateServices}">
+	  <!-- 	<c:if test="${not empty gateServices}">-->
 	                <table id="activeServicesTable" class="greyGridTable">
 		                    <tr>
 		                    	<th>Plane ID</th>
@@ -151,7 +153,7 @@
 		                </c:forEach>
 		                    
 	                </table>
-	    </c:if>
+	   <!--   </c:if>-->
 	 </div>
 	</div>
 </div>
@@ -288,7 +290,7 @@
        });
     }
 
-    function updateServiceStatus(update){
+    function updateServiceStatus2(update){
            if(update.available === false){
 	            $('#activeServicesTable').append(serviceRow(update))
 	            document.getElementById("cancelService"+update.id).onclick  = function(){
@@ -347,6 +349,25 @@
     				})
     		}
     }
+    
+	function updateServiceStatus(update){
+    	
+    	$.ajax({
+    	      type : "GET",
+    	      url : "http://"+window.location.hostname+":8080/overwiewOfServices",
+    	      success: function(result){
+    	        
+    	
+    	        alert(result);
+    	      },
+    	      
+    	      error : function(e) {
+    	       
+    	    	alert(e);
+    	      }
+    	      
+    	 });  
+    }
 
     document.getElementById("mockassignservice").onclick = function () {
      $.ajax({
@@ -377,6 +398,11 @@
         document.getElementById("gate").innerHTML = ${nbGates};
         document.getElementById("refuel").innerHTML = ${nbRefuels};
     };
+    
+    
+    
+    	
+    
     
 
     $("body").on( "click", ".button-newRequest", function(){
