@@ -16,115 +16,115 @@
 
 
 <body>
-<h1>Service manager</h1>
-
-<div id="planeMocker">
-    <p>This button will create a new plane object and create a random service request</p>
-    <input id="mockplanerequest" type="button" value="Mock Plane Request" />
+<div class="container">
+	<h4>Service manager</h4>
+	<hr>
+	<div id="planeMocker" class = "widget">
+	    <p>This button will create a new plane object and create a random service request</p>
+	  	<button id="mockplanerequest" class="waves-effect waves-light btn-small">Mock Plane Request</button>	    
+	</div>	
+	<div id="serviceAssigner" class = "widget">
+	    <p>This button will change random service state and hopefully send update through websocket</p>
+	    <button id="mockassignservice" class="waves-effect waves-light btn-small">Assign random service</button>
+	</div>
+	<hr>
+	<div id="newRequestsWidget" class = "widget">
+	       <h4>New requests</h4>
+	       <c:if test="${not empty newServiceRequests}">
+	               <table class="greyGridTable" style="width: 300px">
+	                   <tr>
+	                       <th id="NR_ServiceRequestID">Request ID</th>
+	                       <th id="NR_PlaneID">Plane ID</th>
+	                       <th id="NR_ServiceRequested">Service requested</th>
+	                       <th id="NR_AvailableServices">Available services</th>
+	                       <th id="NR_Button">Test</th>
+	                   </tr>
+	                   <c:forEach items="${newServiceRequests}" var="request">
+	                       <tr>
+	                           <td headers="NR_ServiceRequestID">${request.id}</td>
+	                           <td headers="NR_PlaneID">${request.plane.planeId}</td>
+	                           <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
+	                           <td ALIGN="center" headers="NR_AvailableServices">
+	                           <c:forEach items="${allServices}" var="serviceGroup">
+	                                <c:if test="${serviceGroup.key.key eq fn:toLowerCase(request.serviceRequested)}">
+	                                     <select class = "browser-default">
+	                                            <c:forEach items="${serviceGroup.value}" var="service">
+	                                               <option value=${service.id}>${service.name}</option>
+	                                            </c:forEach>
+	                                     </select>
+	                                </c:if>
+	                           </c:forEach>
+	                           </td>
+	                           <td headers="NR_Button"><div class="button-newRequest"><button class="waves-effect waves-light btn-small">Assign</button></div>
+	                       </tr>
+	                   </c:forEach>
+	               </table>
+	       </c:if>
+	</div>
+	<hr>
+	<div id="overwiewOfServices" class = "widget">
+	       <h4>Overview of the available services</h4>
+	       <div id="overviewContainer">
+	           <table class="greyGridTable" style="width: 300px" id="overviewTable">
+	               <tr>
+	                   <th>Service</th>
+	                   <th>Number of available teams</th>
+	               </tr>
+	
+	               <c:forEach items="${allServices}" var="serviceGroup">
+	               <c:set var = "countAvailable" value = "0"/>
+	                   <c:forEach items="${serviceGroup.value}" var="service">
+	                        <c:if test="${service.available}">
+	                            <c:set var = "countAvailable" value = "${countAvailable +1}"/>
+	                        </c:if>
+	                   </c:forEach>
+	                   <tr>
+	                       <td>${serviceGroup.key.value}</td>
+	                       <td id="${serviceGroup.key.key}">${countAvailable}</td>
+	                   </tr>
+	               </c:forEach>
+	           </table>
+	       </div>
+	</div>
+	<hr>
+	<div id="activeServices" class = "widget">
+	  <h4>Active Services</h4>
+	
+	  <div>
+	        <table id="activeServicesTable" class="greyGridTable" >
+	                <tr>
+	                    <th>Plane ID</th>
+	                    <th>Service ID</th>
+	                    <th>Service available</th>
+	                </tr>
+	                <tr id="noServicesWarning">
+	                    <td>
+	                        <h4>No ActiveServices</h4>
+	                    </td>
+	                </tr>
+	
+	                <c:forEach items="${allServices}" var="serviceGroup">
+	                    <c:forEach items="${serviceGroup.value}" var="service">
+	                     <c:if test ="${ not service.available}">
+	                        <tr id="${service.id}">
+	                        <td> Plane ID: ${service.planeId} </td>
+	                        <td>${service.name}</td>
+	                        <td>${service.available}</td>
+	                        <td>timeStarted:${service.timeStarted}</td>
+	                        <td id="counter${service.id}">time left: ${service.duration}</td>
+	                        <td style="width:50px">
+	                            <div class="progressBar">
+	                                <div id="progressIndicator${service.id}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
+	                            </div>
+	                        </td>
+	                        <td><button class="cancelServiceButton waves-effect waves-light btn-small red" id="cancelService${service.id}">Cancel &#9888;</button></td>
+	                        </tr>
+	                    </c:if>
+	                     </c:forEach>
+	                </c:forEach>
+	        </table>
+	 </div>
 </div>
-
-<div id="serviceAssigner">
-    <p>This button will change random service state and hopefully send update through websocket</p>
-    <input id="mockassignservice" type="button" value="Assign random service" />
-</div>
-
-<div id="newRequestsWidget">
-       <h2>New requests</h2>
-       <c:if test="${not empty newServiceRequests}">
-               <table class="greyGridTable" style="width: 300px">
-                   <tr>
-                       <th id="NR_ServiceRequestID">Request ID</th>
-                       <th id="NR_PlaneID">Plane ID</th>
-                       <th id="NR_ServiceRequested">Service requested</th>
-                       <th id="NR_AvailableServices">Available services</th>
-                       <th id="NR_Button">Test</th>
-                   </tr>
-                   <c:forEach items="${newServiceRequests}" var="request">
-                       <tr>
-                           <td headers="NR_ServiceRequestID">${request.id}</td>
-                           <td headers="NR_PlaneID">${request.plane.planeId}</td>
-                           <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
-                           <td ALIGN="center" headers="NR_AvailableServices">
-                           <c:forEach items="${allServices}" var="serviceGroup">
-                                <c:if test="${serviceGroup.key.key eq fn:toLowerCase(request.serviceRequested)}">
-                                     <select class = "browser-default">
-                                            <c:forEach items="${serviceGroup.value}" var="service">
-                                               <option value=${service.id}>${service.name}</option>
-                                            </c:forEach>
-                                     </select>
-                                </c:if>
-                           </c:forEach>
-                           </td>
-                           <td headers="NR_Button"><div class="button-newRequest"><button> Click Me </button></div>
-                       </tr>
-                   </c:forEach>
-               </table>
-       </c:if>
-</div>
-
-<div id="overwiewOfServices">
-       <h2>Overview of the available services</h2>
-       <div id="overviewContainer">
-           <table class="greyGridTable" style="width: 300px" id="overviewTable">
-               <tr>
-                   <th>Service</th>
-                   <th>Number of available teams</th>
-               </tr>
-
-               <c:forEach items="${allServices}" var="serviceGroup">
-               <c:set var = "countAvailable" value = "0"/>
-                   <c:forEach items="${serviceGroup.value}" var="service">
-                        <c:if test="${service.available}">
-                            <c:set var = "countAvailable" value = "${countAvailable +1}"/>
-                        </c:if>
-                   </c:forEach>
-                   <tr>
-                       <td>${serviceGroup.key.value}</td>
-                       <td id="${serviceGroup.key.key}">${countAvailable}</td>
-                   </tr>
-               </c:forEach>
-           </table>
-       </div>
-</div>
-
-<div id="activeServices">
-  <h2>Active Services</h2>
-
-  <div>
-        <table id="activeServicesTable" class="greyGridTable" >
-                <tr>
-                    <th>Plane ID</th>
-                    <th>Service ID</th>
-                    <th>Service available</th>
-                </tr>
-                <tr id="noServicesWarning">
-                    <td>
-                        <h2>No ActiveServices</h2>
-                    </td>
-                </tr>
-
-                <c:forEach items="${allServices}" var="serviceGroup">
-                    <c:forEach items="${serviceGroup.value}" var="service">
-                     <c:if test ="${ not service.available}">
-                        <tr id="${service.id}">
-                        <td> Plane ID: ${service.planeId} </td>
-                        <td>${service.name}</td>
-                        <td>${service.available}</td>
-                        <td>timeStarted:${service.timeStarted}</td>
-                        <td id="counter${service.id}">time left: ${service.duration}</td>
-                        <td style="width:50px">
-                            <div class="progressBar">
-                                <div id="progressIndicator${service.id}" data-timeStarted="${service.timeStarted}" data-duration="${service.duration}" class="progressBarIndicator"></div>
-                            </div>
-                        </td>
-                        <td><button class="cancelServiceButton" id="cancelService${service.id}">Cancel &#9888;</button></td>
-                        </tr>
-                    </c:if>
-                     </c:forEach>
-                </c:forEach>
-        </table>
- </div>
-
 <script>
 	$( document ).ready(function() {
 		var tableBody = $("#activeServicesTable > tbody")
