@@ -47,7 +47,7 @@
                            <td ALIGN="center" headers="NR_AvailableServices">
                            <c:forEach items="${allServices}" var="serviceGroup">
                                 <c:if test="${serviceGroup.key.key eq fn:toLowerCase(request.serviceRequested)}">
-                                     <select>
+                                     <select class = "browser-default">
                                             <c:forEach items="${serviceGroup.value}" var="service">
                                                <option value=${service.id}>${service.name}</option>
                                             </c:forEach>
