@@ -47,7 +47,6 @@
             <table id="TracksTable" class="greyGridTable" style="width: 300px">
                 <tr>
                     <th>Track ID</th>
-                    <th>Track type</th>
                     <th>Track available</th>
                     <th>Assigned Plane</th>
                     <th></th>
