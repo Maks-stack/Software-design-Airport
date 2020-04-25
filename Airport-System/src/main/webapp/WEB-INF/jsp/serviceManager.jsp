@@ -64,6 +64,8 @@
                </tr>
                <c:set var="nbGate" scope="session" value="0"/>
 			   <c:set var="nbRefuel" scope="session" value="0"/>
+				   <c:set var="nbTest" scope="session" value="0"/>
+				   <c:set var="nbTestList" scope="session" value="${['Empty']}" />
 
                 
                 <c:forEach items="${allServices}" var="PossibleServiceList">
@@ -92,6 +94,7 @@
                    <th>Refuel</th>
                    <th id="refuel">${nbRefuel}</th>
                </tr>
+
            </table>
 </div>
 
@@ -99,7 +102,7 @@
   <h2>Active Services</h2>
 
   <div>
-  	<c:if test="${not empty gateServices}">
+	  <!-- 	<c:if test="${not empty gateServices}">-->
                 <table id="activeServicesTable" class="greyGridTable">
 	                    <tr>
 	                    	<th>Plane ID</th>
@@ -141,7 +144,7 @@
 	                    
 	                    
                 </table>
-    </c:if>
+	   <!--   </c:if>-->
  </div>
 
 <script>
@@ -271,6 +274,7 @@
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/services/updates', function (update) {
             updateServiceStatus(JSON.parse(update.body))
+            updateOverwiewOfServices()
             console.log(JSON.parse(update.body))	 
           });
        });
@@ -323,6 +327,27 @@
         	   $("#noServicesWarning").show()
            }
     }
+    
+	function updateOverwiewOfServices(){
+    	
+    	$.ajax({
+    	      type : "GET",
+    	      url : "http://"+window.location.hostname+":8080/overwiewOfServices",
+    	      success: function(result){
+    	        
+    	    	var newNumber = result.split("$");
+    	        document.getElementById("gate").innerHTML = newNumber[1];
+    			document.getElementById("refuel").innerHTML = newNumber[3];
+    	        
+    	      },
+    	      
+    	      error : function(e) {
+    	       
+    	    	alert(e);
+    	      }
+    	      
+    	 });  
+    }
 
     document.getElementById("mockassignservice").onclick = function () {
      $.ajax({
@@ -353,6 +378,11 @@
         document.getElementById("gate").innerHTML = ${nbGates};
         document.getElementById("refuel").innerHTML = ${nbRefuels};
     };
+    
+    
+    
+    	
+    
     
 
     $("body").on( "click", ".button-newRequest", function(){

@@ -42,6 +42,32 @@ public class ServiceManager implements Observable{
 
     public Map<String, String> getServiceCatalog() { return serviceCatalog; }
     
+    public String getNumberOfActiveServices() { 
+    	
+    	String NumberOfActiveServices;
+    	System.out.println("IN THE FUNCTION");
+    	//Count number of active services
+    	
+    	int nbOfGate =0;
+    	int nbOfRefuel =0;
+    	
+    	for (Map.Entry<String, Object> entry : services.entrySet()) {
+            
+            PlaneService ps = (PlaneService) entry.getValue();
+            if(ps.getName().startsWith("Gate") && ps.getAvailable()) {
+            	nbOfGate++;
+            }
+            if(ps.getName().startsWith("Refuel") && ps.getAvailable()) {
+            	nbOfRefuel++;
+            }
+        }
+        
+    	//System.out.println("Gate: "+nbOfGate+" / Refuel : "+nbOfRefuel);
+    	NumberOfActiveServices = "Gate$"+nbOfGate+"$Refuel$"+nbOfRefuel+"$";
+    	//NumberOfActiveServices = "Gate4$Refuel10$";
+    	return NumberOfActiveServices; 
+    }
+    
     public List<PlaneService> getServicesByType(String serviceType) {
         List<PlaneService> returnList = new ArrayList<PlaneService>();
         for (Map.Entry<String, Object> entry : services.entrySet()) {

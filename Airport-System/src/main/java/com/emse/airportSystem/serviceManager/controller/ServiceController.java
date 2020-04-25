@@ -14,6 +14,7 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
@@ -88,6 +89,13 @@ public class ServiceController {
     public ResponseEntity<?> cancelService(@RequestParam String serviceId) {
         SM.cancelService(serviceId);
         return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @RequestMapping(value="/overwiewOfServices", method=RequestMethod.GET, produces="text/plain")
+    @ResponseBody
+    public String overwiewOfServices() {
+        String ActiveServices = SM.getNumberOfActiveServices();
+        return ActiveServices;
     }
 
     public void notifyServiceSubscribers() {
