@@ -9,6 +9,12 @@
 <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"</head>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"></head>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+
 <body>
 <h1>Service manager</h1>
 
@@ -190,7 +196,7 @@
         ' 		<div id="progressIndicator' + update.id + '" class="progressBarIndicator"></div>' +
        	'	</div>'+
         '</td>'+
-        '<td><button class="cancelServiceButton" id="cancelService' + update.id + '">Cancel &#9888;</button></td>' +
+        '<td><button class="cancelServiceButton waves-effect waves-light btn-small red" id="cancelService' + update.id + '">Cancel &#9888;</button></td>' +
         '</tr>'
         
         var progressIndicatorWidth = 1
