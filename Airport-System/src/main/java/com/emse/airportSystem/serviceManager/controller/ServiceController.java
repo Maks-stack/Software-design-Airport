@@ -40,7 +40,6 @@ public class ServiceController {
     public String index(Model model) {
         List<? extends PlaneService> gateServices = SM.getServicesByType("Gate");
         List<? extends PlaneService> refuelServices = SM.getServicesByType("Refuel");
-        List<List<? extends PlaneService>> allServices = Arrays.asList(gateServices, refuelServices);
         Collection<ServiceRequest> newServiceRequests = SM.getNewServiceRequests();
         List<ServiceRequest> serviceRequestsInProgress = SM.getServiceRequestsInProgress();
         
@@ -53,7 +52,6 @@ public class ServiceController {
         
         model.addAttribute("gateServices", gateServices);
         model.addAttribute("refuelServices", refuelServices);
-        model.addAttribute("allServices", allServices);
         model.addAttribute("newServiceRequests", newServiceRequests);
         model.addAttribute("serviceRequestsInProgress", serviceRequestsInProgress);
         model.addAttribute("allServices", allServices);
