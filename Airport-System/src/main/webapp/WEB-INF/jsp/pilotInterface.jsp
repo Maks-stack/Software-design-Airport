@@ -15,6 +15,10 @@
     <input id="requestGateService" type="button" value="Request gate service" />
 </div>
 
+<div id="requestRefuelService">
+    <input id="requestRefuelService" type="button" value="Request refuel service" />
+</div>
+
 <div id="requestTrackService">
     <input id="requestTrackService" type="button" value="Request track service" />
 </div>
@@ -37,7 +41,24 @@
 
     document.getElementById("requestGateService").onclick = function () {
         let planeId = document.getElementById('planeid').innerHTML;
-        let data = {"planeId": planeId, "service":"Bus"};
+        let data = {"planeId": planeId, "service":"gate"};
+         $.ajax({
+                            type : "POST",
+                            data: JSON.stringify(data),
+                            contentType : 'application/json; charset=utf-8',
+                            url : "http://localhost:8080/plane/requestservice",
+                            success: function(data){
+                                console.log(data);
+                              },
+                            error: function(data){
+                                console.log(data);
+                            },
+                });
+        };
+        
+        document.getElementById("requestRefuelService").onclick = function () {
+        let planeId = document.getElementById('planeid').innerHTML;
+        let data = {"planeId": planeId, "service":"refuel"};
          $.ajax({
                             type : "POST",
                             data: JSON.stringify(data),
