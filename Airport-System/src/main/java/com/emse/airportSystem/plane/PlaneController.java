@@ -6,6 +6,8 @@ import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
 import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
+import com.emse.airportSystem.trackManager.service.TrackManager;
+
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,9 @@ public class PlaneController {
 
     @Autowired
     ServiceManager serviceManager;
+    
+    @Autowired
+    TrackManager trackManager;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -64,7 +69,16 @@ public class PlaneController {
     
     @RequestMapping(value = "/plane/requesttrack", method = RequestMethod.POST)
     public void requestTrack(@RequestBody String req){
-        //To complete
+    	Object obj= JSONValue.parse(req);
+        JSONObject jsonObject = (JSONObject) obj;
+        try{
+            String planeId = jsonObject.get("planeId").toString();
+            Plane plane = planeManager.getPlaneById(planeId);
+            trackManager.registerNewRequest(plane);
+
+        } catch(Exception e){
+            System.out.println(e);
+        }
     }
 
     public void notifyServiceSubscribers() {
