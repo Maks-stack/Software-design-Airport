@@ -15,6 +15,11 @@
     <input id="requestGateService" type="button" value="Request gate service" />
 </div>
 
+<div id="requestTrackService">
+    <input id="requestTrackService" type="button" value="Request track service" />
+</div>
+
+
 <script>
     connectServicesWebsocket();
 
@@ -38,6 +43,23 @@
                             data: JSON.stringify(data),
                             contentType : 'application/json; charset=utf-8',
                             url : "http://localhost:8080/plane/requestservice",
+                            success: function(data){
+                                console.log(data);
+                              },
+                            error: function(data){
+                                console.log(data);
+                            },
+                });
+        };
+        
+        document.getElementById("requestTrackService").onclick = function () {
+        let planeId = document.getElementById('planeid').innerHTML;
+        let data = {"planeId": planeId, "service":"Bus"};
+         $.ajax({
+                            type : "POST",
+                            data: JSON.stringify(data),
+                            contentType : 'application/json; charset=utf-8',
+                            url : "http://localhost:8080/plane/requesttrack",
                             success: function(data){
                                 console.log(data);
                               },

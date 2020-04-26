@@ -61,6 +61,11 @@ public class PlaneController {
             System.out.println(e);
         }
     }
+    
+    @RequestMapping(value = "/plane/requesttrack", method = RequestMethod.POST)
+    public void requestTrack(@RequestBody String req){
+        //To complete
+    }
 
     public void notifyServiceSubscribers() {
         this.template.convertAndSend("/planes/updates", "Test");
