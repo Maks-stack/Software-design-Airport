@@ -34,6 +34,13 @@ public class ServiceController {
     public ServiceController(){
     }
 
+    @RequestMapping("/")
+	public String central() {
+		return "centralControl";
+	}
+    
+    
+    
     @RequestMapping("/servicemanager")
     public String index(Model model) {
         Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
