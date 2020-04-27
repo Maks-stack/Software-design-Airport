@@ -12,15 +12,15 @@
 </c:if>
 
 <div id="requestGateService">
-    <input id="requestGateService" type="button" value="Request gate service" />
+    <input id="requestGateServiceButton" type="button" style="background-color:#7FDD4C" value="GATE" />
 </div>
 
 <div id="requestRefuelService">
-    <input id="requestRefuelService" type="button" value="Request refuel service" />
+    <input id="requestRefuelServiceButton" type="button" style="background-color:#7FDD4C" value="REFUEL" />
 </div>
 
 <div id="requestTrackService">
-    <input id="requestTrackService" type="button" value="Request track service" />
+    <input id="requestTrackService" type="button" style="background-color:#7FDD4C" value="TRACK" />
 </div>
 
 
@@ -33,7 +33,9 @@
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/planes/${planeObj}/updates', function (update) {
-             console.log(JSON.parse(update.body))
+             console.log("HERE5");
+             updateObject = JSON.parse(update.body);
+             updateServiceStatus(updateObject);
           });
        });
     }
@@ -91,6 +93,21 @@
         };
 
 
+	function updateServiceStatus(updateObject){
+        let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
+        let service = updateObject[1]
+        let nameService = service.name;
+        console.log("Service Name : "+service.name); console.log("Service ID : "+service.id);
+        if(nameService.startsWith("Refuel")) {
+        	document.getElementById("requestRefuelServiceButton").style.backgroundColor='#CCFF33';
+        	document.getElementById("requestRefuelServiceButton").disabled = true;
+        }
+        if(nameService.startsWith("Gate")) {
+        	document.getElementById("requestGateServiceButton").style.backgroundColor='#CCFF33';
+        	document.getElementById("requestGateServiceButton").disabled = true;
+        }
+        
+    }
 
 </script>
 
