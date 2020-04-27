@@ -21,6 +21,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PlaneController {
@@ -49,7 +50,10 @@ public class PlaneController {
         //currently hardcoded values, but this will need to be changed
         String planeId = "Test"+System.currentTimeMillis();
         planeManager.addPlane("A320", new InAir(), planeId);
+        Map<String,String> serviceCatalog = serviceManager.getServiceCatalog();
+        
         model.addAttribute("planeObj", planeId);
+        model.addAttribute("serviceCatalogue", serviceCatalog);
         return "pilotInterface";
     }
 

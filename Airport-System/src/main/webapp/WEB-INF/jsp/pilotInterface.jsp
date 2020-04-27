@@ -11,6 +11,10 @@
     <p id="planeid">${planeObj}</p>
 </c:if>
 
+<c:forEach items="${serviceCatalogue}" var="service">
+	<input id="requestGateServiceButton" type="button" style="background-color:#7FDD4C" value="${service.value}" />
+</c:forEach>
+
 <div id="requestGateService">
     <input id="requestGateServiceButton" type="button" style="background-color:#7FDD4C" value="GATE" />
 </div>
