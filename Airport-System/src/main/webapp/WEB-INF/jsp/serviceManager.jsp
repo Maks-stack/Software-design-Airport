@@ -50,10 +50,12 @@
 	                                <c:if test="${serviceGroup.key.key eq fn:toLowerCase(request.serviceRequested)}">
 	                                     <select class = "browser-default">
 	                                            <c:forEach items="${serviceGroup.value}" var="service">
-	                                               <option value=${service.id}>${service.name}</option>
+		                                            <c:if test="${ service.available }">
+		                                               <option value="${service.id}">${service.name}</option>
+	                                               </c:if>
 	                                            </c:forEach>
 	                                     </select>
-	                                </c:if>
+                                     </c:if>	                                
 	                           </c:forEach>
 	                           </td>
 	                           <td headers="NR_Button"><div><button class="button-newRequest waves-effect waves-light btn-small">Assign</button></div>
