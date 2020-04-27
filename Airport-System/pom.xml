@@ -94,6 +94,13 @@
             <artifactId>jquery-ui</artifactId>
             <version>1.12.1</version>
         </dependency>
+        <dependency>
+    		<groupId>com.fasterxml.jackson.core</groupId>
+    		<artifactId>jackson-core</artifactId>
+    		<version>2.11.0.rc1</version>
+		</dependency>
+        
+        
     </dependencies>
     <build>
         <plugins>

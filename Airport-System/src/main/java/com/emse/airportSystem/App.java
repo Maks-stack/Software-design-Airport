@@ -3,6 +3,7 @@ package com.emse.airportSystem;
 import com.emse.airportSystem.plane.PlanesObserver;
 import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
+import com.emse.airportSystem.serviceManager.service.ServiceRequestsObserver;
 import com.emse.airportSystem.serviceManager.service.ServicesObserver;
 import com.emse.airportSystem.trackManager.service.TrackManager;
 import com.emse.airportSystem.trackManager.service.TracksObserver;
@@ -28,6 +29,9 @@ public class App {
 
 	@Autowired
 	ServicesObserver servicesObserver;
+	
+	@Autowired
+	ServiceRequestsObserver serviceRequestsObserver;
 
 	@Autowired
 	TracksObserver tracksObserver;
@@ -38,6 +42,7 @@ public class App {
 	@EventListener(ApplicationReadyEvent.class)
 	private void setUpObservers() {
 		serviceManager.registerObserver(servicesObserver);
+		serviceManager.registerObserver(serviceRequestsObserver);
 		trackManager.registerObserver(tracksObserver);
 		planeManager.registerObserver(planesObserver);
 

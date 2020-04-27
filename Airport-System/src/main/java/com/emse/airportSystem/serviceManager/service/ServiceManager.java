@@ -85,7 +85,7 @@ public class ServiceManager implements Observable{
     public void assignRandomService() throws ServiceNotAvailableException, RequestNotFoundException {
         try{
             Plane mockPlane = new Plane("Mock1",new InAir(),"Mock1");
-            ServiceRequest serviceRequest = new ServiceRequest(mockPlane,"Bus");
+            ServiceRequest serviceRequest = new ServiceRequest(mockPlane,"Bus", this);
             newServiceRequests.put(serviceRequest.getId(), serviceRequest);
             this.assignService(serviceRequest.getId(), "bus"+new Random().nextInt(10));
         } catch (Exception e) {
@@ -104,7 +104,7 @@ public class ServiceManager implements Observable{
     }
 
     public void registerNewRequest(Plane plane, String ServiceName){
-        ServiceRequest serviceRequest = new ServiceRequest(plane, ServiceName);
+        ServiceRequest serviceRequest = new ServiceRequest(plane, ServiceName, this);
         newServiceRequests.put(serviceRequest.getId(), serviceRequest);
     }
 
@@ -133,4 +133,10 @@ public class ServiceManager implements Observable{
     public void notifyObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
     }
+    
+    public void notifyServiceRequestObservers(Object obj) {
+        observers.forEach(observer -> observer.update(obj));
+    }
+    
+    
 }

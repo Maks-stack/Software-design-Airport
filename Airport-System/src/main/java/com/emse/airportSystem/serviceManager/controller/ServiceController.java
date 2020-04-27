@@ -88,6 +88,15 @@ public class ServiceController {
 
     public void notifyServiceSubscribers(Object updatedService) {
         Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
+        
         this.template.convertAndSend("/services/updates", Arrays.asList(updatedService, allServices));
+    }
+    
+    public void notifyServiceRequestSubscribers() {
+        this.template.convertAndSend("/services/requestupdates", "Test");
+    }
+
+    public void notifyServiceRequestSubscribers(Object updatedService) {
+        this.template.convertAndSend("/services/requestupdates", serviceManager.getServiceRequestsInProgress());
     }
 }

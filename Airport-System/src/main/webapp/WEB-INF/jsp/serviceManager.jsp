@@ -30,8 +30,9 @@
 	<hr>
 	<div id="newRequestsWidget" class = "widget">
 	       <h4>New requests</h4>
-	       <c:if test="${not empty newServiceRequests}">
-	               <table class="greyGridTable" style="width: 300px">
+	       
+               <table id ="serviceRequestTable" class="greyGridTable" style="width: 300px">
+	               <c:if test="${not empty newServiceRequests}">
 	                   <tr>
 	                       <th id="NR_ServiceRequestID">Request ID</th>
 	                       <th id="NR_PlaneID">Plane ID</th>
@@ -55,11 +56,12 @@
 	                                </c:if>
 	                           </c:forEach>
 	                           </td>
-	                           <td headers="NR_Button"><div class="button-newRequest"><button class="waves-effect waves-light btn-small">Assign</button></div>
+	                           <td headers="NR_Button"><div><button class="button-newRequest waves-effect waves-light btn-small">Assign</button></div>
 	                       </tr>
 	                   </c:forEach>
-	               </table>
-	       </c:if>
+	               </c:if>
+               </table>
+	       
 	</div>
 	<hr>
 	<div id="overwiewOfServices" class = "widget">
@@ -222,19 +224,46 @@
         	
 		return output
 	}
+	
+	var serviceRequestRow = function(update){
+
+		var requestId = update[0].id
+		var planeId = update[0].plane.planeId
+		var serviceName = update[0].serviceRequested
+		
+		var output =
+		'<tr>' +
+        '<td headers="NR_ServiceRequestID">' + requestId + '</td>' +
+        '<td headers="NR_PlaneID">' + planeId + '</td>' +
+        '<td headers="NR_ServiceRequested">' + serviceName + '</td>' +
+        '<td ALIGN="center" headers="NR_AvailableServices">' +
+	    '    <select id="'+serviceName+'"class="browser-default planeRequestSelector">' +      
+        '    	<option value=1>Test</option>' +
+	    '   </select>' +
+        '</td>' +
+        '<td headers="NR_Button">' +
+        '	<div>' +
+        '		<button class="button-newRequest waves-effect waves-light btn-small">Assign</button> ' +
+        '	</div>' +
+       	'</td>' +
+    	'</tr>'
+    	
+    	return output
+		
+	}
 
     connectServicesWebsocket();
     function connectServicesWebsocket() {
        var socket = new SockJS('/services-websocket');
        stompClient = Stomp.over(socket);
        stompClient.connect({}, function (frame) {
-          //console.log('Connected: ' + frame);
           stompClient.subscribe('/services/updates', function (update) {
             updateObject = JSON.parse(update.body);
             updateServiceStatus(updateObject)
             updateOverview(updateObject)
-            //console.log(updateObject)
-          });
+            console.log(updateObject)
+            updateServiceRequests(updateObject)   
+          });          
        });
     }
 
@@ -284,7 +313,12 @@
      });
     };
 
-    $("body").on( "click", ".button-newRequest", function(){
+    $("body").on( "click", ".button-newRequest", function(){    	
+    	console.log("UTPUT")
+    	console.log($(this))
+    	var element = $(this)
+    	console.log($(this).closest('tr').find('td:eq(0)').html())
+    	console.log($(this).closest('tr').find('td:eq(3) :selected').val())    	
         $.ajax({
             type: "POST",
             url:  "http://"+window.location.hostname+":8080/assignservice",
@@ -296,7 +330,14 @@
                 409: function(xhr) {
                     alert(xhr.responseJSON.error.message);
                 }
-            }
+            },
+            success :
+            	function(data){
+            		console.log("remove myself")
+            		console.log(element)
+            		console.log(element.closest('tr'))
+            		element.closest('tr').remove()
+            }  
         })
     });
 
@@ -329,6 +370,44 @@
                  "</tr>";
           }
           document.getElementById("overviewContainer").innerHTML = html;
+    }
+    
+    function updateServiceRequests(update){
+		
+    	if($('#serviceRequestTable').children().length > 0) {
+	 		updateServiceRequestSelectors(update)	
+	 	}
+    	
+    	if(update[0].type === "undefined" || typeof update[0].type === 'undefined' ) 
+   			return null
+   			
+	 	$('#serviceRequestTable').append(serviceRequestRow(update))
+	 	
+ 		updateServiceRequestSelectors(update) 
+    	    	    	
+    }
+    function updateServiceRequestSelectors(update){
+    	
+    	$('.planeRequestSelector').empty()   	 
+   	 	console.log(update)    	 
+   	 	
+   	 	$('.planeRequestSelector').each(function(){   
+   	 		var htmlId = $(this).attr('id')
+   	 		
+   	 		var services = update[1] //List of services is second element in return array
+          	for (serviceType in services) {
+          		var serviceName = serviceType.split("=")[1] 
+          		console.log(serviceName)
+          		console.log(htmlId)
+          		if(serviceName.includes(htmlId)){
+          			for(service in services[serviceType]) {
+          				if(services[serviceType][service].available) {
+	       	 				$(this).append('<option value='+ services[serviceType][service].id +'>' + services[serviceType][service].name + '</option>')
+          				}
+	       	 		}
+          		}	
+          	}
+   	 	})     	
     }
 
 </script>
