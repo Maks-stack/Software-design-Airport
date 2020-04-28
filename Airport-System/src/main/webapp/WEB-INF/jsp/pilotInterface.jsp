@@ -87,12 +87,12 @@
         let nameService = service.name;
         console.log("Service Name : "+service.name); console.log("Service ID : "+service.id);
         if(nameService.startsWith("Refuel")) {
-        	document.getElementById("requestRefuelServiceButton").style.backgroundColor='#CCFF33';
-        	document.getElementById("requestRefuelServiceButton").disabled = true;
-        }
-        if(nameService.startsWith("Gate")) {
-        	document.getElementById("requestGateServiceButton").style.backgroundColor='#CCFF33';
-        	document.getElementById("requestGateServiceButton").disabled = true;
+        
+        	let html = '<div id="refuel">'+
+         			'<input id="refuel" type="button" value="Refuel service" disabled="disabled" style="background-color:#CCFF33" onClick="processService("refuel","Refuel service");"/>'+	
+     				'</div>';
+		 	document.getElementById("refuel").innerHTML = html;
+		 
         }
         
     }
