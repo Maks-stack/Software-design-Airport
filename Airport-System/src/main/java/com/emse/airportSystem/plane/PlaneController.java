@@ -44,14 +44,15 @@ public class PlaneController {
     }
 
     @RequestMapping("/plane/panel")
-    public String plane(Model model){
+    public String plane(Model model) throws Exception{
         //check for authorization token. If has - all good, if not, redirect to authorize.
 
         //currently hardcoded values, but this will need to be changed
         String planeId = "Test"+System.currentTimeMillis();
         planeManager.addPlane("A320", new InAir(), planeId);
         Map<String,String> serviceCatalog = serviceManager.getServiceCatalog();
-        
+        Plane p = planeManager.getPlaneById(planeId);
+        model.addAttribute("state", p.getState());
         model.addAttribute("planeObj", planeId);
         model.addAttribute("serviceCatalogue", serviceCatalog);
         return "pilotInterface";

@@ -12,16 +12,10 @@
 </c:if>
 
 <c:forEach items="${serviceCatalogue}" var="service">
-	<input id="requestGateServiceButton" type="button" style="background-color:#7FDD4C" value="${service.value}" />
+	<div id="${service.key}">
+		<input id="${service.key}" type="button" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
+	</div>
 </c:forEach>
-
-<div id="requestGateService">
-    <input id="requestGateServiceButton" type="button" style="background-color:#7FDD4C" value="GATE" />
-</div>
-
-<div id="requestRefuelService">
-    <input id="requestRefuelServiceButton" type="button" style="background-color:#7FDD4C" value="REFUEL" />
-</div>
 
 <div id="requestTrackService">
     <input id="requestTrackService" type="button" style="background-color:#7FDD4C" value="TRACK" />
@@ -45,39 +39,29 @@
     }
 
 
-    document.getElementById("requestGateService").onclick = function () {
+    function processService(serviceKey, serviceValue) {
         let planeId = document.getElementById('planeid').innerHTML;
-        let data = {"planeId": planeId, "service":"gate"};
+        let data = {"planeId": planeId, "service":serviceKey};
+        console.log(serviceValue);
          $.ajax({
-                            type : "POST",
-                            data: JSON.stringify(data),
-                            contentType : 'application/json; charset=utf-8',
-                            url : "http://localhost:8080/plane/requestservice",
-                            success: function(data){
-                                console.log(data);
-                              },
-                            error: function(data){
-                                console.log(data);
-                            },
+                    type : "POST",
+                    data: JSON.stringify(data),
+                    contentType : 'application/json; charset=utf-8',
+                    url : "http://localhost:8080/plane/requestservice",
+                    success: function(data){
+                        console.log("s");
+                      },
+                    error: function(data){
+                        console.log("e");
+                    },
                 });
-        };
+         
+         let html = '<div id="serviceKey">'+
+         			'<input id="'+serviceKey+'" type="button" value="'+serviceValue+'" disabled="disabled" style="background-color:#F4661B" onClick="processService("'+serviceKey+'","'+serviceValue+'");"/>'+	
+     				'</div>';
+		 document.getElementById(serviceKey).innerHTML = html;
+        }
         
-        document.getElementById("requestRefuelService").onclick = function () {
-        let planeId = document.getElementById('planeid').innerHTML;
-        let data = {"planeId": planeId, "service":"refuel"};
-         $.ajax({
-                            type : "POST",
-                            data: JSON.stringify(data),
-                            contentType : 'application/json; charset=utf-8',
-                            url : "http://localhost:8080/plane/requestservice",
-                            success: function(data){
-                                console.log(data);
-                              },
-                            error: function(data){
-                                console.log(data);
-                            },
-                });
-        };
         
         document.getElementById("requestTrackService").onclick = function () {
         let planeId = document.getElementById('planeid').innerHTML;
