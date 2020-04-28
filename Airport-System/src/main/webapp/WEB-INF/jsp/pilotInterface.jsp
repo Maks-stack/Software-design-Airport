@@ -89,9 +89,17 @@
         if(nameService.startsWith("Refuel")) {
         
         	let html = '<div id="refuel">'+
-         			'<input id="refuel" type="button" value="Refuel service" disabled="disabled" style="background-color:#CCFF33" onClick="processService("refuel","Refuel service");"/>'+	
+         			'<input id="refuel" type="button" value="Refuel service" disabled="disabled" style="background-color:#7FDD4C" onClick="processService("refuel","Refuel service");"/>'+	
      				'</div>';
 		 	document.getElementById("refuel").innerHTML = html;
+		 
+        }
+        if(nameService.startsWith("Bus")) {
+        
+        	let html = '<div id="bus">'+
+         			'<input id="bus" type="button" value="Bus service" disabled="disabled" style="background-color:#7FDD4C" onClick="processService("bus","Bus service");"/>'+	
+     				'</div>';
+		 	document.getElementById("bus").innerHTML = html;
 		 
         }
         
