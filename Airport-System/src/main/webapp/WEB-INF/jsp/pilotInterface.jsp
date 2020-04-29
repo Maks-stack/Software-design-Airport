@@ -11,6 +11,12 @@
     <p id="planeid">${planeObj}</p>
 </c:if>
 
+<div id="status">
+    <input id="inAir" type="button" value="In the air" />
+    <input id="landed" type="button" value="Landed" />
+    <input id="atTerminal" type="button" value="At terminal" />
+</div>
+
 <c:forEach items="${serviceCatalogue}" var="service">
 	<div id="${service.key}">
 		<input id="${service.key}" type="button" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
