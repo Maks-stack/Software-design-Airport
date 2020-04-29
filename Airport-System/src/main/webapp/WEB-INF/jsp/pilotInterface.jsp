@@ -27,6 +27,12 @@
     <input id="requestTrackService" type="button" style="background-color:#7FDD4C" value="TRACK" />
 </div>
 
+<br>
+
+<div id="requestLanding">
+    <input id="requestLanding" type="button" value="Request Landing Track"  />
+</div>
+
 
 <script>
     connectServicesWebsocket();
@@ -84,6 +90,22 @@
                     console.log(data);
                 },
             });
+        };
+           document.getElementById("requestLanding").onclick = function () {
+        let planeId = document.getElementById('planeid').innerHTML;
+        let data = {"planeId": planeId};
+         $.ajax({
+                            type : "POST",
+                            data: JSON.stringify(data),
+                            contentType : 'application/json; charset=utf-8',
+                            url : "http://localhost:8080/plane/requestlanding",
+                            success: function(data){
+                                console.log(data);
+                              },
+                            error: function(data){
+                                console.log(data);
+                            },
+                });
         };
 
 

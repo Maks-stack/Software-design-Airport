@@ -85,6 +85,25 @@ public class PlaneController {
             System.out.println(e);
         }
     }
+    
+    @RequestMapping(value = "/plane/requestlanding", method = RequestMethod.POST)
+    public void requestTrack(@RequestBody String req){
+    	Object obj= JSONValue.parse(req);
+        JSONObject jsonObject = (JSONObject) obj;
+        try{
+            String planeId = jsonObject.get("planeId").toString();
+            Plane plane = planeManager.getPlaneById(planeId);
+            State state = plane.getState();
+            
+            if(state.getStateName() == "InAir"){
+            trackManager.registerNewRequest(plane);
+            }
+            
+        } catch(Exception e){
+            System.out.println(e);
+        }
+
+    }
 
     public void notifyServiceSubscribers() {
         this.template.convertAndSend("/planes/updates", "Test");
