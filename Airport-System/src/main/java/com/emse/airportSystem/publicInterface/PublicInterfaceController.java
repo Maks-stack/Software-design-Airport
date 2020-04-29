@@ -6,6 +6,7 @@ import com.emse.airportSystem.serviceManager.model.PlaneService;
 import com.emse.airportSystem.serviceManager.model.ServiceRequest;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -16,11 +17,14 @@ import java.util.List;
 import java.util.Map;
 
 @Controller
-public class PublicController {
+public class PublicInterfaceController {
     @Autowired
     private PlaneManager planeManager;
 
-    public PublicController() {}
+    @Autowired
+    private SimpMessagingTemplate template;
+
+    public PublicInterfaceController() {}
 
     @RequestMapping("/publicinterface")
     public String index(Model model) {
@@ -30,5 +34,18 @@ public class PublicController {
 
         return "planeManager";
     }
+
+    public void notifyServiceSubscribers() {
+        this.template.convertAndSend("/planes/updates", "Test");
+    }
+
+    public void notifyServiceSubscribers(Object obj) {
+        List objList = (List) obj;
+        Plane plane = (Plane) objList.get(0);
+        PlaneService service = (PlaneService) objList.get(1);
+        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
+    }
+
+
 
 }
