@@ -51,7 +51,7 @@ public class TrackManager implements Observable {
 
     public List<Track> getFreeTracks() {
         System.out.println("Searching for all available tracks... ");
-        List<Track> availableTracks = new ArrayList<Track>();;
+        List<Track> availableTracks = new ArrayList<Track>();
         if(tracks != null) {
             for (Track tmp : tracks) {
                 if (tmp.getState().isAvailable()) {
@@ -83,7 +83,7 @@ public class TrackManager implements Observable {
     }
 
     public void unassignTrack(int id) {
-        Track assignedTrack = tracks.stream().parallel()
+        Track assignedTrack = tracks.stream()
             .filter(track -> track.getTrackID() == id)
             .findAny()
             .orElseThrow(RuntimeException::new);
@@ -104,7 +104,7 @@ public class TrackManager implements Observable {
     }
 
     public void registerNewRequest(Plane plane){
-        newTrackRequests.add(new TrackRequest(plane));
+        newTrackRequests.add(new TrackRequest(plane, getFreeTracks()));
         notifyRequestObservers(newTrackRequests);
     }
 

@@ -21,7 +21,6 @@
        <table class="greyGridTable" style="width: 300px" id="requestsTable">
            <tr>
                <th>Plane ID</th>
-               <th>Track requested</th>
                <th>Available tracks</th>
                <th></th>
            </tr>
@@ -47,7 +46,6 @@
             <table id="TracksTable" class="greyGridTable" style="width: 300px">
                 <tr>
                     <th>Track ID</th>
-                    <th>Track type</th>
                     <th>Track available</th>
                     <th>Assigned Plane</th>
                     <th></th>
@@ -95,12 +93,9 @@
     function updateTrackStatus(update){
         $('tr').each(function(){
             if($(this).attr('id') == update.trackID){
-                $(this).html("<td>"+update.trackID+"</td><td>"+update.state.state+"</td>");
-            }
-        })
-        $('tr').each(function(){
-            if($(this).attr('id') == update.trackID){
-                $(this).html("<td>"+update.trackID+"</td><td>"+update.state.state+"</td>");
+                var planeId = update.assignedPlane? update.assignedPlane.planeId : "";
+                var isDisabled = planeId? "" : "disabled";
+                $(this).html("<td>"+update.trackID+"</td><td>"+update.state.state+"</td><td>"+ planeId +"</td><td><input onclick='unassignTrack(this)' " + isDisabled + " type='button' value='Unassign track' /></td>");
             }
         })
     }
@@ -108,30 +103,42 @@
     function updateRequestList(update){
         var ids = [];
         var requestTableIds = [];
-        for (request in update) {
-            ids.push(request.plane.planeId);
-        }
-        $('#requestsTable > tbody').children().each(function(index,element) {
+        update.forEach(function (request) {
+                    ids.push(request.plane.planeId);
+                })
+        $('#requestsTable > tbody').children().slice(1).each(function(index,element) {
             requestTableIds.push($(element).attr("id"));
 
             if(!ids.includes($(element).attr("id"))) {
                 $(element).remove();
             }
         })
-        for (request in update) {
+        update.forEach(function (request) {
             if(!requestTableIds.includes(request.plane.planeId)) {
                 $('#requestsTable').append(addRequestRow(request));
             }
-        }
+        })
     }
 
     var addRequestRow = function(request){
     	var output =
     	'<tr id="' + request.plane.planeId + '">' +
-    	'<td>' + update.planeId +' </td>' +
-        '<td></td> ' +
+    	'<td>'+ request.plane.planeId +'</td>' +
+    	'<td><select>'+ addOptions(request.availableTracks) + '</select></td>' +
         '<td><input onclick="assignTrack(this);" type="button" value="Assign track" />' +
         '</tr>'
+
+        return output;
+    }
+
+    var addOptions = function(availableTracks){
+        var options = "";
+
+    	for (num in availableTracks) {
+    	    options += "<option>" + availableTracks[num].trackID + "</option>"
+    	}
+
+    	return options;
     }
 
     function assignTrack(param){
@@ -142,7 +149,7 @@
                   contentType : 'application/json; charset=utf-8',
                   url : "http://localhost:8080/assigntrack/" + trackId + "?plane_id=" + planeId,
                   statusCode: {
-                      409: function(xhr) {
+                      500: function(xhr) {
                         console.log(xhr);
                         alert ("Track not available");
                       }
@@ -158,9 +165,9 @@
                     contentType : 'application/json; charset=utf-8',
                     url : "http://localhost:8080/unassigntrack/" + trackId,
                     statusCode: {
-                        409: function(xhr) {
+                        500: function(xhr) {
                           console.log(xhr);
-                          alert ("Track not available");
+                          alert ("Track not assigned");
                         }
                       }
                 });
