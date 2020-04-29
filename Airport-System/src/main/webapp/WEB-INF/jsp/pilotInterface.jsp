@@ -12,9 +12,9 @@
 </c:if>
 
 <div id="status">
-    <input id="inAir" type="button" value="In the air" />
-    <input id="landed" type="button" value="Landed" />
-    <input id="atTerminal" type="button" value="At terminal" />
+    <input id="inAir" type="button" value="In the air" onClick="changeState();"/>
+    <input id="landed" type="button" value="Landed" onClick="changeState();" />
+    <input id="atTerminal" type="button" value="At terminal" onClick="changeState();"/>
 </div>
 
 <c:forEach items="${serviceCatalogue}" var="service">
@@ -70,20 +70,20 @@
         
         
         document.getElementById("requestTrackService").onclick = function () {
-        let planeId = document.getElementById('planeid').innerHTML;
-        let data = {"planeId": planeId, "service":"Bus"};
-         $.ajax({
-                            type : "POST",
-                            data: JSON.stringify(data),
-                            contentType : 'application/json; charset=utf-8',
-                            url : "http://localhost:8080/plane/requesttrack",
-                            success: function(data){
-                                console.log(data);
-                              },
-                            error: function(data){
-                                console.log(data);
-                            },
-                });
+	        let planeId = document.getElementById('planeid').innerHTML;
+	        let data = {"planeId": planeId, "service":"Bus"};
+	        $.ajax({
+                type : "POST",
+                data: JSON.stringify(data),
+                contentType : 'application/json; charset=utf-8',
+                url : "http://localhost:8080/plane/requesttrack",
+                success: function(data){
+                    console.log(data);
+                  },
+                error: function(data){
+                    console.log(data);
+                },
+            });
         };
 
 
@@ -109,6 +109,23 @@
 		 
         }
         
+    }
+    
+    function changeState () {
+    	let planeId = document.getElementById('planeid').innerHTML;
+        let data = {"planeId": planeId};
+    	$.ajax({
+            type : "POST",
+            data: JSON.stringify(data),
+            contentType : 'application/json; charset=utf-8',
+            url : "http://localhost:8080/plane/changeState",
+            success: function(data){
+                console.log(data);
+              },
+            error: function(data){
+                console.log(data);
+            },
+        });
     }
 
 </script>

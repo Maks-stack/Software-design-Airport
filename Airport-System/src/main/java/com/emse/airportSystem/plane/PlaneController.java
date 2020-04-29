@@ -96,6 +96,20 @@ public class PlaneController {
         PlaneService service = (PlaneService) objList.get(1);
         this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
     }
+    
+    @RequestMapping("/plane/changeState")
+    public void changeState(@RequestBody String req){
+    	 Object obj= JSONValue.parse(req);
+         JSONObject jsonObject = (JSONObject) obj;
+         try{
+             String planeId = jsonObject.get("planeId").toString();
+             Plane plane = planeManager.getPlaneById(planeId);
+             planeManager.proceedToNextState(plane);
+
+         } catch(Exception e){
+             System.out.println(e);
+         }
+    }
 
 
 }
