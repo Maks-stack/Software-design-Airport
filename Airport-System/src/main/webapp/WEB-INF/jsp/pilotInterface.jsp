@@ -5,35 +5,55 @@
 <script src="/webjars/jquery/3.1.1-1/jquery.min.js"></script>
 <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
-<c:if test="${not empty planeObj}">
-    <p id="planeid">${planeObj}</p>
-</c:if>
 
-<div id="status">
+<div class="container">
+
+<h4>Pilot view</h4>
+<hr>
+
+<div id="PlaneInformation" class = "widget">
+
+	<c:if test="${not empty planeObj}">
+	    <p id="planeid">${planeObj}</p>
+	</c:if>
+	
+</div>
+
+<hr>
+
+<div id="status" class = "widget">
     <input id="inAir" type="button" value="In the air" onClick="changeState();"/>
     <input id="landed" type="button" value="Landed" onClick="changeState();" />
     <input id="atTerminal" type="button" value="At terminal" onClick="changeState();"/>
 </div>
 
+<hr>
+
+<div id="CatalogOfServices" class = "widget">
 <c:forEach items="${serviceCatalogue}" var="service">
 	<div id="${service.key}">
 		<input id="${service.key}" type="button" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
 	</div>
 </c:forEach>
+</div>
 
-<div id="requestTrackService">
+<hr>
+
+<div id="requestTrackService" class = "widget">
     <input id="requestTrackService" type="button" style="background-color:#7FDD4C" value="TRACK" />
 </div>
 
 <br>
+<hr>
 
-<div id="requestLanding">
+<div id="requestLanding" class = "widget">
     <input id="requestLanding" type="button" value="Request Landing Track"  />
 </div>
 
-
+</div>
 <script>
     connectServicesWebsocket();
 

@@ -1,12 +1,11 @@
 package com.emse.airportSystem.planeManager.states;
 
-public class AtTerminal implements State {
-
+public class AwaitingGateAssigment implements State {
 	public State proceedToNextState() {
-			return new AwaitingTrackForTakeOff();
+		return new TakingOff();
 	}
 
-	public String getStateName() {
+	public String getStateName(){
 		return this.getClass().getName();
 	}
 

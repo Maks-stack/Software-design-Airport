@@ -4,6 +4,7 @@ import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
 import com.emse.airportSystem.planeManager.states.InAir;
+import com.emse.airportSystem.planeManager.states.State;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 import com.emse.airportSystem.trackManager.service.TrackManager;
@@ -87,7 +88,7 @@ public class PlaneController {
     }
     
     @RequestMapping(value = "/plane/requestlanding", method = RequestMethod.POST)
-    public void requestTrack(@RequestBody String req){
+    public void requestLand(@RequestBody String req){
     	Object obj= JSONValue.parse(req);
         JSONObject jsonObject = (JSONObject) obj;
         try{
