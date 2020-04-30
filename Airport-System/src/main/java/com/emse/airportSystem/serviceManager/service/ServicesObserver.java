@@ -3,7 +3,7 @@ package com.emse.airportSystem.serviceManager.service;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.serviceManager.controller.ServiceController;
-import com.fasterxml.jackson.core.JsonProcessingException;
+//import com.fasterxml.jackson.core.JsonProcessingException;
 
 import org.springframework.stereotype.Service;
 

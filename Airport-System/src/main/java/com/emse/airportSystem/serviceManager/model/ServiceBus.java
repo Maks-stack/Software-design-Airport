@@ -10,10 +10,11 @@ public class ServiceBus extends PlaneService {
         this.available = Boolean.TRUE;
         this.serviceManager = serviceManager;
         this.name = name;
-        this.id = id;        this.cancelled = Boolean.FALSE;
+        this.id = id;
         this.cancelled = Boolean.FALSE;
-	this.timeStarted = LocalDateTime.MAX;
-	this.duration = 30000;
+        this.cancelled = Boolean.FALSE;
+        this.timeStarted = LocalDateTime.MAX;
+        this.duration = 30000;
         
     }
 

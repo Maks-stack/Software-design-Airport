@@ -6,6 +6,8 @@
 <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 </head>
+
+
 <body>
 <c:if test="${not empty planeObj}">
     <p id="planeid">${planeObj}</p>
