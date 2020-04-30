@@ -7,6 +7,6 @@ public class Landed implements State {
 	}
 
 	public String getStateName(){
-		return this.getClass().getName();
+		return this.getClass().getSimpleName();
 	}
 }

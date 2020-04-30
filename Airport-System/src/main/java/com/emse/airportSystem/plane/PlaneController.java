@@ -53,8 +53,8 @@ public class PlaneController {
         planeManager.addPlane("A320", new InAir(), planeId);
         Map<String,String> serviceCatalog = serviceManager.getServiceCatalog();
         Plane p = planeManager.getPlaneById(planeId);
-        model.addAttribute("state", p.getState());
-        model.addAttribute("planeObj", planeId);
+        model.addAttribute("planeState", p.getState().getStateName());
+        model.addAttribute("planeId", planeId);
         model.addAttribute("serviceCatalogue", serviceCatalog);
         return "pilotInterface";
     }

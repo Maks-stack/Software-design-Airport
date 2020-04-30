@@ -11,20 +11,32 @@
 
 <div class="container">
 
-<h4>Pilot view</h4>
+<h1 align="center">Pilot view</h1>
 <hr>
 
 <div id="PlaneInformation" class = "widget">
-
-	<c:if test="${not empty planeObj}">
-	    <p id="planeid">${planeObj}</p>
+<h4>Plane Information</h4>
+	<c:if test="${not empty planeId}">
+	    <p id="planeid"><b>PlaneID:</b> ${planeId}</p>
+		<p id="planeState"><b>Current state of the plane:</b> ${planeState}</p>
+	</c:if>
+	<c:if test="${empty planeId}">
+		<p> ERROR. Unable to get information about the plane.</p>
 	</c:if>
 	
 </div>
 
 <hr>
+<div id="mock" class = "widget">
+<h4>&#128027;Mock&#128027;</h4>
+
+</div>
+
+
+<hr>
 
 <div id="status" class = "widget">
+<h4>Status</h4>
     <input id="inAir" type="button" value="In the air" onClick="changeState();"/>
     <input id="landed" type="button" value="Landed" onClick="changeState();" />
     <input id="atTerminal" type="button" value="At terminal" onClick="changeState();"/>
@@ -33,6 +45,7 @@
 <hr>
 
 <div id="CatalogOfServices" class = "widget">
+<h4>Catalog of services</h4>
 <c:forEach items="${serviceCatalogue}" var="service">
 	<div id="${service.key}">
 		<input id="${service.key}" type="button" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
@@ -62,8 +75,8 @@
        stompClient = Stomp.over(socket);
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
-          stompClient.subscribe('/planes/${planeObj}/updates', function (update) {
-             console.log("HERE5");
+          stompClient.subscribe('/planes/${planeId}/updates', function (update) {
+             
              updateObject = JSON.parse(update.body);
              updateServiceStatus(updateObject);
           });

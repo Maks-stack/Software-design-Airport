@@ -7,6 +7,6 @@ public class InAir implements State {
 	}
 
 	public String getStateName(){
-		return this.getClass().getName();
+		return this.getClass().getSimpleName();
 	}
 }

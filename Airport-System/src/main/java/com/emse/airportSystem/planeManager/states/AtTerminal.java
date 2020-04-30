@@ -7,7 +7,7 @@ public class AtTerminal implements State {
 	}
 
 	public String getStateName() {
-		return this.getClass().getName();
+		return this.getClass().getSimpleName();
 	}
 
 }
