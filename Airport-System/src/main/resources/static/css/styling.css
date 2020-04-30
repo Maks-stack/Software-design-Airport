@@ -1,0 +1,23 @@
+.grid-container {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr 1fr;
+  grid-template-rows: 0.4fr 1.6fr 1fr;
+  gap: 1px 1px;
+  grid-template-areas: ". . . ." "SidebarLeft MainPanel MainPanel SidebarRight" ". MainPanel MainPanel .";
+}
+
+.MainPanel { 
+	grid-area: MainPanel; 
+	height: 100vh;
+	display: flex;
+    flex-direction: column;
+ }
+ 
+ .MainPanel > button {
+ 	margin: 2vh;
+ 
+ }
+
+.SidebarLeft { grid-area: SidebarLeft; }
+
+.SidebarRight { grid-area: SidebarRight; }
