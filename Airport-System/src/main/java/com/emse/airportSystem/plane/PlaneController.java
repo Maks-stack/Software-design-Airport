@@ -3,10 +3,11 @@ package com.emse.airportSystem.plane;
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
-import com.emse.airportSystem.planeManager.states.InAir;
-import com.emse.airportSystem.planeManager.states.State;
+import com.emse.airportSystem.planeManager.states.*;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
+import com.emse.airportSystem.serviceManager.model.ServiceRequest;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
+import com.emse.airportSystem.serviceManager.service.ServiceManager.*;
 import com.emse.airportSystem.trackManager.service.TrackManager;
 
 import net.minidev.json.JSONObject;
@@ -104,6 +105,32 @@ public class PlaneController {
             System.out.println(e);
         }
 
+    }
+    @RequestMapping(value = "/plane/requestTakeOff", method = RequestMethod.POST)
+    public void requestTakeOffTrack(@RequestBody String req){
+    	Object obj= JSONValue.parse(req);
+        JSONObject jsonObject = (JSONObject) obj;
+        try{
+            String planeId = jsonObject.get("planeId").toString();
+            Plane plane = planeManager.getPlaneById(planeId);
+            State state = plane.getState();
+            boolean servicefound = false;
+            List<ServiceRequest> servicesInProgress = serviceManager.getServiceRequestsInProgress();
+            for(ServiceRequest service: servicesInProgress)
+            {
+            	if(service.getPlane().getPlaneId() == planeId)
+            	{
+            		servicefound = true;
+            		break;
+            	}
+            		
+            }
+            if(state.getStateName() == "AtTerminal" && !servicefound){
+            trackManager.registerNewRequest(plane);
+            }   
+        } catch(Exception e){
+            System.out.println(e);
+        }
     }
 
     public void notifyServiceSubscribers() {

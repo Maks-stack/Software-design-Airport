@@ -73,7 +73,12 @@
 <div id="requestLanding" class = "widget">
     <input id="requestLanding" type="button" value="Request Landing Track"  />
 </div>
+<br>
 
+<div id="requestTakeOff">
+    <input id="requestTakeOff" type="button" value="Request Take Off Track"  />
+</div>
+<br>
 </div>
 <script>
     connectServicesWebsocket();
@@ -148,7 +153,23 @@
                             },
                 });
         };
-
+          document.getElementById("requestTakeOff").onclick = function () {
+        let planeId = document.getElementById('planeid').innerHTML;
+        let data = {"planeId": planeId};
+         $.ajax({
+                            type : "POST",
+                            data: JSON.stringify(data),
+                            contentType : 'application/json; charset=utf-8',
+                            url : "http://localhost:8080/plane/requestTakeOff",
+                            success: function(data){
+                                console.log(data);
+                              },
+                            error: function(data){
+                                console.log(data);
+                            },
+                });
+        };
+        
 
 	function updateServiceStatus(updateObject){
         let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
