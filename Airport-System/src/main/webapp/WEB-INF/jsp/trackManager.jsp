@@ -101,22 +101,11 @@
     }
 
     function updateRequestList(update){
-        var ids = [];
-        var requestTableIds = [];
-        update.forEach(function (request) {
-                    ids.push(request.plane.planeId);
-                })
         $('#requestsTable > tbody').children().slice(1).each(function(index,element) {
-            requestTableIds.push($(element).attr("id"));
-
-            if(!ids.includes($(element).attr("id"))) {
-                $(element).remove();
-            }
+            $(element).remove();
         })
         update.forEach(function (request) {
-            if(!requestTableIds.includes(request.plane.planeId)) {
-                $('#requestsTable').append(addRequestRow(request));
-            }
+            $('#requestsTable').append(addRequestRow(request));
         })
     }
 

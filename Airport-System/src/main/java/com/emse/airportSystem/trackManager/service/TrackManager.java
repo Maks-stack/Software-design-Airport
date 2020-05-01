@@ -78,6 +78,9 @@ public class TrackManager implements Observable {
         freeTrack.setAssignedPlane(planeManager.findPlane(planeId));
         deleteTrackRequest(planeId);
         notifyObservers(freeTrack);
+        newTrackRequests.stream()
+            .map(TrackRequest::getAvailableTracks)
+            .forEach(list -> list.remove(freeTrack));
         notifyRequestObservers(newTrackRequests);
         System.out.println("Assigned track: " + freeTrack.toString());
     }
@@ -90,6 +93,10 @@ public class TrackManager implements Observable {
         assignedTrack.setState(assignedTrack.getState().proceedToNextStep());
         assignedTrack.setAssignedPlane(null);
         notifyObservers(assignedTrack);
+        newTrackRequests.stream()
+            .map(TrackRequest::getAvailableTracks)
+            .forEach(list -> list.add(assignedTrack));
+        notifyRequestObservers(newTrackRequests);
         System.out.println("Assigned track: " + assignedTrack.toString());
     }
 
