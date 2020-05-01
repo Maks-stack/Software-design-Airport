@@ -85,7 +85,7 @@
 
 
     function processService(serviceKey, serviceValue) {
-        let planeId = document.getElementById('planeid').innerHTML;
+        let planeId = "${planeId}";
         let data = {"planeId": planeId, "service":serviceKey};
         console.log(serviceValue);
          $.ajax({
@@ -168,6 +168,7 @@
     
     function changeState () {
     	let planeId = document.getElementById('planeid').innerHTML;
+    	let planeStatus = ${planeState};
         let data = {"planeId": planeId};
     	$.ajax({
             type : "POST",
@@ -181,6 +182,11 @@
                 console.log(data);
             },
         });
+        
+        let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState();"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState();" />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState();"/>';
     }
 
 </script>
