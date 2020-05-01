@@ -4,17 +4,14 @@ import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.planeManager.service.IPlaneManager;
-import com.emse.airportSystem.serviceManager.model.ServiceGate;
-import com.emse.airportSystem.serviceManager.model.ServiceRefuel;
-import com.emse.airportSystem.serviceManager.model.ServiceRequest;
-import com.emse.airportSystem.trackManager.model.*;
-import com.emse.airportSystem.trackManager.states.Assigned;
+import com.emse.airportSystem.trackManager.model.Track;
+import com.emse.airportSystem.trackManager.model.TrackRequest;
 import com.emse.airportSystem.trackManager.states.Available;
-import com.emse.airportSystem.trackManager.states.TrackState;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -93,9 +90,12 @@ public class TrackManager implements Observable {
         assignedTrack.setState(assignedTrack.getState().proceedToNextStep());
         assignedTrack.setAssignedPlane(null);
         notifyObservers(assignedTrack);
+
         newTrackRequests.stream()
             .map(TrackRequest::getAvailableTracks)
-            .forEach(list -> list.add(assignedTrack));
+            .peek(list -> list.add(assignedTrack))
+            .forEach(list -> list.sort(Comparator.comparingInt(Track::getTrackID)));
+
         notifyRequestObservers(newTrackRequests);
         System.out.println("Assigned track: " + assignedTrack.toString());
     }

@@ -107,6 +107,7 @@
         update.forEach(function (request) {
             $('#requestsTable').append(addRequestRow(request));
         })
+
     }
 
     var addRequestRow = function(request){
