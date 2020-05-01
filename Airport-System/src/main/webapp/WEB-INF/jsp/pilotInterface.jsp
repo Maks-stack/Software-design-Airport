@@ -13,12 +13,12 @@
 
 <h1 align="center">Pilot view</h1>
 <hr>
-
+<div id="planeState"> ${planeState} </div>
 <div id="PlaneInformation" class = "widget">
 <h4>Plane Information</h4>
 	<c:if test="${not empty planeId}">
 	    <p id="planeid"><b>PlaneID:</b> ${planeId}</p>
-		<p id="planeState"><b>Current state of the plane:</b> ${planeState}</p>
+		<p id="planeStateVisible"><b>Current state of the plane:</b> ${planeState}</p>
 	</c:if>
 	<c:if test="${empty planeId}">
 		<p> ERROR. Unable to get information about the plane.</p>
@@ -37,9 +37,9 @@
 
 <div id="status" class = "widget">
 <h4>Status</h4>
-    <input id="inAir" type="button" value="In the air" onClick="changeState();"/>
-    <input id="landed" type="button" value="Landed" onClick="changeState();" />
-    <input id="atTerminal" type="button" value="At terminal" onClick="changeState();"/>
+    <input id="inAir" type="button" value="In the air" onClick="changeState('InAir');" disabled="disabled"/>
+    <input id="landed" type="button" value="Landed" onClick="changeState('Landed');" />
+    <input id="atTerminal" type="button" value="At terminal" onClick="changeState('AtTerminal');" disabled="disabled"/>
 </div>
 
 <hr>
@@ -166,9 +166,8 @@
         
     }
     
-    function changeState () {
-    	let planeId = document.getElementById('planeid').innerHTML;
-    	let planeStatus = ${planeState};
+    function changeState (state) {
+    	let planeId = "${planeId}";
         let data = {"planeId": planeId};
     	$.ajax({
             type : "POST",
@@ -182,11 +181,43 @@
                 console.log(data);
             },
         });
+        console.log("STATE :"+state);
+        if(state === "InAir") {
+        	console.log("LA 1");
+        	let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+		    document.getElementById("status").innerHTML = html;
+		    
+		    let html2 = 'Landed';
+		    document.getElementById("planeState").innerHTML = html2;
+		    
+        }
+        if(state === "Landed") {
+        	console.log("LA 2");
+        	let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" />';
+		    document.getElementById("status").innerHTML = html;
+		    
+		    let html2 = 'AtTerminal';
+		    document.getElementById("planeState").innerHTML = html2;
+        }
+        if(state === "AtTerminal") {
+        	console.log("LA 3");
+        	let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+		    document.getElementById("status").innerHTML = html;
+		    
+		    let html2 = 'InAir';
+		    document.getElementById("planeState").innerHTML = html2;
+        }
         
-        let html = '<h4>Status</h4>'+
-				    '<input id="inAir" type="button" value="In the air" onClick="changeState();"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState();" />'+
-				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState();"/>';
+        
     }
 
 </script>
