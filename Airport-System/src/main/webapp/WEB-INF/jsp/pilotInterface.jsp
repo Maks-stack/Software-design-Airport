@@ -30,6 +30,14 @@
 <div id="mock" class = "widget">
 <h4>&#128027;Mock&#128027;</h4>
 
+	<p>
+	<button id="mockStatusButton" class="waves-effect waves-light btn-small">Fake status</button>
+	<select id="mockStatusSelector" class = "browser-default">
+		<option>InAir</option>
+		<option>AtTerminal</option>
+	</select>
+	</p>
+
 </div>
 
 
@@ -218,6 +226,27 @@
         }
         
         
+    }
+    
+    document.getElementById("mockStatusButton").onclick = function () {
+    	VisualizationBased_Status(document.getElementById('mockStatusSelector').value);
+    };
+    
+    function VisualizationBased_Status(status){
+    	
+    	switch(status) {
+    	  case "InAir":
+    		$("#status").show();
+    		$("#CatalogOfServices").hide();
+      	    break;
+      	  case "AtTerminal":
+      		$("#status").hide();
+      		$("#CatalogOfServices").show();
+        	break;
+    	  default:
+    	  	console.log(status);
+    	} 
+
     }
 
 </script>
