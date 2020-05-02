@@ -176,6 +176,7 @@
                                 console.log(data);
                             },
                 });
+            changeState('');
         };
         
 
