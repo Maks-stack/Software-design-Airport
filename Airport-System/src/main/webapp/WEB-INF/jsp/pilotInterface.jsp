@@ -91,7 +91,13 @@
           stompClient.subscribe('/planes/${planeId}/updates', function (update) {
              
              updateObject = JSON.parse(update.body);
-             updateServiceStatus(updateObject);
+             console.log("TEST:"+updateObject[1])
+             if(updateObject[1]) {
+             	updateServiceStatus(updateObject);
+             } else {
+             	changeValueState(updateObject);
+             }
+             
           });
        });
     }
@@ -122,7 +128,7 @@
         
         
         document.getElementById("requestTrackService").onclick = function () {
-	        let planeId = document.getElementById('planeid').innerHTML;
+	        let planeId = "${planeId}";
 	        let data = {"planeId": planeId, "service":"Bus"};
 	        $.ajax({
                 type : "POST",
@@ -140,7 +146,7 @@
         };
         
         document.getElementById("requestLanding").onclick = function () {
-        let planeId = document.getElementById('planeid').innerHTML;
+        let planeId = "${planeId}";
         let data = {"planeId": planeId};
          $.ajax({
                             type : "POST",
@@ -156,7 +162,7 @@
                 });
         };
           document.getElementById("requestTakeOff").onclick = function () {
-        let planeId = document.getElementById('planeid').innerHTML;
+        let planeId = "${planeId}";
         let data = {"planeId": planeId};
          $.ajax({
                             type : "POST",
@@ -222,7 +228,7 @@
 		    document.getElementById("status").innerHTML = html;
 		    
 		    let html2 = 'Landed';
-		    document.getElementById("planeState").innerHTML = html2;
+		    
 		    
         }
         if(state === "Landed") {
@@ -234,7 +240,7 @@
 		    document.getElementById("status").innerHTML = html;
 		    
 		    let html2 = 'AtTerminal';
-		    document.getElementById("planeState").innerHTML = html2;
+		    
         }
         if(state === "AtTerminal") {
         	console.log("LA 3");
@@ -245,7 +251,7 @@
 		    document.getElementById("status").innerHTML = html;
 		    
 		    let html2 = 'InAir';
-		    document.getElementById("planeState").innerHTML = html2;
+		    
         }
         
         
@@ -270,6 +276,12 @@
     	  	console.log(status);
     	} 
 
+    }
+    
+    function changeValueState(updateObject) {
+    	let plane = updateObject[0]
+    	let state = updateObject[2]
+    	document.getElementById("planeState").innerHTML = state;
     }
 
 </script>
