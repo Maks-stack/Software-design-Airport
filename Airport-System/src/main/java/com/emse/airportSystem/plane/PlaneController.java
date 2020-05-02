@@ -68,7 +68,9 @@ public class PlaneController {
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
             serviceManager.registerNewRequest(plane, jsonObject.get("service").toString());
-
+            if(jsonObject.get("service").toString().startsWith("gate")) {
+            	plane.getState().proceedToNextState();
+            }
         } catch(Exception e){
             System.out.println(e);
         }
@@ -82,7 +84,7 @@ public class PlaneController {
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
             trackManager.registerNewRequest(plane);
-
+            plane.getState().proceedToNextState();
         } catch(Exception e){
             System.out.println(e);
         }

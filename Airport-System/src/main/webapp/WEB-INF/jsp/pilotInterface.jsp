@@ -136,8 +136,10 @@
                     console.log(data);
                 },
             });
+            changeState('AwaitingTrack');
         };
-           document.getElementById("requestLanding").onclick = function () {
+        
+        document.getElementById("requestLanding").onclick = function () {
         let planeId = document.getElementById('planeid').innerHTML;
         let data = {"planeId": planeId};
          $.ajax({
