@@ -8,10 +8,29 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
 <body>
-
+<style>
+input {
+   border: rigde;
+	  
+	  padding: 12px 22px;
+	  text-align: center;
+	  text-decoration: none;
+	  display: inline-block;
+	  font-size: 12px;
+}
+input:hover
+{
+        box-shadow:
+                1px 1px #ffffff,
+                2px 2px #ffffff,
+                3px 3px #ffffff;
+        -webkit-transform: translateX(-3px);
+        transform: translateX(-3px);    
+}
+</style>
 <div class="container">
 
-<h1 align="center">Pilot view&#128027;</h1>
+<h1 align="center">Pilot view</h1>
 <hr>
 <div id="planeState"> ${planeState} </div>
 <div id="PlaneInformation" class = "widget">
@@ -24,69 +43,62 @@
 		<p> ERROR. Unable to get information about the plane.</p>
 	</c:if>
 	
-</div> <!-- div plane info -->
-
-<hr>
-
-<div id="mock" class = "widget">
-<h4>Plane status</h4>
-	<p>
-	<div class="row">
-        <div class="col s6">
-	        <select id="mockStatusSelector" class = "browser-default">
-		    <option>InAir</option>
-		    <option>Landed</option>
-		    <option>AtTerminal</option>
-	    </select>
-	    </div>
-	    <div class="col s6">
-	        <button id="mockStatusButton" class="waves-effect waves-light btn-small">Set plane status</button>
-	    </div>
-	</p>
-    </div>
-<br>
-<hr>
-</div> <!-- div plane mock -->
-
-
-<div id="requestTrack" class = "widget">
-<h4>Request track</h4>
-    <div id="requestLanding" class = "widget">
-        <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Landing Track"  />
-    </div>
-
-    <div id="requestTakeOff">
-        <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Take Off Track"  />
-    </div>
-    <br>
-    <hr>
 </div>
 
+<hr>
+<div id="mock" class = "widget">
+<h4>&#128027;Mock&#128027;</h4>
+
+	<p>
+	<button id="mockStatusButton" class="waves-effect waves-light btn-small">Fake status</button>
+	<select id="mockStatusSelector" class = "browser-default">
+		<option>InAir</option>
+		<option>AtTerminal</option>
+	</select>
+	</p>
+
+</div>
+
+
+<hr>
 
 <div id="status" class = "widget">
 <h4>Status</h4>
     <input id="inAir" type="button" value="In the air" onClick="changeState('InAir');" disabled="disabled"/>
     <input id="landed" type="button" value="Landed" onClick="changeState('Landed');" />
     <input id="atTerminal" type="button" value="At terminal" onClick="changeState('AtTerminal');" disabled="disabled"/>
-<hr>
 </div>
 
+<hr>
 
 <div id="CatalogOfServices" class = "widget">
 <h4>Catalog of services</h4>
-<div class="row">
 <c:forEach items="${serviceCatalogue}" var="service">
-	<div id="${service.key}" class"col s4">
-		<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
+	<div id="${service.key}">
+		<input id="${service.key}" type="button" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
 	</div>
 </c:forEach>
 </div>
+
 <hr>
+
+<div id="requestTrackService" class = "widget">
+    <input id="requestTrackService" type="button" style="background-color:#7FDD4C" value="TRACK" />
 </div>
 
-</div> <!-- div container -->
+<br>
+<hr>
 
+<div id="requestLanding" class = "widget">
+    <input id="requestLanding" type="button" value="Request Landing Track"  />
+</div>
+<br>
 
+<div id="requestTakeOff">
+    <input id="requestTakeOff" type="button" value="Request Take Off Track"  />
+</div>
+<br>
+</div>
 <script>
     connectServicesWebsocket();
 
@@ -132,10 +144,11 @@
      				'</div>';
 		 document.getElementById(serviceKey).innerHTML = html;
         }
-
-        document.getElementById("requestTrack").onclick = function () {
+        
+        
+        document.getElementById("requestTrackService").onclick = function () {
 	        let planeId = "${planeId}";
-	        let data = {"planeId": planeId, "service":"Bus"}; //Bus?
+	        let data = {"planeId": planeId, "service":"Bus"};
 	        $.ajax({
                 type : "POST",
                 data: JSON.stringify(data),
@@ -167,7 +180,7 @@
                             },
                 });
         };
-        document.getElementById("requestTakeOff").onclick = function () {
+          document.getElementById("requestTakeOff").onclick = function () {
         let planeId = "${planeId}";
         let data = {"planeId": planeId};
          $.ajax({
@@ -209,7 +222,7 @@
         }
         
     }
-
+    
     function changeState (state) {
     	let planeId = "${planeId}";
         let data = {"planeId": planeId};
@@ -263,7 +276,7 @@
         
         
     }
-
+    
     document.getElementById("mockStatusButton").onclick = function () {
     	VisualizationBased_Status(document.getElementById('mockStatusSelector').value);
     };
@@ -272,21 +285,12 @@
     	
     	switch(status) {
     	  case "InAir":
-    		$("#status").hide();
+    		$("#status").show();
     		$("#CatalogOfServices").hide();
-    		$("#requestLanding").show();
-    		$("#requestTakeOff").hide();
       	    break;
-      	  case "Landed":
-            $("#status").hide();
-            $("#CatalogOfServices").show();
-            $("#requestTrack").hide();
-            break;
       	  case "AtTerminal":
       		$("#status").hide();
       		$("#CatalogOfServices").show();
-    		$("#requestLanding").hide();
-    		$("#requestTakeOff").show();
         	break;
     	  default:
     	  	console.log(status);
