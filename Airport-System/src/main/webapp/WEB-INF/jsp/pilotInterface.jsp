@@ -83,14 +83,29 @@ input:hover
 <hr>
 </div>
 
+<div id="CatalogOfGates" class = "widget" style="display:none;">
+<h4>Request gate</h4>
+<div class="row">
+<c:forEach items="${serviceCatalogue}" var="service">
+	<c:if test="${service.key eq 'gate'}">
+		<div id="${service.key}" class"col s4">
+			<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="REQUEST A GATE" onClick="processService('${service.key}','${service.value}');" />
+		</div>
+	</c:if>
+</c:forEach>
+</div>
+<hr>
+</div>
 
-<div id="CatalogOfServices" class = "widget">
+<div id="CatalogOfServices" class = "widget" style="display:none;">
 <h4>Catalog of services</h4>
 <div class="row">
 <c:forEach items="${serviceCatalogue}" var="service">
-	<div id="${service.key}" class"col s4">
-		<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
-	</div>
+	<c:if test="${service.key != 'gate'}">
+		<div id="${service.key}" class"col s4">
+			<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
+		</div>
+	</c:if>
 </c:forEach>
 </div>
 <hr>
@@ -240,6 +255,7 @@ input:hover
             },
         });
         console.log("STATE :"+state);
+        
         if(state === "InAir") {
         	console.log("LA 1");
         	let html = '<h4>Status</h4>'+
@@ -259,7 +275,7 @@ input:hover
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" />';
 		    document.getElementById("status").innerHTML = html;
-		    
+		    $("#CatalogOfGates").show();
 		    let html2 = 'AtTerminal';
 		    
         }
@@ -270,7 +286,7 @@ input:hover
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    document.getElementById("status").innerHTML = html;
-		    
+		    $("#CatalogOfServices").show();
 		    let html2 = 'InAir';
 		    
         }
@@ -294,11 +310,12 @@ input:hover
                 console.log(data);
             },
         });
+        console.log("Je change");
     	VisualizationBased_Status(document.getElementById('ChangeStatusButton').value);
     	
     };
     function VisualizationBased_Status(status){
-    	
+    	console.log("Dans Vizu:"+status);
     	switch(status) {
     	  case "InAir":
     		document.getElementById('ChangeStatusButton').value = "AwaitingTrackForLanding";
