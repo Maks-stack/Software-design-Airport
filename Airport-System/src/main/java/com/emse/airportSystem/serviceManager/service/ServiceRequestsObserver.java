@@ -27,6 +27,11 @@ public class ServiceRequestsObserver implements Observer {
     }
 
     @Override
+    public void updateRequest(Object obj) {
+
+    }
+
+    @Override
     public void setObservable(Observable serviceManager) {
         this.serviceManager = serviceManager;
     }

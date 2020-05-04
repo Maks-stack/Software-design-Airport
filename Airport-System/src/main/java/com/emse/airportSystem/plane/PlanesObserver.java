@@ -27,6 +27,11 @@ public class PlanesObserver implements Observer {
     }
 
     @Override
+    public void updateRequest(Object obj) {
+        
+    }
+
+    @Override
     public void setObservable(Observable planeManager) {
         this.planeManager = planeManager;
     }

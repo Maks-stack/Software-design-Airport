@@ -19,10 +19,7 @@ public class ServicesObserver implements Observer {
 
     @Override
     public void update() {
-    	
-    	
-    	
-    	
+
         this.serviceController.notifyServiceSubscribers();
     }
 

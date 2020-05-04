@@ -135,6 +135,11 @@ public class ServiceManager implements Observable{
         observers.forEach(observer -> observer.update(obj));
     }
 
+    @Override
+    public void notifyRequestObservers(Object obj) {
+
+    }
+
     public void notifyServiceRequestObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
     }

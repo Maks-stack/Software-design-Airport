@@ -16,7 +16,7 @@ import java.util.Arrays;
 import java.util.List;
 
 @Service
-public class PlaneManager implements Observable {
+public class PlaneManager implements Observable, IPlaneManager {
     private ArrayList<Plane> planes = new ArrayList<Plane>();
     List<Observer> observers = new ArrayList<Observer>();
 
@@ -79,11 +79,16 @@ public class PlaneManager implements Observable {
         observers.forEach(observer -> observer.update(obj));
     }
 
+    @Override
+    public void notifyRequestObservers(Object obj) {
+
+    }
+
     public Plane findPlane(String id) {
         return planes.stream()
             .filter(plane -> plane.getPlaneId().equals(id))
             .findFirst()
-            .orElseThrow(PlaneNotFoundException::new);
+            .orElseThrow(() -> new PlaneNotFoundException(id));
     }
 
     public Plane getRandomPlane() {
