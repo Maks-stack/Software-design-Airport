@@ -34,12 +34,11 @@ input:hover
 
 <h1 align="center">Pilot view&#128027;</h1>
 <hr>
-<div id="planeState"> ${planeState} </div>
 <div id="PlaneInformation" class = "widget">
 <h4>Plane Information</h4>
 	<c:if test="${not empty planeId}">
-	    <p id="planeid"><b>PlaneID:</b> ${planeId}</p>
-		<p id="planeStateVisible"><b>Current state of the plane:</b> ${planeState}</p>
+	    <p id="planeidVisible"><b>PlaneID:</b> <span id="planeid"> ${planeId}</span></p>
+		<p id="planeStateVisible"><b>Current state of the plane:</b> <span id="planeState"> ${planeState} </span> </p>
 	</c:if>
 	<c:if test="${empty planeId}">
 		<p> ERROR. Unable to get information about the plane.</p>
@@ -47,24 +46,16 @@ input:hover
 	
 </div> <!-- div plane info -->
 
+
+
 <hr>
 
 <div id="mock" class = "widget">
 <h4>Plane status</h4>
+	
 	<p>
-	<div class="row">
-        <div class="col s6">
-	        <select id="mockStatusSelector" class = "browser-default">
-		    <option>InAir</option>
-		    <option>Landed</option>
-		    <option>AtTerminal</option>
-	    </select>
-	    </div>
-	    <div class="col s6">
-	        <button id="mockStatusButton" class="waves-effect waves-light btn-small">Set plane status</button>
-	    </div>
+		<input id="ChangeStatusButton" type="button" class="waves-effect waves-light btn-large" value="AwaitingTrackForLanding" />
 	</p>
-    </div>
 <br>
 <hr>
 </div> <!-- div plane mock -->
@@ -109,6 +100,8 @@ input:hover
 
 
 <script>
+
+
     connectServicesWebsocket();
     function connectServicesWebsocket() {
        var socket = new SockJS('/planes-websocket');
@@ -128,6 +121,7 @@ input:hover
           });
        });
     }
+    
     function processService(serviceKey, serviceValue) {
         let planeId = "${planeId}";
         let data = {"planeId": planeId, "service":serviceKey};
@@ -150,6 +144,8 @@ input:hover
      				'</div>';
 		 document.getElementById(serviceKey).innerHTML = html;
         }
+    
+    
         document.getElementById("requestTrack").onclick = function () {
 	        let planeId = "${planeId}";
 	        let data = {"planeId": planeId, "service":"Bus"}; //Bus?
@@ -184,6 +180,7 @@ input:hover
                             },
                 });
         };
+        
         document.getElementById("requestTakeOff").onclick = function () {
         let planeId = "${planeId}";
         let data = {"planeId": planeId};
@@ -225,6 +222,8 @@ input:hover
         }
         
     }
+	
+	
     function changeState (state) {
     	let planeId = "${planeId}";
         let data = {"planeId": planeId};
@@ -278,30 +277,62 @@ input:hover
         
         
     }
-    document.getElementById("mockStatusButton").onclick = function () {
-    	VisualizationBased_Status(document.getElementById('mockStatusSelector').value);
-    };
     
+    
+    document.getElementById("ChangeStatusButton").onclick = function () {
+    	let planeId = "${planeId}";
+        let data = {"planeId": planeId};
+    	$.ajax({
+            type : "POST",
+            data: JSON.stringify(data),
+            contentType : 'application/json; charset=utf-8',
+            url : "http://localhost:8080/plane/changeState",
+            success: function(data){
+                console.log(data);
+              },
+            error: function(data){
+                console.log(data);
+            },
+        });
+    	VisualizationBased_Status(document.getElementById('ChangeStatusButton').value);
+    	
+    };
     function VisualizationBased_Status(status){
     	
     	switch(status) {
     	  case "InAir":
-    		$("#status").hide();
-    		$("#CatalogOfServices").hide();
-    		$("#requestLanding").show();
-    		$("#requestTakeOff").hide();
+    		document.getElementById('ChangeStatusButton').value = "AwaitingTrackForLanding";
+    		
       	    break;
+    	  case "AwaitingTrackForLanding":
+    	    document.getElementById('ChangeStatusButton').value = "Landing";
+    	    
+    		  break;
+    	  case "Landing":
+      	    document.getElementById('ChangeStatusButton').value = "Landed";
+    		  break;  
       	  case "Landed":
-            $("#status").hide();
-            $("#CatalogOfServices").show();
-            $("#requestTrack").hide();
+        	document.getElementById('ChangeStatusButton').value = "AwaitingGateAssigment";
+            
             break;
+      	  case "AwaitingGateAssigment":
+          	document.getElementById('ChangeStatusButton').value = "AtTerminal";
+      		  
+  		    break;  
       	  case "AtTerminal":
-      		$("#status").hide();
+            document.getElementById('ChangeStatusButton').value = "AwaitingTrackForTakeOff";
       		$("#CatalogOfServices").show();
-    		$("#requestLanding").hide();
-    		$("#requestTakeOff").show();
+    		
         	break;
+      	  case "AwaitingTrackForTakeOff":
+            document.getElementById('ChangeStatusButton').value = "TakingOff";
+            $("#CatalogOfServices").hide();
+            
+  		    break;
+      	  case "TakingOff":
+            document.getElementById('ChangeStatusButton').value = "InAir";
+            
+  		    break; 
     	  default:
     	  	console.log(status);
     	} 
@@ -312,6 +343,8 @@ input:hover
     	let state = updateObject[2]
     	document.getElementById("planeState").innerHTML = state;
     }
+    
+    
 </script>
 
 </body>
