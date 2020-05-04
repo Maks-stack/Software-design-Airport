@@ -63,6 +63,7 @@ input:hover
 
 <div id="requestTrack" class = "widget">
 <h4>Request track</h4>
+	<p style="display:none;" id="trackAffected"> Affected track : X </p>
     <div id="requestLanding" class = "widget">
         <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Landing Track"  />
     </div>
@@ -194,6 +195,9 @@ input:hover
                                 console.log(data);
                             },
                 });
+                $("#trackAffected").show();
+                $("#requestLanding").hide(); 
+                $("#requestTakeOff").hide();
         };
         
         document.getElementById("requestTakeOff").onclick = function () {
