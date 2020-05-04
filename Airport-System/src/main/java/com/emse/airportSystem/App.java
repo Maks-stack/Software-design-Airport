@@ -48,7 +48,8 @@ public class App {
 		serviceManager.registerObserver(servicesObserver);
 		serviceManager.registerObserver(serviceRequestsObserver);
 		trackManager.registerObserver(tracksObserver);
-		planeManager.registerObserver(planesObserver);
+		//TODO This needs to be fixed as we broke it. Need to figure out a way to have different observers for same manager. 
+		//planeManager.registerObserver(planesObserver);
 		planeManager.registerObserver(publicInterfaceObserver);
 
 		//I have put this here as quick workaround for running test, but it requires starting spring app

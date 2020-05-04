@@ -9,7 +9,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -24,15 +26,24 @@ public class PublicInterfaceController {
     @Autowired
     private SimpMessagingTemplate template;
 
+    @Autowired
+    publicInterfaceData publicInterfaceData;
+
     public PublicInterfaceController() {}
 
     @RequestMapping("/publicinterface")
     public String index(Model model) {
+        //TODO: Line bwllow is a hack, think of a better place/way to mocl planes. Maybe not...
+        publicInterfaceData.mockingData();
         ArrayList<Plane> planes = planeManager.getPlanes();
-
         model.addAttribute("allPlanes", planes);
+        return "publicInterface";
+    }
 
-        return "planeManager";
+    @RequestMapping("/advanceplanestate")
+    @ResponseBody
+    public void advancePlaneState(){
+        publicInterfaceData.advancePlaneState();
     }
 
     public void notifyServiceSubscribers() {
@@ -40,10 +51,7 @@ public class PublicInterfaceController {
     }
 
     public void notifyServiceSubscribers(Object obj) {
-        List objList = (List) obj;
-        Plane plane = (Plane) objList.get(0);
-        PlaneService service = (PlaneService) objList.get(1);
-        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
+        this.template.convertAndSend("/publicinterface/updates", obj);
     }
 
 

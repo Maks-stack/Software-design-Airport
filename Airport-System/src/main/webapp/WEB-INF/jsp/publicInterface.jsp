@@ -17,7 +17,6 @@
 
 <body>
 
-
 <h4>Planes and states</h4>
 <table class="greyGridTable" style="width: 300px" id="planeStateTable">
     <tr>
@@ -27,65 +26,40 @@
     <c:forEach items="${allPlanes}" var="plane">
         <tr>
             <td>${plane.planeId}</td>
-            <td>${plane.state}</td>
-
+            <td>${plane.state.name}</td>
         </tr>
     </c:forEach>
 </table>
+<button id="mockadvancestate" >Advance plane state</button>
 
 
-
-</body>
-</html>>
-<head>
-<script src="/webjars/jquery/3.1.1-1/jquery.min.js"></script>
-<script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
-<script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
-</head>
-<body>
-<c:if test="${not empty planeObj}">
-    <p id="planeid">${planeObj}</p>
-</c:if>
-
-<div id="requestGateService">
-    <input id="requestGateService" type="button" value="Request gate service" />
-</div>
 
 <script>
+    document.getElementById("mockadvancestate").onclick = function () {
+     $.ajax({
+        type : "GET",
+        contentType : 'application/json; charset=utf-8',
+        url : "http://"+window.location.hostname+":8080/advanceplanestate",
+     });
+    };
+
     connectPublicInterfaceWebsocket();
 
     function connectPublicInterfaceWebsocket() {
-       var socket = new SockJS('/public-interface');
+       var socket = new SockJS('/publicinterface-websocket');
        stompClient = Stomp.over(socket);
        stompClient.connect({}, function (frame) {
-          //console.log('Connected: ' + frame);
-          stompClient.subscribe('/public-interface/${planeObj}/updates', function (update) {
-             console.log(JSON.parse(update.body))
+          console.log('Connected: ' + frame);
+          stompClient.subscribe('/publicinterface/updates', function (update) {
+             console.log(update.body)
           });
        });
     }
-
-
-    document.getElementById("requestGateService").onclick = function () {
-        let planeId = document.getElementById('planeid').innerHTML;
-        let data = {"planeId": planeId, "service":"Bus"};
-         $.ajax({
-                            type : "POST",
-                            data: JSON.stringify(data),
-                            contentType : 'application/json; charset=utf-8',
-                            url : "http://localhost:8080/plane/requestservice",
-                            success: function(data){
-                                console.log(data);
-                              },
-                            error: function(data){
-                                console.log(data);
-                            },
-                });
-        };
-
-
-
 </script>
-
 </body>
 </html>
+
+
+
+
+
