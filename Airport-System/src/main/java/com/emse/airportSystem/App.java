@@ -15,21 +15,19 @@ import org.springframework.context.event.EventListener;
 
 @SpringBootApplication
 public class App {
-	@Autowired
-	TestContext testContext;
 
 	@Autowired
-	ServiceManager serviceManager;
+	private ServiceManager serviceManager;
 
 	@Autowired
-	TrackManager trackManager;
+	private TrackManager trackManager;
+
+	@Autowired
+	private ServicesObserver servicesObserver;
 
 	@Autowired
 	PlaneManager planeManager;
 
-	@Autowired
-	ServicesObserver servicesObserver;
-	
 	@Autowired
 	ServiceRequestsObserver serviceRequestsObserver;
 
@@ -45,9 +43,6 @@ public class App {
 		serviceManager.registerObserver(serviceRequestsObserver);
 		trackManager.registerObserver(tracksObserver);
 		planeManager.registerObserver(planesObserver);
-
-		//I have put this here as quick workaround for running test, but it requires starting spring app
-		testContext.runTest();
 	}
 
 	public static void main(String Args[]) {

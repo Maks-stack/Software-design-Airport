@@ -1,11 +1,13 @@
 package com.emse.airportSystem.trackManager.model;
 
+import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.trackManager.states.TrackState;
 
 public class Track {
 
     private int trackID;
     private TrackState state;
+    private Plane assignedPlane;
 
     public Track(){}
 
@@ -28,6 +30,14 @@ public class Track {
 
     public void setState(TrackState state) {
         this.state = state;
+    }
+
+    public Plane getAssignedPlane() {
+        return assignedPlane;
+    }
+
+    public void setAssignedPlane(Plane assignedPlane) {
+        this.assignedPlane = assignedPlane;
     }
 
     @Override

@@ -24,6 +24,7 @@ public class ServiceManager implements Observable{
     Map<String, Object> services  = new HashMap<>();
     Map<String, ServiceRequest> newServiceRequests = new HashMap<>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
+    List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
     List<Observer> observers = new ArrayList<Observer>();
     Map<String,String> serviceCatalog = new HashMap<>();
 
@@ -76,7 +77,7 @@ public class ServiceManager implements Observable{
             throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
         }
     }
-    
+
     public void cancelService(String serviceId) {
         PlaneService service = (PlaneService) services.get(serviceId);
         service.cancelService();
@@ -133,10 +134,10 @@ public class ServiceManager implements Observable{
     public void notifyObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
     }
-    
+
     public void notifyServiceRequestObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
     }
-    
-    
+
+
 }

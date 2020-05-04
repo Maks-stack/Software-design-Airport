@@ -3,23 +3,34 @@ package com.emse.airportSystem.trackManager.service;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
-import com.emse.airportSystem.serviceManager.model.ServiceRequest;
-import com.emse.airportSystem.trackManager.model.TrackRequest;
-import com.emse.airportSystem.trackManager.states.Assigned;
-import com.emse.airportSystem.trackManager.states.Available;
-import com.emse.airportSystem.trackManager.states.TrackState;
+import com.emse.airportSystem.planeManager.service.IPlaneManager;
 import com.emse.airportSystem.trackManager.model.Track;
+import com.emse.airportSystem.trackManager.model.TrackRequest;
+import com.emse.airportSystem.trackManager.states.Available;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
 public class TrackManager implements Observable {
 
+    @Autowired private IPlaneManager planeManager;
+
     private List<Track> tracks = new ArrayList<Track>();
     List<Observer> observers = new ArrayList<Observer>();
     List<TrackRequest> newTrackRequests = new ArrayList<TrackRequest>();
+
+    {
+        for (int i = 0; i < 2; i++) {
+            tracks.add(new Track(i, new Available()));
+        }
+        for (int i = 2; i < 4; i++) {
+            tracks.add(new Track(i, new Available()));
+        }
+    }
 
     public List<Track> getTracks() {
         return tracks;
@@ -37,10 +48,10 @@ public class TrackManager implements Observable {
 
     public List<Track> getFreeTracks() {
         System.out.println("Searching for all available tracks... ");
-        List<Track> availableTracks = new ArrayList<Track>();;
+        List<Track> availableTracks = new ArrayList<Track>();
         if(tracks != null) {
             for (Track tmp : tracks) {
-                if (tmp.getState() instanceof Available && tmp.getState().isAvailable()) {
+                if (tmp.getState().isAvailable()) {
                     availableTracks.add(tmp);
                 }
             }
@@ -54,23 +65,54 @@ public class TrackManager implements Observable {
         return availableTracks;
     }
 
-    public Track getFreeTrack() {
-        System.out.println("Searching for available track... ");
-        return getFreeTracks().get(0);
-    }
+    public void assignTrack(int id, String planeId) {
+        Track freeTrack = getFreeTracks().stream().parallel()
+            .filter(track -> track.getTrackID() == id)
+            .findAny()
+            .orElseThrow(RuntimeException::new);
 
-    public Track assignTrack() {
-        Track freeTrack = getFreeTrack();
-        TrackState state = new Assigned();
-        freeTrack.setState(state);
+        freeTrack.setState(freeTrack.getState().proceedToNextStep());
+        freeTrack.setAssignedPlane(planeManager.findPlane(planeId));
+        deleteTrackRequest(planeId);
+        notifyObservers(freeTrack);
+        newTrackRequests.stream()
+            .map(TrackRequest::getAvailableTracks)
+            .forEach(list -> list.remove(freeTrack));
+        notifyRequestObservers(newTrackRequests);
         System.out.println("Assigned track: " + freeTrack.toString());
-        return freeTrack;
     }
 
+    public void unassignTrack(int id) {
+        Track assignedTrack = tracks.stream()
+            .filter(track -> track.getTrackID() == id)
+            .findAny()
+            .orElseThrow(RuntimeException::new);
+        assignedTrack.setState(assignedTrack.getState().proceedToNextStep());
+        assignedTrack.setAssignedPlane(null);
+        notifyObservers(assignedTrack);
 
+        newTrackRequests.stream()
+            .map(TrackRequest::getAvailableTracks)
+            .peek(list -> list.add(assignedTrack))
+            .forEach(list -> list.sort(Comparator.comparingInt(Track::getTrackID)));
+
+        notifyRequestObservers(newTrackRequests);
+        System.out.println("Assigned track: " + assignedTrack.toString());
+    }
+
+    private void deleteTrackRequest(String planeId) {
+        TrackRequest request = newTrackRequests.stream().parallel()
+            .filter(trackRequest -> trackRequest.getPlane().getPlaneId().equals(planeId))
+            .findAny()
+            .orElseThrow(RuntimeException::new);
+
+        newTrackRequests.remove(request);
+        notifyRequestObservers(newTrackRequests);
+    }
 
     public void registerNewRequest(Plane plane){
-        newTrackRequests.add(new TrackRequest(plane));
+        newTrackRequests.add(new TrackRequest(plane, getFreeTracks()));
+        notifyRequestObservers(newTrackRequests);
     }
 
     public List<TrackRequest> getNewTrackRequests(){
@@ -90,5 +132,10 @@ public class TrackManager implements Observable {
     @Override
     public void notifyObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
+    }
+
+    @Override
+    public void notifyRequestObservers(Object obj) {
+        observers.forEach(observer -> observer.updateRequest(obj));
     }
 }

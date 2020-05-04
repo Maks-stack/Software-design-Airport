@@ -2,12 +2,15 @@ package com.emse.airportSystem.trackManager.model;
 
 import com.emse.airportSystem.planeManager.model.Plane;
 
-public class TrackRequest {
-    Track trackRequested;
-    Plane plane;
+import java.util.List;
 
-    public TrackRequest(Plane plane){
+public class TrackRequest {
+    private Plane plane;
+    private List<Track> availableTracks;
+
+    public TrackRequest(Plane plane, List<Track> availableTracks){
         this.plane = plane;
+        this.availableTracks = availableTracks;
 
         System.out.println("Plane track request created");
     }
@@ -16,7 +19,7 @@ public class TrackRequest {
         return plane;
     }
 
-    public Track getTrackRequested() {
-        return trackRequested;
+    public List<Track> getAvailableTracks() {
+        return availableTracks;
     }
 }

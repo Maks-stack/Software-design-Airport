@@ -4,11 +4,14 @@ import com.emse.airportSystem.exceptions.PlaneNotFoundException;
 import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import com.emse.airportSystem.planeManager.model.Plane;
+import com.emse.airportSystem.planeManager.service.IPlaneManager;
+import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.planeManager.states.State;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Random;
 import java.util.Arrays;
 import java.util.List;
 
@@ -17,6 +20,12 @@ public class PlaneManager implements Observable {
     private ArrayList<Plane> planes = new ArrayList<Plane>();
     List<Observer> observers = new ArrayList<Observer>();
 
+    {
+        for (int i = 0; i<10; i++) {
+            planes.add(new Plane("Boeing 737", new InAir(), "Plane_" + i));
+        }
+    }
+
     public void addPlane(String model, State state, String planeId) {
         this.planes.add(new Plane(model, state, planeId));
     }
@@ -24,6 +33,7 @@ public class PlaneManager implements Observable {
     public void removePlane(Plane plane) {
         this.planes.remove(plane);
     }
+
     public ArrayList<Plane> getPlanes() {
         return planes;
     }
@@ -67,5 +77,17 @@ public class PlaneManager implements Observable {
     @Override
     public void notifyObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
+    }
+
+    public Plane findPlane(String id) {
+        return planes.stream()
+            .filter(plane -> plane.getPlaneId().equals(id))
+            .findFirst()
+            .orElseThrow(PlaneNotFoundException::new);
+    }
+
+    public Plane getRandomPlane() {
+        Random rand = new Random();
+        return planes.get(rand.nextInt(planes.size()));
     }
 }

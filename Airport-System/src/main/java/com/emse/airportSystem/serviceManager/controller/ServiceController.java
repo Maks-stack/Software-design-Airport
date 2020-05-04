@@ -35,12 +35,10 @@ public class ServiceController {
     }
 
     @RequestMapping("/")
-	public String central() {
-		return "centralControl";
-	}
-    
-    
-    
+	  public String central() {
+	  	return "centralControl";
+	  }
+
     @RequestMapping("/servicemanager")
     public String index(Model model) {
         Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
@@ -75,7 +73,7 @@ public class ServiceController {
             serviceManager.assignRandomService();
             return new ResponseEntity<>(HttpStatus.OK);
     }
-    
+
     @RequestMapping("/cancelService")
     @ResponseBody
     public ResponseEntity<?> cancelService(@RequestParam String serviceId) {
@@ -95,10 +93,10 @@ public class ServiceController {
 
     public void notifyServiceSubscribers(Object updatedService) {
         Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
-        
+
         this.template.convertAndSend("/services/updates", Arrays.asList(updatedService, allServices));
     }
-    
+
     public void notifyServiceRequestSubscribers() {
         this.template.convertAndSend("/services/requestupdates", "Test");
     }
