@@ -18,53 +18,20 @@
 <body>
 
 
-<div id="planeStateList" class = widget>
-    <h4>Plane State List</h4>
-    <table class="greyGridTable" style="width: 300px" id="planeStateTable">
+<h4>Planes and states</h4>
+<table class="greyGridTable" style="width: 300px" id="planeStateTable">
+    <tr>
+        <th>Plane ID</th>
+        <th>State</th>
+    </tr>
+    <c:forEach items="${allPlanes}" var="plane">
         <tr>
-            <th>Plane</th>
-            <th>State</th>
+            <td>${plane.planeId}</td>
+            <td>${plane.state}</td>
+
         </tr>
-        <c:forEach items="${planes}" var="planes">
-            <c:set var = "changeState" value = "InAir"/>
-            <c:forEach items="${planes.value}" var="state">
-                <c:if test="${planes.proceedToNextState}">
-                    <c:set var = "changeState" value = "${changeState.proceedToNextState}"/>
-                </c:if>
-            </c:forEach>
-            <tr>
-                <td>${planes.key.value}</td>
-                <td id="${planes.key.key}">${proceedToNextState}</td>
-            </tr>
-        </c:forEach>
-    </table>
-</div>
-
-<div id="trackStateList" class = widget>
-    <h4>Plane State List</h4>
-    <table class="greyGridTable" style="width: 300px" id="trackStateTable">
-        <tr>
-            <th>Track</th>
-            <th>State</th>
-        </tr>
-
-        <c:forEach items="${allTracks}" var="tracks">
-            <c:set var = "changeState" value = "available"/>
-                <c:forEach items="${tracks.value}" var="service">
-                    <c:if test="${tracks.available}">
-                        <c:set var = "changeState" value = "${changeState.proceedToNextState}"/>
-                    </c:if>
-                </c:forEach>
-                <tr>
-                    <td>${tracks.key.value}</td>
-                    <td id="${tracks.key.key}">${proceedToNextState}</td>
-                </tr>
-            </c:forEach>
-        </table>
-    </div>
-</div>
-
-
+    </c:forEach>
+</table>
 
 
 
