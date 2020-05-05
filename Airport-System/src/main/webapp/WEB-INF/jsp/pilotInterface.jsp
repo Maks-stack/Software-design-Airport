@@ -267,7 +267,8 @@ input:hover
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    document.getElementById("status").innerHTML = html;
-		    
+		    $("#requestLanding").show();
+		    $("#requestTakeOff").hide();
 		    let html2 = 'Landed';
 		    
 		    
