@@ -221,7 +221,7 @@ input:hover
 	function updateServiceStatus(updateObject){
         let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
         let service = updateObject[1]
-        let nameService = service.name;
+        let nameService = service.name; 
         console.log("Service Name : "+service.name); console.log("Service ID : "+service.id);
         if(nameService.startsWith("Refuel")) {
         
