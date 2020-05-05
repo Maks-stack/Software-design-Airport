@@ -68,8 +68,8 @@ input:hover
         <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Landing Track"  />
     </div>
 
-    <div id="requestTakeOff">
-        <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Take Off Track"  />
+    <div id="requestTakeOff" style="display:none;">
+        <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Take Off Track" onClick="hideElements()"/>
     </div>
     <br>
     <hr>
@@ -88,7 +88,7 @@ input:hover
 <h4>Request gate</h4>
 <div class="row">
 <c:forEach items="${serviceCatalogue}" var="service">
-	<c:if test="${service.key eq 'gate'}">
+	<c:if test="${service.key eq 'bus'}">
 		<div id="${service.key}" class"col s4">
 			<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="REQUEST A GATE" onClick="processService('${service.key}','${service.value}');" />
 		</div>
@@ -102,7 +102,7 @@ input:hover
 <h4>Catalog of services</h4>
 <div class="row">
 <c:forEach items="${serviceCatalogue}" var="service">
-	<c:if test="${service.key != 'gate'}">
+	<c:if test="${service.key != 'bus'}">
 		<div id="${service.key}" class"col s4">
 			<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="${service.value}" onClick="processService('${service.key}','${service.value}');" />
 		</div>
@@ -291,6 +291,8 @@ input:hover
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    document.getElementById("status").innerHTML = html;
 		    $("#CatalogOfServices").show();
+		    $("#trackAffected").hide();
+            $("#requestTakeOff").show();
 		    let html2 = 'InAir';
 		    
         }
@@ -365,6 +367,10 @@ input:hover
     	document.getElementById("planeState").innerHTML = state;
     }
     
+    function hideElements() {
+    	$("#CatalogOfServices").hide();
+    	$("#CatalogOfGates").hide();
+    }
     
 </script>
 

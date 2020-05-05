@@ -28,7 +28,7 @@ public class ServiceManager implements Observable{
     Map<String,String> serviceCatalog = new HashMap<>();
 
     {
-        serviceCatalog.put("bus", "Bus service"); serviceCatalog.put("gate", "Gate service");
+        serviceCatalog.put("bus", "Bus service"); 
         serviceCatalog.put("refuel", "Refuel service");
 
         for (int i = 0; i < 10; i++) {
