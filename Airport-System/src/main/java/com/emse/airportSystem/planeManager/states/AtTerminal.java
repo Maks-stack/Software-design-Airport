@@ -8,7 +8,8 @@ public class AtTerminal implements State {
 			return new AwaitingTrackForTakeOff();
 	}
 
-	public String getState() {
-		return state;
+	public String getStateName() {
+		return this.getClass().getSimpleName();
 	}
+
 }

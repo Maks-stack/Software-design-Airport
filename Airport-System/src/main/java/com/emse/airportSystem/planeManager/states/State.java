@@ -6,4 +6,5 @@ public interface State {
 	default String getStateName(){
 		return this.getClass().getName();
 	}
+
 }

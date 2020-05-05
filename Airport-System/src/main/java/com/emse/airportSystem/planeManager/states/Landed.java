@@ -5,10 +5,10 @@ public class Landed implements State {
 	private String state = "Landed";
 
 	public State proceedToNextState() {
-		return new AtTerminal();
+		return new AwaitingGateAssigment();
 	}
 
-	public String getState() {
-		return state;
+	public String getStateName(){
+		return this.getClass().getSimpleName();
 	}
 }

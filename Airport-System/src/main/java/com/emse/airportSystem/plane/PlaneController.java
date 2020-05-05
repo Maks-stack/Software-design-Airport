@@ -3,9 +3,13 @@ package com.emse.airportSystem.plane;
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
-import com.emse.airportSystem.planeManager.states.InAir;
+import com.emse.airportSystem.planeManager.states.*;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
+import com.emse.airportSystem.serviceManager.model.ServiceRequest;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
+import com.emse.airportSystem.serviceManager.service.ServiceManager.*;
+import com.emse.airportSystem.trackManager.service.TrackManager;
+
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 @Controller
 public class PlaneController {
@@ -27,6 +32,9 @@ public class PlaneController {
 
     @Autowired
     ServiceManager serviceManager;
+    
+    @Autowired
+    TrackManager trackManager;
 
     @Autowired
     private SimpMessagingTemplate template;
@@ -38,13 +46,17 @@ public class PlaneController {
     }
 
     @RequestMapping("/plane/panel")
-    public String plane(Model model){
+    public String plane(Model model) throws Exception{
         //check for authorization token. If has - all good, if not, redirect to authorize.
 
         //currently hardcoded values, but this will need to be changed
         String planeId = "Test"+System.currentTimeMillis();
         planeManager.addPlane("A320", new InAir(), planeId);
-        model.addAttribute("planeObj", planeId);
+        Map<String,String> serviceCatalog = serviceManager.getServiceCatalog();
+        Plane p = planeManager.getPlaneById(planeId);
+        model.addAttribute("planeState", p.getState().getStateName());
+        model.addAttribute("planeId", planeId);
+        model.addAttribute("serviceCatalogue", serviceCatalog);
         return "pilotInterface";
     }
 
@@ -56,7 +68,68 @@ public class PlaneController {
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
             serviceManager.registerNewRequest(plane, jsonObject.get("service").toString());
+            if(jsonObject.get("service").toString().startsWith("gate")) {
+            	planeManager.proceedToNextState(plane);
+            }
+        } catch(Exception e){
+            System.out.println(e);
+        }
+    }
+    
+    @RequestMapping(value = "/plane/requesttrack", method = RequestMethod.POST)
+    public void requestTrack(@RequestBody String req){
+    	Object obj= JSONValue.parse(req);
+        JSONObject jsonObject = (JSONObject) obj;
+        try{
+            String planeId = jsonObject.get("planeId").toString();
+            Plane plane = planeManager.getPlaneById(planeId);
+            trackManager.registerNewRequest(plane);
+            planeManager.proceedToNextState(plane);
+        } catch(Exception e){
+            System.out.println(e);
+        }
+    }
+    
+    @RequestMapping(value = "/plane/requestlanding", method = RequestMethod.POST)
+    public void requestLand(@RequestBody String req){
+    	Object obj= JSONValue.parse(req);
+        JSONObject jsonObject = (JSONObject) obj;
+        try{
+            String planeId = jsonObject.get("planeId").toString();
+            Plane plane = planeManager.getPlaneById(planeId);
+            State state = plane.getState();
+            
+            if(state.getStateName() == "InAir"){
+            trackManager.registerNewRequest(plane);
+        }
+            
+        } catch(Exception e){
+            System.out.println(e);
+        }
 
+    }
+    @RequestMapping(value = "/plane/requestTakeOff", method = RequestMethod.POST)
+    public void requestTakeOffTrack(@RequestBody String req){
+    	Object obj= JSONValue.parse(req);
+        JSONObject jsonObject = (JSONObject) obj;
+        try{
+            String planeId = jsonObject.get("planeId").toString();
+            Plane plane = planeManager.getPlaneById(planeId);
+            State state = plane.getState();
+            boolean servicefound = false;
+            List<ServiceRequest> servicesInProgress = serviceManager.getServiceRequestsInProgress();
+            for(ServiceRequest service: servicesInProgress)
+            {
+            	if(service.getPlane().getPlaneId() == planeId)
+            	{
+            		servicefound = true;
+            		break;
+            	}
+            		
+            }
+            if(state.getStateName() == "AtTerminal" && !servicefound){
+            trackManager.registerNewRequest(plane);
+            }   
         } catch(Exception e){
             System.out.println(e);
         }
@@ -71,6 +144,20 @@ public class PlaneController {
         Plane plane = (Plane) objList.get(0);
         PlaneService service = (PlaneService) objList.get(1);
         this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
+    }
+    
+    @RequestMapping("/plane/changeState")
+    public void changeState(@RequestBody String req){
+    	 Object obj= JSONValue.parse(req);
+         JSONObject jsonObject = (JSONObject) obj;
+         try{
+             String planeId = jsonObject.get("planeId").toString();
+             Plane plane = planeManager.getPlaneById(planeId);
+             planeManager.proceedToNextState(plane);
+
+         } catch(Exception e){
+             System.out.println(e);
+         }
     }
 
 

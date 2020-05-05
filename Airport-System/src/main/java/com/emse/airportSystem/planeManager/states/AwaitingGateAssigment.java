@@ -1,14 +1,12 @@
 package com.emse.airportSystem.planeManager.states;
 
-public class InAir implements State {
-
-	private String state = "In Air";
-
+public class AwaitingGateAssigment implements State {
 	public State proceedToNextState() {
-		return new AwaitingTrackForLanding();
+		return new AtTerminal();
 	}
 
 	public String getStateName(){
 		return this.getClass().getSimpleName();
 	}
+
 }

@@ -8,7 +8,7 @@ public class Landing implements State {
 		return new Landed();
 	}
 
-	public String getState() {
-		return state;
+	public String getStateName(){
+		return this.getClass().getSimpleName();
 	}
 }

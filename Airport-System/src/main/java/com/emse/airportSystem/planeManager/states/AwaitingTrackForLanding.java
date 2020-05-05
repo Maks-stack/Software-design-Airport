@@ -8,8 +8,8 @@ public class AwaitingTrackForLanding implements State {
 		return new Landing();
 	}
 
-	public String getState() {
-		return state;
+	public String getStateName(){
+		return this.getClass().getSimpleName();
 	}
 
 }

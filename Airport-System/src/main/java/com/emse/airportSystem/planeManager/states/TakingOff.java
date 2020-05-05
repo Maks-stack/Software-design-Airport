@@ -8,7 +8,7 @@ public class TakingOff implements State {
 		return new InAir();
 	}
 
-	public String getState() {
-		return state;
+	public String getStateName(){
+		return this.getClass().getSimpleName();
 	}
 }

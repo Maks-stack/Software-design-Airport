@@ -8,7 +8,7 @@ public class AwaitingTrackForTakeOff implements State {
 		return new TakingOff();
 	}
 
-	public String getState() {
-		return state;
+	public String getStateName(){
+		return this.getClass().getSimpleName();
 	}
 }

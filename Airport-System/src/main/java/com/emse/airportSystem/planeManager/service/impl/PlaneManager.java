@@ -41,6 +41,7 @@ public class PlaneManager implements Observable, IPlaneManager {
     //should not be here
     public void proceedToNextState(Plane plane) {
         plane.setState(plane.getState().proceedToNextState());
+        notifyObservers(Arrays.asList(plane, null,plane.getState().getStateName()));
     }
 
     public Plane getPlaneById(String planeId) throws Exception
@@ -54,13 +55,13 @@ public class PlaneManager implements Observable, IPlaneManager {
     }
 
     public void handleServiceAssigned(Plane plane, PlaneService service){
-        proceedToNextState(plane);
+        //proceedToNextState(plane); System.out.println("LA1");
         notifyObservers(Arrays.asList(plane, service));
     }
 
     public void handleServiceCompleted(PlaneService service){
         try {
-            notifyObservers(Arrays.asList(getPlaneById(service.getPlaneId()), service));
+            notifyObservers(Arrays.asList(getPlaneById(service.getPlaneId()), service)); System.out.println("LA2");
         } catch (Exception e){
 
         }
