@@ -50,7 +50,7 @@ input:hover
 
 <hr>
 
-<div id="mock" class = "widget">
+<div id="mock" class = "widget" style="display:none;">
 <h4>Plane status</h4>
 	<p>
 		<input id="ChangeStatusButton" type="button" class="waves-effect waves-light btn-large" value="AwaitingTrackForLanding" />
