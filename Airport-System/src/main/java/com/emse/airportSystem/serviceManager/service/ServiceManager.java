@@ -108,6 +108,38 @@ public class ServiceManager implements Observable{
         ServiceRequest serviceRequest = new ServiceRequest(plane, ServiceName, this);
         newServiceRequests.put(serviceRequest.getId(), serviceRequest);
     }
+    
+    public void AddServiceTeam(String serviceId) throws ServiceNotAvailableException, RequestNotFoundException {
+    	String ServiceId = serviceId.toLowerCase().split(" ")[0];
+    	String name = ServiceId.substring(0, 1).toUpperCase() + ServiceId.substring(1)+" "
+    			+ getServicesByType(ServiceId).size();
+        String id = name.replace(" ","").toLowerCase();
+        PlaneService service = null;//miro
+    	switch(ServiceId){
+    	case "refuel":
+    		service = new ServiceRefuel(name, id , this);
+    		break;
+    	case "bus":
+    		service = new ServiceBus(name, id , this);
+    		break;
+    	}
+    	services.put(id, service);
+    	notifyObservers(service);
+    }
+    
+    public void RemoveServiceTeam(String serviceId) throws ServiceNotAvailableException, RequestNotFoundException {
+    	String ServiceId = serviceId.toLowerCase().split(" ")[0];
+    	List<PlaneService> lista = getServicesByType(ServiceId);
+    	Collections.reverse(lista);
+    	for (PlaneService service : lista) {
+    		if(service.getAvailable()) {
+    			//notifyObservers(service);//Giancarlo
+    			services.remove(service.getId());
+    			break;
+    		}
+        }
+    	notifyObservers(null);//mirar mañana 
+    }
 
     public void notifyServiceCompleted(PlaneService service){
         planeManager.handleServiceCompleted(service);

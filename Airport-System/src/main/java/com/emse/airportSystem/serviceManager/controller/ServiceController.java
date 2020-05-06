@@ -49,6 +49,13 @@ public class ServiceController {
         model.addAttribute("serviceRequestsInProgress", serviceRequestsInProgress);
         return "serviceManager";
     }
+    
+    @RequestMapping("/serviceteammanager")
+    public String indexTeamManager(Model model) {
+        Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
+        model.addAttribute("allServices", allServices);
+        return "serviceTeamManager";
+    }
 
     @RequestMapping("/mockplanerequest")
     @ResponseBody
@@ -87,6 +94,23 @@ public class ServiceController {
         return serviceManager.getServiceCatalog();
     }
 
+    @RequestMapping("/addserviceteam")
+    @ResponseBody
+    public ResponseEntity<?> AddServiceTeam(@RequestParam String serviceSelected)
+    throws ServiceNotAvailableException, RequestNotFoundException {
+            serviceManager.AddServiceTeam(serviceSelected);
+            return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    @RequestMapping("/removeserviceteam")
+    @ResponseBody
+    public ResponseEntity<?> RemoveServiceTeam(@RequestParam String serviceSelected)
+    throws ServiceNotAvailableException, RequestNotFoundException {
+    		serviceManager.RemoveServiceTeam(serviceSelected);
+            return new ResponseEntity<>(HttpStatus.OK);
+    }
+    
+    
     public void notifyServiceSubscribers() {
         this.template.convertAndSend("/services/updates", "Test");
     }

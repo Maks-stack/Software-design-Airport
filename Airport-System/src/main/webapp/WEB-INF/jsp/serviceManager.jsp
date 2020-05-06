@@ -271,7 +271,7 @@
        });
     }
 
-    function updateServiceStatus(updateObject){
+    function updateServiceStatus(updateObject){//
         let update = updateObject[0] // Kind of hack, single updated service is first element in updateObject
            if(update.available === false){
 	            $('#activeServicesTable').append(serviceRow(update))
