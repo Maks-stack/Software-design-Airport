@@ -52,7 +52,6 @@ input:hover
 
 <div id="mock" class = "widget">
 <h4>Plane status</h4>
-	
 	<p>
 		<input id="ChangeStatusButton" type="button" class="waves-effect waves-light btn-large" value="AwaitingTrackForLanding" />
 	</p>
@@ -125,11 +124,11 @@ input:hover
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/planes/${planeId}/updates', function (update) {
-             
+             console.log("Je reviens");
              updateObject = JSON.parse(update.body);
              console.log("TEST:"+updateObject[1])
-             if(updateObject[1]) {
-             	updateServiceStatus(updateObject);
+             if(updateObject[1] != null) {
+             	updateServiceStatus(updateObject); 
              } else {
              	changeValueState(updateObject);
              }
@@ -365,6 +364,7 @@ input:hover
     function changeValueState(updateObject) {
     	let plane = updateObject[0]
     	let state = updateObject[2]
+    	console.log("Mon etat:"+state)
     	document.getElementById("planeState").innerHTML = state;
     }
     
