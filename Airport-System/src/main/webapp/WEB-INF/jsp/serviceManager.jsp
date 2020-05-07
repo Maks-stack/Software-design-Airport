@@ -400,7 +400,7 @@
    	 		
    	 		var services = update[1] //List of services is second element in return array
           	for (serviceType in services) {
-          		var serviceName = serviceType.split("=")[1] 
+          		var serviceName = serviceType.split("=")[1].toLowerCase() 
           		console.log(serviceName)
           		console.log(htmlId)
           		if(serviceName.includes(htmlId)){
