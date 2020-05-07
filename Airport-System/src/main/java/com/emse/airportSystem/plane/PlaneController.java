@@ -68,7 +68,7 @@ public class PlaneController {
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
             serviceManager.registerNewRequest(plane, jsonObject.get("service").toString());
-            if(jsonObject.get("service").toString().startsWith("gate")) {
+            if(jsonObject.get("service").toString().startsWith("bus")) { System.out.println("IF");
             	planeManager.proceedToNextState(plane);
             }
         } catch(Exception e){
