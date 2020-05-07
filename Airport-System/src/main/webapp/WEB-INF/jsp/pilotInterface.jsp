@@ -78,7 +78,7 @@ input:hover
 <div id="status" class = "widget">
 <h4>Status</h4>
     <input id="inAir" type="button" value="In the air" onClick="changeState('InAir');" disabled="disabled"/>
-    <input id="landed" type="button" value="Landed" onClick="changeState('Landed');" />
+    <input id="landed" type="button" value="Landed" onClick="changeState('Landed');" disabled="disabled"/>
     <input id="atTerminal" type="button" value="At terminal" onClick="changeState('AtTerminal');" disabled="disabled"/>
 <hr>
 </div>
@@ -197,6 +197,11 @@ input:hover
                                 console.log(data);
                             },
                 });
+                let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+		    	document.getElementById("status").innerHTML = html;
                 $("#trackAffected").show();
                 $("#requestLanding").hide(); 
                 $("#requestTakeOff").hide();
@@ -218,6 +223,11 @@ input:hover
                             },
                 });
             changeState('');
+            let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+		    document.getElementById("status").innerHTML = html;
         };
         
 	function updateServiceStatus(updateObject){
@@ -238,6 +248,12 @@ input:hover
 		 	document.getElementById("gateAffected").innerHTML = nameOfService;
 		 	$("#valueOfGateAffected").show();
 		 	$("#gateServices").hide();
+		 	
+		 	let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" />';
+		    document.getElementById("status").innerHTML = html;
         }
         
     }
@@ -264,12 +280,11 @@ input:hover
         	console.log("LA 1");
         	let html = '<h4>Status</h4>'+
 				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    document.getElementById("status").innerHTML = html;
 		    $("#requestLanding").show();
 		    $("#requestTakeOff").hide();
-		    let html2 = 'Landed';
 		    
 		    
         }
@@ -278,23 +293,21 @@ input:hover
         	let html = '<h4>Status</h4>'+
 				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
-				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" />';
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled" />';
 		    document.getElementById("status").innerHTML = html;
 		    $("#CatalogOfGates").show();
-		    let html2 = 'AtTerminal';
 		    
         }
         if(state === "AtTerminal") {
         	console.log("LA 3");
         	let html = '<h4>Status</h4>'+
-				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    document.getElementById("status").innerHTML = html;
 		    $("#CatalogOfServices").show();
 		    $("#trackAffected").hide();
             $("#requestTakeOff").show();
-		    let html2 = 'InAir';
 		    
         }
         
