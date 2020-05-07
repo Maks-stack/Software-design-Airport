@@ -33,7 +33,7 @@
 	<div id="newRequestsWidget" class = "widget">
 	       <h4>New requests</h4>
 	       
-               <table id ="serviceRequestTable" class="greyGridTable" style="width: 300px">
+               <table id ="serviceRequestTable" class="greyGridTable">
 	               <c:if test="${not empty newServiceRequests}">
 	                   <tr>
 	                       <th id="NR_ServiceRequestID">Request ID</th>
