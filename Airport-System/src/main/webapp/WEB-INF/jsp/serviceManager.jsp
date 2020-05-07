@@ -396,7 +396,7 @@
    	 	console.log(update)    	 
    	 	
    	 	$('.planeRequestSelector').each(function(){   
-   	 		var htmlId = $(this).attr('id')
+   	 		var htmlId = $(this).attr('id').toLowerCase() 
    	 		
    	 		var services = update[1] //List of services is second element in return array
           	for (serviceType in services) {
