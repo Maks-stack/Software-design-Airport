@@ -85,7 +85,7 @@ input:hover
 
 <div id="CatalogOfGates" class = "widget" style="display:none;">
 <h4>Request gate</h4>
-<div class="row">
+<div class="row" id="gateServices">
 <c:forEach items="${serviceCatalogue}" var="service">
 	<c:if test="${service.key eq 'bus'}">
 		<div id="${service.key}" class"col s4">
@@ -93,6 +93,9 @@ input:hover
 		</div>
 	</c:if>
 </c:forEach>
+</div>
+<div id="valueOfGateAffected" style="display:none;">
+	<p> Affected gate: <span id="gateAffected"> </span> </p>
 </div>
 <hr>
 </div>
@@ -231,12 +234,10 @@ input:hover
 		 
         }
         if(nameService.startsWith("Bus")) {
-        
-        	let html = '<div id="bus">'+
-         			'<input id="bus" type="button" value="Bus service" disabled="disabled" style="background-color:#7FDD4C" onClick="processService("bus","Bus service");"/>'+	
-     				'</div>';
-		 	document.getElementById("bus").innerHTML = html;
-		 
+		 	let nameOfService = service.id;
+		 	document.getElementById("gateAffected").innerHTML = nameOfService;
+		 	$("#valueOfGateAffected").show();
+		 	$("#gateServices").hide();
         }
         
     }
