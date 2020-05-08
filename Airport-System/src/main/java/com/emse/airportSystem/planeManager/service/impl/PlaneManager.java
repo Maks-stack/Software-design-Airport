@@ -56,12 +56,12 @@ public class PlaneManager implements Observable, IPlaneManager {
 
     public void handleServiceAssigned(Plane plane, PlaneService service){
         //proceedToNextState(plane); System.out.println("LA1");
-        notifyObservers(Arrays.asList(plane, "assigned", service));
+        notifyObservers(Arrays.asList(plane, "assigned", service)); System.out.println("LA11");
     }
 
     public void handleServiceCompleted(PlaneService service){
         try {
-            notifyObservers(Arrays.asList(getPlaneById(service.getPlaneId()),"completed" ,service)); System.out.println("LA2");
+            notifyObservers(Arrays.asList(getPlaneById(service.getPlaneId()),"completed" ,service)); System.out.println("LA22");
         } catch (Exception e){
 
         }
@@ -98,7 +98,7 @@ public class PlaneManager implements Observable, IPlaneManager {
     }
     
     public void handleServiceCanceled (Plane plane, PlaneService service) {
-    	
-    			notifyObservers(Arrays.asList(plane,"cancel", service)); 
+    	System.out.println("ICancel");
+		//notifyObservers(Arrays.asList(plane,"cancel", service)); 
     }
 }

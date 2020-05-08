@@ -80,7 +80,13 @@ public class ServiceManager implements Observable{
 
     public void cancelService(String serviceId) {
         PlaneService service = (PlaneService) services.get(serviceId);
-        service.cancelService();
+        Plane plane = null;
+        for(ServiceRequest rs : serviceRequestsInProgress) {
+        	if(serviceId.contains(rs.getServiceRequested())) {
+        		plane = rs.getPlane();
+        	}
+        }
+        service.cancelService(); planeManager.handleServiceCanceled(plane,service);
     }
 
     public void assignRandomService() throws ServiceNotAvailableException, RequestNotFoundException {
