@@ -79,10 +79,10 @@ public class ServiceManager implements Observable{
     }
 
     public void cancelService(String serviceId) {
-        PlaneService service = (PlaneService) services.get(serviceId);
+        PlaneService service = (PlaneService) services.get(serviceId); System.out.println("Nom:"+service.getPlaneId());
         Plane plane = null;
         for(ServiceRequest rs : serviceRequestsInProgress) {
-        	if(serviceId.contains(rs.getServiceRequested())) {
+        	if(service.getPlaneId() == rs.getPlane().getPlaneId()) {
         		plane = rs.getPlane();
         	}
         }
