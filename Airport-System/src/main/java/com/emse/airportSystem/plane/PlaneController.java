@@ -91,7 +91,7 @@ public class PlaneController {
     }
     
     @RequestMapping(value = "/plane/requestlanding", method = RequestMethod.POST)
-    public void requestLand(@RequestBody String req){
+    public void requestlanding(@RequestBody String req){
     	Object obj= JSONValue.parse(req);
         JSONObject jsonObject = (JSONObject) obj;
         try{
@@ -99,17 +99,21 @@ public class PlaneController {
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
             
-            if(state.getStateName() == "InAir"){
+          //  if(state.getStateName() == "InAir"){
             trackManager.registerNewRequest(plane);
-        }
-            
+            planeManager.proceedToNextState(plane);
+        //}
+           
         } catch(Exception e){
             System.out.println(e);
         }
 
     }
+    
+    
+    
     @RequestMapping(value = "/plane/requestTakeOff", method = RequestMethod.POST)
-    public void requestTakeOffTrack(@RequestBody String req){
+    public void requestTakeOff(@RequestBody String req){
     	Object obj= JSONValue.parse(req);
         JSONObject jsonObject = (JSONObject) obj;
         try{
@@ -117,19 +121,19 @@ public class PlaneController {
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
             boolean servicefound = false;
-            List<ServiceRequest> servicesInProgress = serviceManager.getServiceRequestsInProgress();
-            for(ServiceRequest service: servicesInProgress)
-            {
-            	if(service.getPlane().getPlaneId() == planeId)
-            	{
-            		servicefound = true;
-            		break;
-            	}
+           // List<ServiceRequest> servicesInProgress = serviceManager.getServiceRequestsInProgress();
+          //  for(ServiceRequest service: servicesInProgress)
+          //  {
+            	//if(service.getPlane().getPlaneId() == planeId)
+            	//{
+            	//	servicefound = true;
+            		//break;
+            //	}
             		
-            }
-            if(state.getStateName() == "AtTerminal" && !servicefound){
+            //}
+            //if(state.getStateName() == "AtTerminal" && !servicefound){
             trackManager.registerNewRequest(plane);
-            }   
+           // }   
         } catch(Exception e){
             System.out.println(e);
         }
@@ -163,3 +167,4 @@ public class PlaneController {
 
 
 }
+

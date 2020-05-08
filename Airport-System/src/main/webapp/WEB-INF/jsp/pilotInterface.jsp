@@ -60,19 +60,20 @@ input:hover
 </div> <!-- div plane mock -->
 
 
-<div id="requestTrack" class = "widget">
+<div id="requestlanding2" class = "widget">
 <h4>Request track</h4>
-	<p style="display:none;" id="trackAffected"> Affected track : X </p>
-    <div id="requestLanding" class = "widget">
-        <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Landing Track"  />
+	<p style="display:none;" id="trackAffected"> Affected track : <span id="trackAffectedID">X</span> </p>
+    <div id="innerrequestLanding" class = "widget">
+        <input id="requestLanding" type="button" class="waves-effect waves-light btn-small" value="Request Landing Track" onclick="requestLandingFunc()"  />
     </div>
 
     <div id="requestTakeOff" style="display:none;">
-        <input id="requestTrack" type="button" class="waves-effect waves-light btn-small" value="Request Take Off Track" onClick="hideElements()"/>
+        <input id="requestTakeOff" type="button" class="waves-effect waves-light btn-small" value="Request Take Off Track"  onclick="requestTakeoffFunc()" onClick="hideElements()"/>
     </div>
     <br>
     <hr>
 </div>
+
 
 
 <div id="status" class = "widget">
@@ -121,6 +122,34 @@ input:hover
 
 
     connectServicesWebsocket();
+    connectTrackWebsocket();
+    function connectTrackWebsocket() {
+       var socket = new SockJS('/planes-websocket');
+       stompClient = Stomp.over(socket);
+       stompClient.connect({}, function (frame) {
+          console.log('Connected: ' + frame);
+          stompClient.subscribe('/tracks/updates', function (update) {
+             
+             updateObject = JSON.parse(update.body);
+             console.log("Umer TEST:"+updateObject.trackID)
+             if(updateObject != null) {
+             	document.getElementById("trackAffectedID").innerHTML = updateObject.trackID;
+             	
+		        console.log("Track id : "+updateObject.trackID);
+		        
+		        let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+		    document.getElementById("status").innerHTML = html;
+             } else {
+             	
+             }
+             
+          });
+       });
+    }
+    
     function connectServicesWebsocket() {
        var socket = new SockJS('/planes-websocket');
        stompClient = Stomp.over(socket);
@@ -185,9 +214,10 @@ input:hover
             changeState('AwaitingTrack');
         };
         
-        document.getElementById("requestLanding").onclick = function () {
+       function requestLandingFunc() {
         let planeId = "${planeId}";
         let data = {"planeId": planeId};
+        //alert(data);
          $.ajax({
                             type : "POST",
                             data: JSON.stringify(data),
@@ -200,17 +230,18 @@ input:hover
                                 console.log(data);
                             },
                 });
+                changeState('AwaitingTrackForLanding');
                 let html = '<h4>Status</h4>'+
 				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    	document.getElementById("status").innerHTML = html;
                 $("#trackAffected").show();
                 $("#requestLanding").hide(); 
                 $("#requestTakeOff").hide();
-        };
+        }
         
-        document.getElementById("requestTakeOff").onclick = function () {
+        function requestTakeoffFunc() {
         let planeId = "${planeId}";
         let data = {"planeId": planeId};
          $.ajax({
@@ -225,12 +256,15 @@ input:hover
                                 console.log(data);
                             },
                 });
-            changeState('');
+            changeState('AwaitingTrackForTakeOff');
             let html = '<h4>Status</h4>'+
 				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    document.getElementById("status").innerHTML = html;
+		    
+		    $("#trackAffected").show();
+            $("#requestTakeOff").hide();
         };
         
 	function updateServiceStatus(updateObject){
