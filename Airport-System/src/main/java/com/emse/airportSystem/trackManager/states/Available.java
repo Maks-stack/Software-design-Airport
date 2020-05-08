@@ -1,14 +1,25 @@
 package com.emse.airportSystem.trackManager.states;
 
-public class Available extends TrackState {
+import com.emse.airportSystem.trackManager.model.Track;
+
+public class Available implements TrackState {
+
+    private String state = "available";
 
     public Available() {
-        this.setAvailable(true);
         this.setState("available");
     }
 
-    public TrackState proceedToNextStep() {
-        System.out.println("Next Step: " + this.getState());
-        return new Assigned();
+    public void setState(String state) {
+        this.state = state;
+    }
+
+    public String getState() {
+        return state;
+    }
+
+    @Override
+    public void proceedToNextStep(Track track) {
+        track.setState(new Assigned());
     }
 }

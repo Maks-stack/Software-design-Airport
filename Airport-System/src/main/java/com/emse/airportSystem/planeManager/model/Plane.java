@@ -25,6 +25,10 @@ public class Plane {
     return model;
   }
 
+  public void nextState() {
+    state.proceedToNextState(this);
+  }
+
   public String getPlaneId() {
     return planeId;
   }

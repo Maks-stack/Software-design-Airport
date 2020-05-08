@@ -9,9 +9,10 @@ public class Track {
     private TrackState state;
     private Plane assignedPlane;
 
-    public Track(){}
+    public Track() {
+    }
 
-    public Track (int trackID, TrackState state) {
+    public Track(int trackID, TrackState state) {
         this.trackID = trackID;
         this.state = state;
     }
@@ -38,6 +39,10 @@ public class Track {
 
     public void setAssignedPlane(Plane assignedPlane) {
         this.assignedPlane = assignedPlane;
+    }
+
+    public void nextState() {
+        state.proceedToNextStep(this);
     }
 
     @Override

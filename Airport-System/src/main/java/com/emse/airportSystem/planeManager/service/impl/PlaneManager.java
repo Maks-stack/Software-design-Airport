@@ -17,8 +17,8 @@ import java.util.List;
 
 @Service
 public class PlaneManager implements Observable, IPlaneManager {
-    private ArrayList<Plane> planes = new ArrayList<Plane>();
-    List<Observer> observers = new ArrayList<Observer>();
+    private ArrayList<Plane> planes = new ArrayList<>();
+    List<Observer> observers = new ArrayList<>();
 
     {
         for (int i = 0; i<10; i++) {
@@ -38,13 +38,12 @@ public class PlaneManager implements Observable, IPlaneManager {
         return planes;
     }
 
-    //should not be here
     public void proceedToNextState(Plane plane) {
-        plane.setState(plane.getState().proceedToNextState());
+        plane.nextState();
         notifyObservers(Arrays.asList(plane, null,plane.getState().getStateName()));
     }
 
-    public Plane getPlaneById(String planeId) throws Exception
+    public Plane getPlaneById(String planeId)
     {
         for (Plane plane: planes){
             if(plane.getPlaneId().equals(planeId)){
@@ -62,7 +61,7 @@ public class PlaneManager implements Observable, IPlaneManager {
     public void handleServiceCompleted(PlaneService service){
         try {
             notifyObservers(Arrays.asList(getPlaneById(service.getPlaneId()), service)); System.out.println("LA2");
-        } catch (Exception e){
+        } catch (Exception ignored){
 
         }
     }
@@ -72,7 +71,7 @@ public class PlaneManager implements Observable, IPlaneManager {
 
     @Override
     public void notifyObservers() {
-        observers.forEach(obj -> obj.update());
+        observers.forEach(Observer::update);
     }
 
     @Override
