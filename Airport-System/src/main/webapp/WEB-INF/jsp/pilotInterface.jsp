@@ -135,6 +135,9 @@ input:hover
              if(updateObject[1] === "nextState") {
              	changeValueState(updateObject);
              }
+             if(updateObject[1] === "cancel") {
+             	cancelService(updateObject); console.log("Cancel");
+             }
              
           });
        });
@@ -385,6 +388,17 @@ input:hover
     function hideElements() {
     	$("#CatalogOfServices").hide();
     	$("#CatalogOfGates").hide();
+    }
+    
+    function cancelService(updateObject) {
+    	let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
+        let service = updateObject[2]
+        let nameService = service.name; 
+        if(nameService.startsWith("Refuel")) {
+        	let html = '<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="${service.value}" onClick="processService(\'${service.key}\',\'${service.value}\');" />' +
+        				'<p> This service has been canceled. You can launch it again </p>';
+			document.getElementById("${service.key}").innerHTML = html;
+        }
     }
     
 </script>

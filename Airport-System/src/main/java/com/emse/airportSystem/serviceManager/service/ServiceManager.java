@@ -72,15 +72,15 @@ public class ServiceManager implements Observable{
             service.setPlaneId(originalServiceRequest.getPlane().getPlaneId());
             Thread t = new Thread(service);
             t.start();
-            planeManager.handleServiceAssigned(originalServiceRequest.getPlane(), service); 
+            planeManager.handleServiceAssigned(originalServiceRequest.getPlane(), service);
         } else {
             throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
         }
     }
 
     public void cancelService(String serviceId) {
-        PlaneService service = (PlaneService) services.get(serviceId); 
-        service.cancelService(); planeManager.handleServiceCanceled(service.getPlaneId(), service);
+        PlaneService service = (PlaneService) services.get(serviceId);
+        service.cancelService();
     }
 
     public void assignRandomService() throws ServiceNotAvailableException, RequestNotFoundException {

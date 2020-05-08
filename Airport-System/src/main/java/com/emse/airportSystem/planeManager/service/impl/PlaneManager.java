@@ -97,13 +97,8 @@ public class PlaneManager implements Observable, IPlaneManager {
         return planes.get(rand.nextInt(planes.size()));
     }
     
-    public void handleServiceCanceled (String planeId, PlaneService service) {
-    	for(Plane p: planes) {
-    		if(p.getPlaneId() == planeId) {
-    			notifyObservers(Arrays.asList(p, "cancel", service));
-    			break;
-    		}
-    	}
+    public void handleServiceCanceled (Plane plane, PlaneService service) {
     	
+    			notifyObservers(Arrays.asList(plane,"cancel", service)); 
     }
 }
