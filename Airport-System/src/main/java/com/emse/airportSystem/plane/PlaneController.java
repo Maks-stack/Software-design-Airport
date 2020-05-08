@@ -142,8 +142,9 @@ public class PlaneController {
     public void notifyServiceSubscribers(Object obj) {
         List objList = (List) obj;
         Plane plane = (Plane) objList.get(0);
-        PlaneService service = (PlaneService) objList.get(1);
-        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
+        //String nomService = (String) objList.get(1);
+        //PlaneService service = (PlaneService) objList.get(2);
+        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj); System.out.println("LA2");
     }
     
     @RequestMapping("/plane/changeState")

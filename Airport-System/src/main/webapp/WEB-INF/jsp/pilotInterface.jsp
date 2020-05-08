@@ -129,10 +129,10 @@ input:hover
           stompClient.subscribe('/planes/${planeId}/updates', function (update) {
              console.log("Je reviens");
              updateObject = JSON.parse(update.body);
-             console.log("TEST:"+updateObject[1])
-             if(updateObject[1] != null) {
+             if(updateObject[1] === "assigned") {
              	updateServiceStatus(updateObject); 
-             } else {
+             } 
+             if(updateObject[1] === "nextState") {
              	changeValueState(updateObject);
              }
              
@@ -232,7 +232,7 @@ input:hover
         
 	function updateServiceStatus(updateObject){
         let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
-        let service = updateObject[1]
+        let service = updateObject[2]
         let nameService = service.name; 
         console.log("Service Name : "+service.name); console.log("Service ID : "+service.id);
         if(nameService.startsWith("Refuel")) {
