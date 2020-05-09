@@ -156,7 +156,7 @@ input:hover
        stompClient.connect({}, function (frame) {
           //console.log('Connected: ' + frame);
           stompClient.subscribe('/planes/${planeId}/updates', function (update) {
-             console.log("Je reviens");
+            
              updateObject = JSON.parse(update.body);
              if(updateObject[1] === "assigned") {
              	updateServiceStatus(updateObject); 
@@ -165,7 +165,7 @@ input:hover
              	changeValueState(updateObject);
              }
              if(updateObject[1] === "cancel") {
-             	cancelService(updateObject); console.log("Cancel");
+             	cancelService(updateObject); 
              }
              
           });
@@ -279,7 +279,7 @@ input:hover
         
 	function updateServiceStatus(updateObject){
         let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
-        let service = updateObject[2]
+        let service = updateObject[2]; console.log("Je suis dedans!");
         let nameService = service.name; 
         console.log("Service Name : "+service.name); console.log("Service ID : "+service.id);
         if(nameService.startsWith("Refuel")) {
@@ -437,12 +437,18 @@ input:hover
     function cancelService(updateObject) {
     	let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
         let service = updateObject[2]
-        let nameService = service.name; 
-        if(nameService.startsWith("Refuel")) {
-        	let html = '<input id="${service.key}" type="button" class="waves-effect waves-light btn-small" value="${service.value}" onClick="processService(\'${service.key}\',\'${service.value}\');" />' +
-        				'<p> This service has been canceled. You can launch it again </p>';
-			document.getElementById("${service.key}").innerHTML = html;
-        }
+        let nameService = service.name; console.log("Dans cancelService:"+service.name);
+
+		if(nameService.startsWith("Refuel")) {
+			alert("The refuel service has been canceled. You can launch it again");
+			let html = '<input id="refuel" type="button" class="waves-effect waves-light btn-small" value="REFUEL" onClick="processService(\'refuel\',\'Refuel service\');" />';
+			document.getElementById("refuel").innerHTML = html; 
+			//$("#gateServices").show(); $("#valueOfGateAffected").hide(); 
+			
+			
+		}
+    	
+ 
     }
     
 </script>

@@ -156,7 +156,7 @@ public class PlaneController {
         Plane plane = (Plane) objList.get(0);
         //String nomService = (String) objList.get(1);
         //PlaneService service = (PlaneService) objList.get(2);
-        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj); System.out.println("LA2");
+        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj); System.out.println("LA21");
     }
     
     @RequestMapping("/plane/changeState")

@@ -99,6 +99,6 @@ public class PlaneManager implements Observable, IPlaneManager {
     
     public void handleServiceCanceled (Plane plane, PlaneService service) {
     	System.out.println("ICancel:"+plane.getPlaneId());
-		//notifyObservers(Arrays.asList(plane,"cancel", service)); 
+		notifyObservers(Arrays.asList(plane,"cancel", service)); 
     }
 }
