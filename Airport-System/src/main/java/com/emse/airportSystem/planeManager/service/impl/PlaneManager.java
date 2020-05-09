@@ -59,12 +59,8 @@ public class PlaneManager implements Observable, IPlaneManager {
         notifyObservers(Arrays.asList(plane, "assigned", service)); System.out.println("LA11");
     }
 
-    public void handleServiceCompleted(PlaneService service){
-        try {
-            notifyObservers(Arrays.asList(getPlaneById(service.getPlaneId()),"completed" ,service)); System.out.println("LA22");
-        } catch (Exception e){
-
-        }
+    public void handleServiceCompleted(Plane plane,PlaneService service){
+        notifyObservers(Arrays.asList(plane,"completed" ,service)); System.out.println("LA22");
     }
 
     @Override

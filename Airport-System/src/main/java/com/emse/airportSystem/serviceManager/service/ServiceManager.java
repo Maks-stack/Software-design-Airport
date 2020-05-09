@@ -115,8 +115,15 @@ public class ServiceManager implements Observable{
         newServiceRequests.put(serviceRequest.getId(), serviceRequest);
     }
 
-    public void notifyServiceCompleted(PlaneService service){
-        planeManager.handleServiceCompleted(service);
+    public void notifyServiceCompleted(PlaneService service, String planeId) {
+    	Plane plane = null; 
+    	for(ServiceRequest rs : serviceRequestsInProgress) {
+    		System.out.println("1:"+planeId+"2:"+rs.getPlane().getPlaneId());
+        	if(planeId == rs.getPlane().getPlaneId()) {
+        		plane = rs.getPlane(); System.out.println("Here:"+plane.getPlaneId());
+        	}
+        }
+        planeManager.handleServiceCompleted(plane,service); 
     }
 
     public Collection<ServiceRequest> getNewServiceRequests(){

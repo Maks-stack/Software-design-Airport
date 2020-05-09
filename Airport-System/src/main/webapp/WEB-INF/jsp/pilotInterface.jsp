@@ -167,6 +167,9 @@ input:hover
              if(updateObject[1] === "cancel") {
              	cancelService(updateObject); 
              }
+             if(updateObject[1] === "completed") {
+             	serviceCompleted(updateObject); console.log("haut");
+             }
              
           });
        });
@@ -441,14 +444,22 @@ input:hover
 
 		if(nameService.startsWith("Refuel")) {
 			alert("The refuel service has been canceled. You can launch it again");
-			let html = '<input id="refuel" type="button" class="waves-effect waves-light btn-small" value="REFUEL" onClick="processService(\'refuel\',\'Refuel service\');" />';
+			let html = '<input id="refuel" type="button" class="waves-effect waves-light btn-small" value="Refuel service" onClick="processService(\'refuel\',\'Refuel service\');" />';
 			document.getElementById("refuel").innerHTML = html; 
 			//$("#gateServices").show(); $("#valueOfGateAffected").hide(); 
-			
-			
+
 		}
-    	
- 
+    }
+    
+    function serviceCompleted(updateObject) {
+		let plane = updateObject[0] // Kind of hack, single updated service is first element in updateObject
+        let service = updateObject[2]
+        let nameService = service.name; console.log("Dans serviceCompleted:"+service.name);
+
+		if(nameService.startsWith("Refuel")) {
+			let html = '<input id="refuel" type="button" style="background-color:#32CD32;border-radius:5px 5px;" disabled="disabled" value="Refuel service" onClick="processService(\'refuel\',\'Refuel service\');" />';
+			document.getElementById("refuel").innerHTML = html; 
+		}
     }
     
 </script>
