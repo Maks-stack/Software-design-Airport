@@ -22,6 +22,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -98,11 +99,12 @@ public class PlaneController {
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
-            
-          //  if(state.getStateName() == "InAir"){
-            trackManager.registerNewRequest(plane);
-            planeManager.proceedToNextState(plane);
-        //}
+           
+            if(state.getStateName().equals("InAir")){
+            	
+	            trackManager.registerNewRequest(plane);
+	            planeManager.proceedToNextState(plane);
+            }
            
         } catch(Exception e){
             System.out.println(e);
@@ -116,26 +118,32 @@ public class PlaneController {
     public void requestTakeOff(@RequestBody String req){
     	Object obj= JSONValue.parse(req);
         JSONObject jsonObject = (JSONObject) obj;
+        String response= "Not Sent";
         try{
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
             boolean servicefound = false;
-           // List<ServiceRequest> servicesInProgress = serviceManager.getServiceRequestsInProgress();
-          //  for(ServiceRequest service: servicesInProgress)
-          //  {
-            	//if(service.getPlane().getPlaneId() == planeId)
-            	//{
-            	//	servicefound = true;
-            		//break;
-            //	}
+            Collection<ServiceRequest> servicesInProgress = serviceManager.getNewServiceRequests();
+            for(ServiceRequest service: servicesInProgress)
+            {
+            	Plane p = service.getPlane();
+            	if(p.getPlaneId().equals(planeId))
+            	{
+            		servicefound = true;
+            		break;
+            	}
             		
-            //}
-            //if(state.getStateName() == "AtTerminal" && !servicefound){
-            trackManager.registerNewRequest(plane);
-           // }   
+            }
+            
+            if(state.getStateName().equals("AtTerminal") && !servicefound){
+            	trackManager.registerNewRequest(plane);
+            	//response =  "Sent";
+            }
+            
         } catch(Exception e){
             System.out.println(e);
+           // return "Not Sent";
         }
     }
 

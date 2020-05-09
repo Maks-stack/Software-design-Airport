@@ -197,6 +197,7 @@ input:hover
     
     
         document.getElementById("requestTrack").onclick = function () {
+        
 	        let planeId = "${planeId}";
 	        let data = {"planeId": planeId, "service":"Bus"}; //Bus?
 	        $.ajax({
@@ -242,6 +243,7 @@ input:hover
         }
         
         function requestTakeoffFunc() {
+        document.getElementById("trackAffectedID").innerHTML = "X";
         let planeId = "${planeId}";
         let data = {"planeId": planeId};
          $.ajax({
@@ -249,19 +251,27 @@ input:hover
                             data: JSON.stringify(data),
                             contentType : 'application/json; charset=utf-8',
                             url : "http://localhost:8080/plane/requestTakeOff",
-                            success: function(data){
-                                console.log(data);
+                            success: function(res){
+                                console.log("umer1: "+res);
+                                //if(sent) // TO-DO
+                                //{
+                                	changeState('AwaitingTrackForTakeOff');
+						            let html = '<h4>Status</h4>'+
+										    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
+										    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
+										    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+								    document.getElementById("status").innerHTML = html;
+                                //}
+                                //else {
+                                  // display error
+                               // }
+                                
                               },
-                            error: function(data){
-                                console.log(data);
+                            error: function(res){
+                                console.log("umer: " + res);
                             },
                 });
-            changeState('AwaitingTrackForTakeOff');
-            let html = '<h4>Status</h4>'+
-				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
-				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
-		    document.getElementById("status").innerHTML = html;
+            
 		    
 		    $("#trackAffected").show();
             $("#requestTakeOff").hide();
