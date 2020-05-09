@@ -1,7 +1,10 @@
 <!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en">
+
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <script src="/webjars/jquery/3.1.1-1/jquery.min.js"></script>
 <script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"></script>
 <link href="css/serviceManager.css" rel="stylesheet">
@@ -14,22 +17,26 @@
 
 
 <body>
-<div id= "container">
-    <h4>Service manager</h4>
+<div  id= "container">
+   <div class="w3-container w3-teal">
+    <h4>Service manager </h4>
+   </div> 
 	<hr>
 	<div id="planeMocker" class="widget">
 	    <p>This button will create a new plane object and create a random service request</p>
-	       <button id="mockplanerequest" class="waves-effect waves-light btn-small blue"> Mock Plane Request</button>
+	       <button id="mockplanerequest" class="waves-effect waves-light btn-small purple"> Mock Plane Request</button>
 
 	</div>
 	<div id="serviceAssigner" class="widget">
 	    <p>This button will change random service state and hopefully send update through websocket</p>
-	       <button id="mockassignservice" class="waves-effect waves-light btn-small blue">Assign random service</button>
+	       <button id="mockassignservice" class="waves-effect waves-light btn-small purple">Assign random service</button>
 
 	</div>
 	<hr>
 	<div id="newRequestsWidget" class="widget">
+	  <div class="w3-container w3-teal">
 	       <h4>New requests</h4>
+	  </div>     
 	       <c:if test="${not empty newServiceRequests}">
 	               <table class="greyGridTable">
 	                   <tr>
@@ -62,7 +69,7 @@
 	                                   
 	                               </select>
 	                           </td>
-	                           <td headers="NR_Button"><div class="button-newRequest"><button class="waves-effect waves-light btn-small blue"> Assign </button></div>
+	                           <td headers="NR_Button"><div class="button-newRequest"><button class="waves-effect waves-light btn-small purple"> Assign </button></div>
 	                       </tr>
 	                   </c:forEach>
 	               </table>
@@ -70,7 +77,9 @@
 	</div>
 	<hr>
 	<div id="overwiewOfServices" class="widget">
+	     <div class="w3-container w3-teal">
 	       <h4>Overview of the available services</h4>
+	     </div>  
 	           <table class="greyGridTable" style="width: 300px">
 	               <tr>
 	                   <th>Service</th>
@@ -111,7 +120,9 @@
 	</div>
 	<hr>
 	<div id="activeServices" class="widget">
+	  <div class="w3-container w3-teal">
 	  <h4>Active Services</h4>
+	  </div>
 	
 	  <div>
 	  <!-- 	<c:if test="${not empty gateServices}">-->
