@@ -190,7 +190,7 @@ input:hover
                 });
          
          let html = '<div id="serviceKey">'+
-         			'<input id="'+serviceKey+'" type="button" value="'+serviceValue+'" disabled="disabled" style="background-color:#F4661B" onClick="processService("'+serviceKey+'","'+serviceValue+'");"/>'+	
+         			'<input id="'+serviceKey+'" type="button" class="waves-effect waves-light btn-small" value="'+serviceValue+'" disabled="disabled" onClick="processService("'+serviceKey+'","'+serviceValue+'");"/>'+	
      				'</div>';
 		 document.getElementById(serviceKey).innerHTML = html;
         }
@@ -285,7 +285,7 @@ input:hover
         if(nameService.startsWith("Refuel")) {
         
         	let html = '<div id="refuel">'+
-         			'<input id="refuel" type="button" value="Refuel service" disabled="disabled" style="background-color:#7FDD4C" onClick="processService("refuel","Refuel service");"/>'+	
+         			'<input id="refuel" type="button" value="Refuel service" disabled="disabled" style="background-color:#FF7F50;border-radius:5px 5px;" onClick="processService("refuel","Refuel service");"/>'+	
      				'</div>';
 		 	document.getElementById("refuel").innerHTML = html;
 		 
