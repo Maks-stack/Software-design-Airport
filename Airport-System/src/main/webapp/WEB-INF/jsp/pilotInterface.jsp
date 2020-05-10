@@ -137,11 +137,7 @@ input:hover
              	
 		        console.log("Track id : "+updateObject.trackID);
 		        
-		        let html = '<h4>Status</h4>'+
-				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
-				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
-		    document.getElementById("status").innerHTML = html;
+		        
              } else {
              	
              }
@@ -237,7 +233,7 @@ input:hover
                 changeState('AwaitingTrackForLanding');
                 let html = '<h4>Status</h4>'+
 				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 		    	document.getElementById("status").innerHTML = html;
                 $("#trackAffected").show();
@@ -248,26 +244,31 @@ input:hover
         function requestTakeoffFunc() {
         document.getElementById("trackAffectedID").innerHTML = "X";
         let planeId = "${planeId}";
-        let data = {"planeId": planeId};
+        let data = {"plane": planeId};
          $.ajax({
                             type : "POST",
                             data: JSON.stringify(data),
+                           
                             contentType : 'application/json; charset=utf-8',
-                            url : "http://localhost:8080/plane/requestTakeOff",
+                            url : "http://localhost:8080/plane/requestTakeOff?plane="+planeId,
                             success: function(res){
-                                console.log("umer1: "+res);
-                                //if(sent) // TO-DO
-                                //{
+                                console.log("umer1: "+JSON.stringify(res));
+                                if(res["response"] == "Sent") // TO-DO
+                                {
+                                 alert("sent");
                                 	changeState('AwaitingTrackForTakeOff');
 						            let html = '<h4>Status</h4>'+
 										    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
 										    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 										    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 								    document.getElementById("status").innerHTML = html;
-                                //}
-                                //else {
-                                  // display error
-                               // }
+								    $("#trackAffected").show();
+                                    $("#requestTakeOff").hide();
+                                }
+                                else {
+                                    alert("Can't request for TakeOff Yet!");
+                             
+                                }
                                 
                               },
                             error: function(res){
@@ -276,8 +277,7 @@ input:hover
                 });
             
 		    
-		    $("#trackAffected").show();
-            $("#requestTakeOff").hide();
+		    
         };
         
 	function updateServiceStatus(updateObject){
@@ -335,6 +335,7 @@ input:hover
 		    document.getElementById("status").innerHTML = html;
 		    $("#requestLanding").show();
 		    $("#requestTakeOff").hide();
+		    $("#trackAffected").hide();
 		    
 		    
         }
@@ -443,7 +444,7 @@ input:hover
         let nameService = service.name; console.log("Dans cancelService:"+service.name);
 
 		if(nameService.startsWith("Refuel")) {
-			alert("The refuel service has been canceled. You can launch it again");
+			alert("Request gate");
 			let html = '<input id="refuel" type="button" class="waves-effect waves-light btn-small" value="Refuel service" onClick="processService(\'refuel\',\'Refuel service\');" />';
 			document.getElementById("refuel").innerHTML = html; 
 			//$("#gateServices").show(); $("#valueOfGateAffected").hide(); 

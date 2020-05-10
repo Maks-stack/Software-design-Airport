@@ -21,10 +21,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class PlaneController {
@@ -115,12 +122,17 @@ public class PlaneController {
     
     
     @RequestMapping(value = "/plane/requestTakeOff", method = RequestMethod.POST)
-    public void requestTakeOff(@RequestBody String req){
-    	Object obj= JSONValue.parse(req);
-        JSONObject jsonObject = (JSONObject) obj;
+    public void requestTakeOff(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+    	res.setContentType("application/json");
+    	//Object obj= JSONValue.parse(req);
+    	
+    	PrintWriter out = res.getWriter();
+        //JSONObject jsonObject = (JSONObject) obj;
         String response= "Not Sent";
         try{
-            String planeId = jsonObject.get("planeId").toString();
+            String planeId = req.getParameter("plane");
+            
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
             boolean servicefound = false;
@@ -130,6 +142,7 @@ public class PlaneController {
             	Plane p = service.getPlane();
             	if(p.getPlaneId().equals(planeId))
             	{
+            		System.out.println("service found: "+service);
             		servicefound = true;
             		break;
             	}
@@ -138,13 +151,19 @@ public class PlaneController {
             
             if(state.getStateName().equals("AtTerminal") && !servicefound){
             	trackManager.registerNewRequest(plane);
-            	//response =  "Sent";
+            	response =  "Sent";
             }
+            
             
         } catch(Exception e){
             System.out.println(e);
-           // return "Not Sent";
+            response = "Not Sent";
         }
+        JSONObject myObj = new JSONObject();
+        myObj.put("response",response);
+        
+        out.write(myObj.toString());
+        out.close();
     }
 
     public void notifyServiceSubscribers() {
