@@ -7,6 +7,8 @@
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
 </head>
+
+
 <body>
 
 <style>
