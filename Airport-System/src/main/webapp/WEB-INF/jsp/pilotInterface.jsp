@@ -276,7 +276,8 @@ input:hover
                             },
                 });
             
-		    
+		     $("#CatalogOfServices").hide(); 
+             $("#CatalogOfGates").hide();
 		    
         };
         
@@ -444,7 +445,7 @@ input:hover
         let nameService = service.name; console.log("Dans cancelService:"+service.name);
 
 		if(nameService.startsWith("Refuel")) {
-			alert("Request gate");
+			alert("The refuel service has been canceled. You can launch it again.");
 			let html = '<input id="refuel" type="button" class="waves-effect waves-light btn-small" value="Refuel service" onClick="processService(\'refuel\',\'Refuel service\');" />';
 			document.getElementById("refuel").innerHTML = html; 
 			//$("#gateServices").show(); $("#valueOfGateAffected").hide(); 
