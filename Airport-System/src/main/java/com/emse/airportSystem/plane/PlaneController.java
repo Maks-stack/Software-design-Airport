@@ -99,24 +99,34 @@ public class PlaneController {
     }
     
     @RequestMapping(value = "/plane/requestlanding", method = RequestMethod.POST)
-    public void requestlanding(@RequestBody String req){
-    	Object obj= JSONValue.parse(req);
-        JSONObject jsonObject = (JSONObject) obj;
+    public void requestlanding(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+    	res.setContentType("application/json");
+    	//Object obj= JSONValue.parse(req);
+    	
+    	PrintWriter out = res.getWriter();
+        //JSONObject jsonObject = (JSONObject) obj;
+        String response= "Not Sent";
         try{
-            String planeId = jsonObject.get("planeId").toString();
+            String planeId = req.getParameter("plane");
+            
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
-           
             if(state.getStateName().equals("InAir")){
             	
-	            trackManager.registerNewRequest(plane);
-	            planeManager.proceedToNextState(plane);
+                trackManager.registerNewRequest(plane);
+                response = "Sent";
             }
-           
+            
         } catch(Exception e){
             System.out.println(e);
+            
         }
-
+        JSONObject myObj = new JSONObject();
+        myObj.put("response",response);
+        
+        out.write(myObj.toString());
+        out.close();
     }
     
     
@@ -157,7 +167,6 @@ public class PlaneController {
             
         } catch(Exception e){
             System.out.println(e);
-            response = "Not Sent";
         }
         JSONObject myObj = new JSONObject();
         myObj.put("response",response);

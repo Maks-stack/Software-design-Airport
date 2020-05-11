@@ -123,6 +123,7 @@ input:hover
 
     connectServicesWebsocket();
     connectTrackWebsocket();
+    var currentState = $("#planeState").text();
     function connectTrackWebsocket() {
        var socket = new SockJS('/planes-websocket');
        stompClient = Stomp.over(socket);
@@ -132,14 +133,41 @@ input:hover
              
              updateObject = JSON.parse(update.body);
              console.log("Umer TEST:"+updateObject.trackID)
+             console.log("Umer TEST Object:"+JSON.stringify(updateObject))
              if(updateObject != null) {
+              console.log("before : "+currentState);
+             
+            
+             
+             
              	document.getElementById("trackAffectedID").innerHTML = updateObject.trackID;
-             	
+             	if(updateObject.assignedPlane.state.stateName == "AwaitingTrackForLanding")
+             	{
+             		changeState('Landing');
+             	    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+				    document.getElementById("status").innerHTML = html;
+				    $("#trackAffected").show();
+	                $("#requestLanding").hide(); 
+	                $("#requestTakeOff").hide();
+		    	
+             	}
+             	else if(updateObject.assignedPlane.state.stateName == "AwaitingTrackForTakeOff")
+             	{
+             		changeState('TakingOff');
+             		let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
+				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled"/>'+
+				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+				    document.getElementById("status").innerHTML = html;
+				    $("#trackAffected").show();
+	                $("#requestLanding").hide(); 
+	                $("#requestTakeOff").hide();
+		    	
+             	}
 		        console.log("Track id : "+updateObject.trackID);
 		        
-		        
-             } else {
-             	
              }
              
           });
@@ -219,26 +247,40 @@ input:hover
         let data = {"planeId": planeId};
         //alert(data);
          $.ajax({
-                            type : "POST",
+                               type : "POST",
                             data: JSON.stringify(data),
+                           
                             contentType : 'application/json; charset=utf-8',
-                            url : "http://localhost:8080/plane/requestlanding",
-                            success: function(data){
-                                console.log(data);
+                            url : "http://localhost:8080/plane/requestlanding?plane="+planeId,
+                            success: function(res){
+                                console.log("umergill: "+JSON.stringify(res));
+                                if(res["response"] == "Sent") 
+                                {
+                                 alert("sent");
+                                 changeState('AwaitingTrackForLanding');
+                                 let html = '<h4>Status</h4>'+
+								    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+								    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled"/>'+
+								    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+						    	document.getElementById("status").innerHTML = html;
+				                $("#trackAffected").show();
+				                $("#requestLanding").hide(); 
+				                $("#requestTakeOff").hide();
+                                	
+                                }
+                                else {
+                                    alert("Can't request for !");
+                             
+                                }
+                                
                               },
-                            error: function(data){
-                                console.log(data);
+                            error: function(res){
+                                console.log("umer: " + res);
                             },
                 });
-                changeState('AwaitingTrackForLanding');
-                let html = '<h4>Status</h4>'+
-				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
-				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
-		    	document.getElementById("status").innerHTML = html;
-                $("#trackAffected").show();
-                $("#requestLanding").hide(); 
-                $("#requestTakeOff").hide();
+                
+                
+                
         }
         
         function requestTakeoffFunc() {
@@ -255,29 +297,33 @@ input:hover
                                 console.log("umer1: "+JSON.stringify(res));
                                 if(res["response"] == "Sent") // TO-DO
                                 {
-                                 alert("sent");
-                                	changeState('AwaitingTrackForTakeOff');
-						            let html = '<h4>Status</h4>'+
-										    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
+	                                 alert("sent");
+	                                 changeState('AwaitingTrackForTakeOff');
+	                                 $("#trackAffected").show();
+	                                 $("#requestTakeOff").hide();
+	                                 $("#CatalogOfServices").hide(); 
+             						 $("#CatalogOfGates").hide();
+             						 let html = '<h4>Status</h4>'+
+										    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
 										    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled" />'+
 										    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
-								    document.getElementById("status").innerHTML = html;
-								    $("#trackAffected").show();
-                                    $("#requestTakeOff").hide();
+                                	document.getElementById("status").innerHTML = html;
                                 }
                                 else {
                                     alert("Can't request for TakeOff Yet!");
-                             
+ 
                                 }
                                 
                               },
                             error: function(res){
                                 console.log("umer: " + res);
                             },
+                            
                 });
+                
+						            
             
-		     $("#CatalogOfServices").hide(); 
-             $("#CatalogOfGates").hide();
+		     
 		    
         };
         
