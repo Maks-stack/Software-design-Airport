@@ -2,29 +2,41 @@
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <html lang="en">
 <head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
 <script src="/webjars/jquery/3.1.1-1/jquery.min.js"></script>
 <script src="/webjars/jquery-ui/1.12.1/jquery-ui.min.js"></script>
 <link href="css/serviceManager.css" rel="stylesheet">
 <script src="/webjars/sockjs-client/1.0.2/sockjs.js"></script>
 <script src="/webjars/stomp-websocket/2.3.3/stomp.min.js"></script>
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css"</head>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
 <body>
-    <h1>Service manager</h1>
+<div  id= "container">
+   <div class="w3-container w3-teal">
+    <h4>Service manager </h4>
+   </div> 
+	<hr>
+	<div id="planeMocker" class="widget">
+	    <p>This button will create a new plane object and create a random service request</p>
+	       <button style="background-color:purple;color:white;" id="mockplanerequest" class="waves-effect waves-light btn-small purple"> Mock Plane Request</button>
 
-<div id="planeMocker">
-    <p>This button will create a new plane object and create a random service request</p>
-    <input id="mockplanerequest" type="button" value="Mock Plane Request" />
-</div>
+	</div>
+	<div id="serviceAssigner" class="widget">
+	    <p>This button will change random service state and hopefully send update through websocket</p>
+	       <button style="background-color:purple;color:white;" id="mockassignservice" class="waves-effect waves-light btn-small purple">Assign random service</button>
 
-<div id="serviceAssigner">
-    <p>This button will change random service state and hopefully send update through websocket</p>
-    <input id="mockassignservice" type="button" value="Assign random service" />
-</div>
+	</div>
+	<hr>
 
-<div id="newRequestsWidget">
-       <h2>New requests</h2>
+<div id="newRequestsWidget" class="widget">
+      <div class="w3-container w3-teal">
+       <h4>New requests</h4>
+      </div> 
        <c:if test="${not empty newServiceRequests}">
-               <table class="greyGridTable" style="width: 300px">
+               <table class="greyGridTable">
                    <tr>
                        <th id="NR_ServiceRequestID">Request ID</th>
                        <th id="NR_PlaneID">Plane ID</th>
@@ -38,7 +50,7 @@
                            <td headers="NR_PlaneID">${request.plane.planeId}</td>
                            <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
                            <td ALIGN="center" headers="NR_AvailableServices">
-                              <select>
+                              <select class = "browser-default">
                                   <c:choose>
                                       <c:when test="${request.serviceRequested=='Gate'}">
                                           <c:forEach items="${gateServices}" var="service">
@@ -53,7 +65,7 @@
                                    </c:choose>
                                </select>
                            </td>
-                           <td headers="NR_Button"><div class="button-newRequest"><button> Click Me </button></div>
+                           <td headers="NR_Button"><div class="button-newRequest"><button class="waves-effect waves-light btn-small purple"> Assign</button></div>
                        </tr>
                    </c:forEach>
                </table>
@@ -61,7 +73,10 @@
 </div>
 
 <div id="overwiewOfServices">
-       <h2>Overview of the available services</h2>
+     <br></br>
+      <div class="w3-container w3-teal">
+       <h4>Overview of the available services</h4>
+     </div>  
            <table class="greyGridTable" style="width: 300px">
                <tr>
                    <th>Service</th>
@@ -93,10 +108,12 @@
 </div>
 
 <div id="activeServices">
-  <h2>Active Services</h2>
+   <div class="w3-container w3-teal"> 
+    <h4>Active Services</h4>
+   </div> 
 
   <div>
-  	<c:if test="${not empty gateServices}">
+ 	  <!-- 	<c:if test="${not empty gateServices}">-->
                 <table id="activeServicesTable" class="greyGridTable">
 	                    <tr>
 	                    	<th>Plane ID</th>
@@ -105,7 +122,7 @@
 	                    </tr>
 	                    <tr id="noServicesWarning">
 	                    	<td>
-	                    		<h2>No ActiveServics</h2>
+	                    		<h4>No ActiveServics</h4>
                     		</td>
           				</tr>
 	                    
@@ -147,7 +164,7 @@
                 </table>
     </c:if>
  </div>
-
+</div>
 <script>
 	$( document ).ready(function() {
 		var tableBody = $("#activeServicesTable > tbody")
