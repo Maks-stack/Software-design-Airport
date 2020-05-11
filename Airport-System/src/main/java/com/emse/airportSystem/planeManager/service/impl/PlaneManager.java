@@ -40,7 +40,7 @@ public class PlaneManager implements Observable, IPlaneManager {
 
     public void proceedToNextState(Plane plane) {
         plane.nextState();
-        notifyObservers(Arrays.asList(plane, null,plane.getState().getStateName()));
+        notifyObservers(Arrays.asList(plane, "nextState" ,plane.getState().getStateName()));
     }
 
     public Plane getPlaneById(String planeId)
@@ -55,15 +55,12 @@ public class PlaneManager implements Observable, IPlaneManager {
 
     public void handleServiceAssigned(Plane plane, PlaneService service){
         //proceedToNextState(plane); System.out.println("LA1");
-        notifyObservers(Arrays.asList(plane, service));
+        notifyObservers(Arrays.asList(plane, "assigned", service)); System.out.println("LA11");
     }
 
-    public void handleServiceCompleted(PlaneService service){
-        try {
-            notifyObservers(Arrays.asList(getPlaneById(service.getPlaneId()), service)); System.out.println("LA2");
-        } catch (Exception ignored){
 
-        }
+    public void handleServiceCompleted(Plane plane,PlaneService service){
+        notifyObservers(Arrays.asList(plane,"completed" ,service)); System.out.println("LA22");
     }
 
     @Override
@@ -94,5 +91,10 @@ public class PlaneManager implements Observable, IPlaneManager {
     public Plane getRandomPlane() {
         Random rand = new Random();
         return planes.get(rand.nextInt(planes.size()));
+    }
+    
+    public void handleServiceCanceled (Plane plane, PlaneService service) {
+    	System.out.println("ICancel:"+plane.getPlaneId());
+		notifyObservers(Arrays.asList(plane,"cancel", service)); 
     }
 }

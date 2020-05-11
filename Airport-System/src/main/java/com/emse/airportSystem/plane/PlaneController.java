@@ -21,9 +21,17 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import java.io.PrintWriter;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.io.IOException;
+import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
+import javax.servlet.http.HttpServlet;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class PlaneController {
@@ -68,7 +76,7 @@ public class PlaneController {
             String planeId = jsonObject.get("planeId").toString();
             Plane plane = planeManager.getPlaneById(planeId);
             serviceManager.registerNewRequest(plane, jsonObject.get("service").toString());
-            if(jsonObject.get("service").toString().startsWith("gate")) {
+            if(jsonObject.get("service").toString().startsWith("bus")) { System.out.println("IF");
             	planeManager.proceedToNextState(plane);
             }
         } catch(Exception e){
@@ -91,48 +99,80 @@ public class PlaneController {
     }
     
     @RequestMapping(value = "/plane/requestlanding", method = RequestMethod.POST)
-    public void requestLand(@RequestBody String req){
-    	Object obj= JSONValue.parse(req);
-        JSONObject jsonObject = (JSONObject) obj;
+    public void requestlanding(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+    	res.setContentType("application/json");
+    	//Object obj= JSONValue.parse(req);
+    	
+    	PrintWriter out = res.getWriter();
+        //JSONObject jsonObject = (JSONObject) obj;
+        String response= "Not Sent";
         try{
-            String planeId = jsonObject.get("planeId").toString();
+            String planeId = req.getParameter("plane");
+            
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
-            
-            if(state.getStateName() == "InAir"){
-            trackManager.registerNewRequest(plane);
-        }
+            if(state.getStateName().equals("InAir")){
+            	
+                trackManager.registerNewRequest(plane);
+                response = "Sent";
+            }
             
         } catch(Exception e){
             System.out.println(e);
+            
         }
-
+        JSONObject myObj = new JSONObject();
+        myObj.put("response",response);
+        
+        out.write(myObj.toString());
+        out.close();
     }
+    
+    
+    
     @RequestMapping(value = "/plane/requestTakeOff", method = RequestMethod.POST)
-    public void requestTakeOffTrack(@RequestBody String req){
-    	Object obj= JSONValue.parse(req);
-        JSONObject jsonObject = (JSONObject) obj;
+    public void requestTakeOff(HttpServletRequest req, HttpServletResponse res)
+            throws ServletException, IOException {
+    	res.setContentType("application/json");
+    	//Object obj= JSONValue.parse(req);
+    	
+    	PrintWriter out = res.getWriter();
+        //JSONObject jsonObject = (JSONObject) obj;
+        String response= "Not Sent";
         try{
-            String planeId = jsonObject.get("planeId").toString();
+            String planeId = req.getParameter("plane");
+            
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
             boolean servicefound = false;
-            List<ServiceRequest> servicesInProgress = serviceManager.getServiceRequestsInProgress();
+            Collection<ServiceRequest> servicesInProgress = serviceManager.getNewServiceRequests();
             for(ServiceRequest service: servicesInProgress)
             {
-            	if(service.getPlane().getPlaneId() == planeId)
+            	Plane p = service.getPlane();
+            	if(p.getPlaneId().equals(planeId))
             	{
+            		System.out.println("service found: "+service);
             		servicefound = true;
             		break;
             	}
             		
             }
-            if(state.getStateName() == "AtTerminal" && !servicefound){
-            trackManager.registerNewRequest(plane);
-            }   
+            
+            if(state.getStateName().equals("AtTerminal") && !servicefound){
+            	trackManager.registerNewRequest(plane);
+            	response =  "Sent";
+            }
+            
+            
         } catch(Exception e){
             System.out.println(e);
         }
+        JSONObject myObj = new JSONObject();
+        myObj.put("response",response);
+        
+        out.write(myObj.toString());
+        out.close();
     }
 
     public void notifyServiceSubscribers() {
@@ -142,8 +182,9 @@ public class PlaneController {
     public void notifyServiceSubscribers(Object obj) {
         List objList = (List) obj;
         Plane plane = (Plane) objList.get(0);
-        PlaneService service = (PlaneService) objList.get(1);
-        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
+        //String nomService = (String) objList.get(1);
+        //PlaneService service = (PlaneService) objList.get(2);
+        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj); System.out.println("LA21");
     }
     
     @RequestMapping("/plane/changeState")
@@ -162,3 +203,4 @@ public class PlaneController {
 
 
 }
+
