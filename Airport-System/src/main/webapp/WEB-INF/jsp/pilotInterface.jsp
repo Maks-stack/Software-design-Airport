@@ -144,7 +144,8 @@ input:hover
              	if(updateObject.assignedPlane.state.stateName == "AwaitingTrackForLanding")
              	{
              		changeState('Landing');
-             	    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+             		let html = '<h4>Status</h4>'+
+				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
 				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
 				    document.getElementById("status").innerHTML = html;
