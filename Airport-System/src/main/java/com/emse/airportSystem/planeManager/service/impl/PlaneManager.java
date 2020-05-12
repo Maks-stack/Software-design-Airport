@@ -39,10 +39,8 @@ public class PlaneManager implements Observable, IPlaneManager {
     }
 
     public void proceedToNextState(Plane plane) {
-    	System.out.println("PLaneManagerState1:"+plane.getState().getStateName());
         plane.nextState(); 
         notifyObservers(Arrays.asList(plane, "nextState" ,plane.getState().getStateName()));
-        System.out.println("PLaneManagerState2:"+plane.getState().getStateName());
     }
 
     public Plane getPlaneById(String planeId)

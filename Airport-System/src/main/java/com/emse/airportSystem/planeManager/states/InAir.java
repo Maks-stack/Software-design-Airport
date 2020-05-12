@@ -13,6 +13,5 @@ public class InAir implements State {
 	@Override
 	public void proceedToNextState(Plane plane) {
 		plane.setState(new AwaitingTrackForLanding());
-		System.out.println("InAirhERE");
 	}
 }

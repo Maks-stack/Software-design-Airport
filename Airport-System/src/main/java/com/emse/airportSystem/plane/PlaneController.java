@@ -1,19 +1,15 @@
 package com.emse.airportSystem.plane;
 
-import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
-import com.emse.airportSystem.planeManager.states.*;
-import com.emse.airportSystem.serviceManager.model.PlaneService;
+import com.emse.airportSystem.planeManager.states.InAir;
+import com.emse.airportSystem.planeManager.states.State;
 import com.emse.airportSystem.serviceManager.model.ServiceRequest;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
-import com.emse.airportSystem.serviceManager.service.ServiceManager.*;
 import com.emse.airportSystem.trackManager.service.TrackManager;
-
 import net.minidev.json.JSONObject;
 import net.minidev.json.JSONValue;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.messaging.core.AbstractDestinationResolvingMessagingTemplate;
 import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -21,17 +17,14 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.io.PrintWriter;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
-import java.io.IOException;
-import javax.servlet.ServletException;
-import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 @Controller
 public class PlaneController {
@@ -109,16 +102,13 @@ public class PlaneController {
         String response= "Not Sent";
         try{
             String planeId = req.getParameter("plane");
-            
             Plane plane = planeManager.getPlaneById(planeId);
-            System.out.println("PlaneControoler1:"+plane.getState().getStateName());
-            State state = plane.getState(); System.out.println("PlaneControoler11:"+plane.getState().getStateName());
+            State state = plane.getState();
             if(state.getStateName().equals("InAir")){
             	
                 trackManager.registerNewRequest(plane);
                 response = "Sent";
             }
-            System.out.println("PlaneControoler2:"+plane.getState().getStateName());
             
         } catch(Exception e){
             System.out.println(e);
@@ -186,12 +176,11 @@ public class PlaneController {
         Plane plane = (Plane) objList.get(0);
         //String nomService = (String) objList.get(1);
         //PlaneService service = (PlaneService) objList.get(2);
-        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj); System.out.println("LA21");
+        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
     }
     
     @RequestMapping("/plane/changeState")
     public void changeState(@RequestBody String req){
-    	 System.out.println("CHANGE STATE !");
     	 Object obj= JSONValue.parse(req);
          JSONObject jsonObject = (JSONObject) obj;
          try{
