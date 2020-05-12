@@ -113,7 +113,7 @@ public class TrackManager implements Observable {
 
     public void registerNewRequest(Plane plane){
         newTrackRequests.add(new TrackRequest(plane, getFreeTracks()));
-        plane.nextState();
+        //plane.nextState();
         notifyRequestObservers(newTrackRequests);
     }
 

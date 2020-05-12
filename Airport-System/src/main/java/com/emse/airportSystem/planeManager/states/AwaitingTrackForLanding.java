@@ -9,10 +9,12 @@ public class AwaitingTrackForLanding implements State {
 	@Override
 	public void proceedToNextState(Plane plane) {
 		plane.setState(new Landing());
+		System.out.println("AWTTO");
 	}
 
 	public String getStateName(){
 		return this.getClass().getSimpleName();
+		
 	}
 
 }

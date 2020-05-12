@@ -111,12 +111,14 @@ public class PlaneController {
             String planeId = req.getParameter("plane");
             
             Plane plane = planeManager.getPlaneById(planeId);
-            State state = plane.getState();
+            System.out.println("PlaneControoler1:"+plane.getState().getStateName());
+            State state = plane.getState(); System.out.println("PlaneControoler11:"+plane.getState().getStateName());
             if(state.getStateName().equals("InAir")){
             	
                 trackManager.registerNewRequest(plane);
                 response = "Sent";
             }
+            System.out.println("PlaneControoler2:"+plane.getState().getStateName());
             
         } catch(Exception e){
             System.out.println(e);
@@ -189,6 +191,7 @@ public class PlaneController {
     
     @RequestMapping("/plane/changeState")
     public void changeState(@RequestBody String req){
+    	 System.out.println("CHANGE STATE !");
     	 Object obj= JSONValue.parse(req);
          JSONObject jsonObject = (JSONObject) obj;
          try{

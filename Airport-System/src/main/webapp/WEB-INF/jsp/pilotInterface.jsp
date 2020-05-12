@@ -141,9 +141,10 @@ input:hover
              
              
              	document.getElementById("trackAffectedID").innerHTML = updateObject.trackID;
-             	if(updateObject.assignedPlane.state.stateName == "AwaitingTrackForLanding")
+             	console.log("My status:"+updateObject.assignedPlane.state.stateName)
+             	if(updateObject.assignedPlane.state.stateName == "Landing")
              	{
-             		changeState('Landing');
+             		document.getElementById("planeState").innerHTML = "Landing";
              		let html = '<h4>Status</h4>'+
 				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
@@ -154,9 +155,9 @@ input:hover
 	                $("#requestTakeOff").hide();
 		    	
              	}
-             	else if(updateObject.assignedPlane.state.stateName == "AwaitingTrackForTakeOff")
+             	else if(updateObject.assignedPlane.state.stateName == "TakingOff")
              	{
-             		changeState('TakingOff');
+             		document.getElementById("planeState").innerHTML = "TakingOff";
              		let html = '<h4>Status</h4>'+
 				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
 				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled"/>'+
