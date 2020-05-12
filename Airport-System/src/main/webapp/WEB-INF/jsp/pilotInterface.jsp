@@ -62,7 +62,7 @@ input:hover
 
 <div id="requestlanding2" class = "widget">
 <h4>Request track</h4>
-	<p style="display:none;" id="trackAffected"> Affected track : <span id="trackAffectedID">X</span> </p>
+	<p style="display:none;" id="trackAffected"> Assigned track : <span id="trackAffectedID">X</span> </p>
     <div id="innerrequestLanding" class = "widget">
         <input id="requestLanding" type="button" class="waves-effect waves-light btn-small" value="Request Landing Track" onclick="requestLandingFunc()"  />
     </div>
@@ -96,7 +96,7 @@ input:hover
 </c:forEach>
 </div>
 <div id="valueOfGateAffected" style="display:none;">
-	<p> Affected gate: <span id="gateAffected"> </span> </p>
+	<p> Assigned gate: <span id="gateAffected"> </span> </p>
 </div>
 <hr>
 </div>
@@ -384,10 +384,7 @@ input:hover
 		    $("#CatalogOfServices").show();
 		    $("#trackAffected").hide();
             $("#requestTakeOff").show();
-		    
         }
-        
-        
     }
     
     
