@@ -33,10 +33,10 @@ public class PlaneService implements Runnable{
             e.printStackTrace();
         }
         this.available = Boolean.TRUE;
-        planeId = "";
+        
         serviceManager.notifyObservers(this);
-        serviceManager.notifyServiceCompleted(this);
-
+        serviceManager.notifyServiceCompleted(this,planeId);
+        planeId = "";
 
     }
 
