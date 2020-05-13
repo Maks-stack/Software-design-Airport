@@ -17,6 +17,7 @@
 
 <body>
 
+
 <h4>Planes and states</h4>
 <table class="greyGridTable" style="width: 300px" id="planeStateTable">
     <tr>
@@ -30,18 +31,11 @@
         </tr>
     </c:forEach>
 </table>
-<button id="mockadvancestate" >Advance plane state</button>
 
 
 
 <script>
-    document.getElementById("mockadvancestate").onclick = function () {
-     $.ajax({
-        type : "GET",
-        contentType : 'application/json; charset=utf-8',
-        url : "http://"+window.location.hostname+":8080/advanceplanestate",
-     });
-    };
+
 
     connectPublicInterfaceWebsocket();
 
@@ -51,7 +45,17 @@
        stompClient.connect({}, function (frame) {
           console.log('Connected: ' + frame);
           stompClient.subscribe('/publicinterface/updates', function (update) {
-             console.log(update.body)
+              alert(update.body)
+              $.ajax({
+                  type : "POST",
+                  contentType : 'application/json; charset=utf-8',
+                  url : "http://"+window.location.hostname+":8080/publicinterface",
+                  success: function() {
+                      location.reload();
+                  }
+              });
+
+
           });
        });
     }

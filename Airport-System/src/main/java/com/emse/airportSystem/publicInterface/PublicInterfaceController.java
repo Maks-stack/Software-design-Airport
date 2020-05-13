@@ -33,8 +33,8 @@ public class PublicInterfaceController {
 
     @RequestMapping("/publicinterface")
     public String index(Model model) {
-        //TODO: Line bwllow is a hack, think of a better place/way to mocl planes. Maybe not...
-        publicInterfaceData.mockingData();
+        //TODO: Line bellow is a hack, think of a better place/way to mock planes. Maybe not...
+        //publicInterfaceData.mockingData();
         ArrayList<Plane> planes = planeManager.getPlanes();
         model.addAttribute("allPlanes", planes);
         return "publicInterface";
