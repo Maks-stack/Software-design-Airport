@@ -15,4 +15,9 @@ public class AwaitingTrackForLanding implements State {
 		return this.getClass().getSimpleName();
 	}
 
+	@Override
+	public String getDisplayName() {
+		return this.state;
+	}
+
 }

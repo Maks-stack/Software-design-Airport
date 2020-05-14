@@ -27,7 +27,7 @@
     <c:forEach items="${allPlanes}" var="plane">
         <tr>
             <td>${plane.planeId}</td>
-            <td>${plane.state.getStateName()}</td>
+            <td>${plane.state.getDisplayName()}</td>
         </tr>
     </c:forEach>
 </table>
@@ -38,6 +38,29 @@
 
 
     connectPublicInterfaceWebsocket();
+    connectTrackWebsocket();
+    connectPublicInterfaceWebsocket();
+
+    function connectTrackWebsocket() {
+        var socket = new SockJS('/publicinterface-websocket');
+        stompClient = Stomp.over(socket);
+        stompClient.connect({}, function (frame) {
+            console.log('Connected: ' + frame);
+            stompClient.subscribe('/tracks/updates', function (update) {
+                $.ajax({
+                    type : "POST",
+                    contentType : 'application/json; charset=utf-8',
+                    url : "http://"+window.location.hostname+":8080/publicinterface",
+                    success: function() {
+                        location.reload();
+                    }
+                });
+
+
+            });
+        });
+    }
+
 
     function connectPublicInterfaceWebsocket() {
        var socket = new SockJS('/publicinterface-websocket');
@@ -45,7 +68,6 @@
        stompClient.connect({}, function (frame) {
           console.log('Connected: ' + frame);
           stompClient.subscribe('/publicinterface/updates', function (update) {
-              alert(update.body)
               $.ajax({
                   type : "POST",
                   contentType : 'application/json; charset=utf-8',
