@@ -14,4 +14,9 @@ public class Landed implements State {
 	public void proceedToNextState(Plane plane) {
 		plane.setState(new AwaitingGateAssigment());
 	}
+
+	@Override
+	public String getDisplayName() {
+		return this.state;
+	}
 }

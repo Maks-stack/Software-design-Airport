@@ -15,4 +15,9 @@ public class AtTerminal implements State {
 		plane.setState(new AwaitingTrackForTakeOff());
 	}
 
+	@Override
+	public String getDisplayName() {
+		return this.state;
+	}
+
 }

@@ -14,4 +14,9 @@ public class TakingOff implements State {
 	public void proceedToNextState(Plane plane) {
 		plane.setState(new InAir());
 	}
+
+	@Override
+	public String getDisplayName() {
+		return this.state;
+	}
 }

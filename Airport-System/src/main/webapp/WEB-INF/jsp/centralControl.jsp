@@ -25,6 +25,8 @@
 	<button class="waves-effect waves-light btn-small">Pilot Interface</button>
 
 	<button class="waves-effect waves-light btn-small">Track Manager</button>
+
+	  <button class="waves-effect waves-light btn-small" onclick="window.open('/publicinterface');">Public Interface</button>
  
   	<div class="SidebarLeft"></div>
   	<div class="SidebarRight"></div>

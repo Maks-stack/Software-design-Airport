@@ -11,7 +11,7 @@ import org.springframework.web.socket.config.annotation.AbstractWebSocketMessage
 public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/services","/planes", "/tracks");
+        config.enableSimpleBroker("/services","/planes", "/tracks", "/publicinterface");
         config.setApplicationDestinationPrefixes("/app");
     }
     @Override
@@ -19,5 +19,6 @@ public class WebSocketConfig extends AbstractWebSocketMessageBrokerConfigurer {
         registry.addEndpoint("/services-websocket").withSockJS();
         registry.addEndpoint("/planes-websocket").withSockJS();
         registry.addEndpoint("/track-websocket").withSockJS();
+        registry.addEndpoint("/publicinterface-websocket").withSockJS();
     }
 }

@@ -14,4 +14,9 @@ public class AwaitingTrackForTakeOff implements State {
 	public void proceedToNextState(Plane plane) {
 		plane.setState(new TakingOff());
 	}
+
+	@Override
+	public String getDisplayName() {
+		return this.state;
+	}
 }

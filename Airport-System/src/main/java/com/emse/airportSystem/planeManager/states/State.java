@@ -9,4 +9,6 @@ public interface State {
 	}
 
 	void proceedToNextState(Plane plane);
+
+	String getDisplayName();
 }
