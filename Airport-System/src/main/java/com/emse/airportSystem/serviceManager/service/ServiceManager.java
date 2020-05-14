@@ -123,7 +123,9 @@ public class ServiceManager implements Observable{
         		plane = rs.getPlane(); System.out.println("Here:"+plane.getPlaneId());
         	}
         }
-        planeManager.handleServiceCompleted(plane,service); 
+        if(planeId != "") {
+        	planeManager.handleServiceCompleted(plane,service); 
+        }
     }
 
     public Collection<ServiceRequest> getNewServiceRequests(){
