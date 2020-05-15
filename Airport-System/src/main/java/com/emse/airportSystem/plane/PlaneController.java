@@ -2,6 +2,7 @@ package com.emse.airportSystem.plane;
 
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
+import com.emse.airportSystem.planeManager.states.AtTerminal;
 import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.planeManager.states.State;
 import com.emse.airportSystem.serviceManager.model.ServiceRequest;
@@ -33,7 +34,7 @@ public class PlaneController {
 
     @Autowired
     ServiceManager serviceManager;
-    
+
     @Autowired
     TrackManager trackManager;
 
@@ -52,7 +53,7 @@ public class PlaneController {
 
         //currently hardcoded values, but this will need to be changed
         String planeId = "Test"+System.currentTimeMillis();
-        planeManager.addPlane("A320", new InAir(), planeId);
+        planeManager.createAndAddPlane("A320", new InAir(), planeId);
         Map<String,String> serviceCatalog = serviceManager.getServiceCatalog();
         Plane p = planeManager.getPlaneById(planeId);
         model.addAttribute("planeState", p.getState().getStateName());
@@ -70,16 +71,16 @@ public class PlaneController {
             Plane plane = planeManager.getPlaneById(planeId);
             serviceManager.registerNewRequest(plane, jsonObject.get("service").toString());
             if(jsonObject.get("service").toString().startsWith("bus")) { System.out.println("IF");
-            	planeManager.proceedToNextState(plane);
+                planeManager.proceedToNextState(plane);
             }
         } catch(Exception e){
             System.out.println(e);
         }
     }
-    
+
     @RequestMapping(value = "/plane/requesttrack", method = RequestMethod.POST)
     public void requestTrack(@RequestBody String req){
-    	Object obj= JSONValue.parse(req);
+        Object obj= JSONValue.parse(req);
         JSONObject jsonObject = (JSONObject) obj;
         try{
             String planeId = jsonObject.get("planeId").toString();
@@ -90,14 +91,14 @@ public class PlaneController {
             System.out.println(e);
         }
     }
-    
+
     @RequestMapping(value = "/plane/requestlanding", method = RequestMethod.POST)
     public void requestlanding(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-    	res.setContentType("application/json");
-    	//Object obj= JSONValue.parse(req);
-    	
-    	PrintWriter out = res.getWriter();
+        res.setContentType("application/json");
+        //Object obj= JSONValue.parse(req);
+
+        PrintWriter out = res.getWriter();
         //JSONObject jsonObject = (JSONObject) obj;
         String response= "Not Sent";
         try{
@@ -105,94 +106,95 @@ public class PlaneController {
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
             if(state.getStateName().equals("InAir")){
-            	
+
                 trackManager.registerNewRequest(plane);
                 response = "Sent";
             }
-            
+
         } catch(Exception e){
             System.out.println(e);
-            
+
         }
         JSONObject myObj = new JSONObject();
         myObj.put("response",response);
-        
+
         out.write(myObj.toString());
         out.close();
     }
-    
-    
-    
+
+
+
     @RequestMapping(value = "/plane/requestTakeOff", method = RequestMethod.POST)
     public void requestTakeOff(HttpServletRequest req, HttpServletResponse res)
             throws ServletException, IOException {
-    	res.setContentType("application/json");
-    	//Object obj= JSONValue.parse(req);
-    	
-    	PrintWriter out = res.getWriter();
+        res.setContentType("application/json");
+        //Object obj= JSONValue.parse(req);
+
+        PrintWriter out = res.getWriter();
         //JSONObject jsonObject = (JSONObject) obj;
         String response= "Not Sent";
         try{
             String planeId = req.getParameter("plane");
-            
+
             Plane plane = planeManager.getPlaneById(planeId);
             State state = plane.getState();
             boolean servicefound = false;
             Collection<ServiceRequest> servicesInProgress = serviceManager.getNewServiceRequests();
             for(ServiceRequest service: servicesInProgress)
             {
-            	Plane p = service.getPlane();
-            	if(p.getPlaneId().equals(planeId))
-            	{
-            		System.out.println("service found: "+service);
-            		servicefound = true;
-            		break;
-            	}
-            		
+                Plane p = service.getPlane();
+                if(p.getId().equals(planeId))
+                {
+                    System.out.println("service found: "+service);
+                    servicefound = true;
+                    break;
+                }
+
             }
-            
+
             if(state.getStateName().equals("AtTerminal") && !servicefound){
-            	trackManager.registerNewRequest(plane);
-            	response =  "Sent";
+                trackManager.registerNewRequest(plane);
+                response =  "Sent";
             }
-            
-            
+
+
         } catch(Exception e){
             System.out.println(e);
         }
         JSONObject myObj = new JSONObject();
         myObj.put("response",response);
-        
+
         out.write(myObj.toString());
         out.close();
     }
 
-    public void notifyServiceSubscribers() {
+    public void notifyPlaneSubscribers() {
         this.template.convertAndSend("/planes/updates", "Test");
     }
 
-    public void notifyServiceSubscribers(Object obj) {
-        List objList = (List) obj;
-        Plane plane = (Plane) objList.get(0);
-        //String nomService = (String) objList.get(1);
-        //PlaneService service = (PlaneService) objList.get(2);
-        this.template.convertAndSend("/planes/"+plane.getPlaneId() +"/updates", obj);
+    public void notifyPlaneSubscribers(Object obj) {
+        Plane plane;
+        try {
+            plane = (Plane) obj;
+        } catch (Exception e){
+            List objList = (List) obj;
+            plane = (Plane) objList.get(0);
+        }
+        this.template.convertAndSend("/planes/"+plane.getId() +"/updates", obj);
     }
-    
+
     @RequestMapping("/plane/changeState")
     public void changeState(@RequestBody String req){
-    	 Object obj= JSONValue.parse(req);
-         JSONObject jsonObject = (JSONObject) obj;
-         try{
-             String planeId = jsonObject.get("planeId").toString();
-             Plane plane = planeManager.getPlaneById(planeId);
-             planeManager.proceedToNextState(plane);
+        Object obj= JSONValue.parse(req);
+        JSONObject jsonObject = (JSONObject) obj;
+        try{
+            String planeId = jsonObject.get("planeId").toString();
+            Plane plane = planeManager.getPlaneById(planeId);
+            planeManager.proceedToNextState(plane);
 
-         } catch(Exception e){
-             System.out.println(e);
-         }
+        } catch(Exception e){
+            System.out.println(e);
+        }
     }
-
-
 }
 

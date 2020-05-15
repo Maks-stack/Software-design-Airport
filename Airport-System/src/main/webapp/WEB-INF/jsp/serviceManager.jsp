@@ -1,4 +1,4 @@
-s<!DOCTYPE html>
+<!DOCTYPE html>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 <%@ taglib uri="http://java.sun.com/jsp/jstl/functions" prefix="fn" %>
 <html lang="en">
@@ -45,7 +45,7 @@ s<!DOCTYPE html>
 	                   <c:forEach items="${newServiceRequests}" var="request">
 	                       <tr>
 	                           <td headers="NR_ServiceRequestID">${request.id}</td>
-	                           <td headers="NR_PlaneID">${request.plane.planeId}</td>
+	                           <td headers="NR_PlaneID">${request.plane.id}</td>
 	                           <td headers="NR_ServiceRequested">${request.serviceRequested}</td>
 	                           <td ALIGN="center" headers="NR_AvailableServices">
 	                           <c:forEach items="${allServices}" var="serviceGroup">
@@ -113,7 +113,7 @@ s<!DOCTYPE html>
 	                    <c:forEach items="${serviceGroup.value}" var="service">
 	                     <c:if test ="${ not service.available}">
 	                        <tr id="${service.id}">
-	                        <td> Plane ID: ${service.planeId} </td>
+	                        <td> Plane ID: ${service.assignedPlane.id} </td>
 	                        <td>${service.name}</td>
 	                        <td>${service.available}</td>
 	                        <td>timeStarted:${service.timeStarted}</td>
@@ -232,7 +232,7 @@ s<!DOCTYPE html>
 	var serviceRequestRow = function(update){
 
 		var requestId = update[0].id
-		var planeId = update[0].plane.planeId
+		var planeId = update[0].plane.id
 		var serviceName = update[0].serviceRequested
 		
 		var output =

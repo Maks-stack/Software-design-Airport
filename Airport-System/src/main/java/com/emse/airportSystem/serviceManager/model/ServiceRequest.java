@@ -13,20 +13,20 @@ public class ServiceRequest {
     ServiceManager serviceManager;
 
     public ServiceRequest(Plane plane, String serviceRequested, ServiceManager serviceManager){
-        this.id = plane.getPlaneId()+serviceRequested+System.currentTimeMillis();
+        this.id = plane.getId()+serviceRequested+System.currentTimeMillis();
         this.plane = plane;
         this.serviceRequested = serviceRequested;
         this.serviceManager = serviceManager;
-        
+
         JSONObject json = new JSONObject();
         json.put("type", "serviceRequest");
         json.put("id", this.id);
         json.put("plane", this.plane);
         json.put("serviceRequested", this.serviceRequested);
-        
+
         serviceManager.notifyObservers(json);
     }
-    
+
     public Plane getPlane() {
         return plane;
     }

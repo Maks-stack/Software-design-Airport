@@ -10,7 +10,6 @@ public class ServiceRefuel extends PlaneService {
         this.serviceManager = serviceManager;
         this.name = name;
         this.id = id;
-        this.cancelled = Boolean.FALSE;
         this.duration = 15000;
         this.timeStarted = LocalDateTime.MAX;
     }
@@ -20,7 +19,6 @@ public class ServiceRefuel extends PlaneService {
         this.serviceManager = serviceManager;
         this.name = name;
         this.id= id;
-        this.cancelled = Boolean.FALSE;
         this.duration = 15000;
         this.timeStarted = LocalDateTime.MAX;
     }

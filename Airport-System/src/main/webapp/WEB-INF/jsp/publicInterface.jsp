@@ -26,7 +26,7 @@
     </tr>
     <c:forEach items="${allPlanes}" var="plane">
         <tr>
-            <td>${plane.planeId}</td>
+            <td>${plane.id}</td>
             <td>${plane.state.getDisplayName()}</td>
         </tr>
     </c:forEach>

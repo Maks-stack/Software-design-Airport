@@ -19,16 +19,17 @@ import java.util.List;
 public class PlaneManager implements Observable, IPlaneManager {
     private ArrayList<Plane> planes = new ArrayList<>();
     List<Observer> observers = new ArrayList<>();
-
     {
         for (int i = 0; i<10; i++) {
-            planes.add(new Plane("Boeing 737", new InAir(), "Plane_" + i));
+            planes.add(new Plane("Boeing 737", new InAir(), "Plane_" + i, this));
         }
     }
 
-    public void addPlane(String model, State state, String planeId) {
-        this.planes.add(new Plane(model, state, planeId));
+    public void createAndAddPlane(String model, State state, String planeId) {
+        this.planes.add(new Plane(model, state, planeId, this));
     }
+
+    public void addPlane(Plane plane) {this.planes.add(plane); }
 
     public void removePlane(Plane plane) {
         this.planes.remove(plane);
@@ -39,14 +40,14 @@ public class PlaneManager implements Observable, IPlaneManager {
     }
 
     public void proceedToNextState(Plane plane) {
-        plane.nextState(); 
+        plane.nextState();
         notifyObservers(Arrays.asList(plane, "nextState" ,plane.getState().getStateName()));
     }
 
     public Plane getPlaneById(String planeId)
     {
         for (Plane plane: planes){
-            if(plane.getPlaneId().equals(planeId)){
+            if(plane.getId().equals(planeId)){
                 return plane;
             }
         }
@@ -54,13 +55,13 @@ public class PlaneManager implements Observable, IPlaneManager {
     }
 
     public void handleServiceAssigned(Plane plane, PlaneService service){
-        //proceedToNextState(plane); System.out.println("LA1");
-        notifyObservers(Arrays.asList(plane, "assigned", service)); System.out.println("LA11");
+        notifyObservers(Arrays.asList(plane, "assigned", service));
     }
 
 
-    public void handleServiceCompleted(Plane plane,PlaneService service){
-        notifyObservers(Arrays.asList(plane,"completed" ,service)); System.out.println("LA22");
+    public void handleServiceCompleted(String planeId, PlaneService service){
+        Plane plane = getPlaneById(planeId);
+        notifyObservers(Arrays.asList(plane,"completed" ,service));
     }
 
     @Override
@@ -83,18 +84,18 @@ public class PlaneManager implements Observable, IPlaneManager {
 
     public Plane findPlane(String id) {
         return planes.stream()
-            .filter(plane -> plane.getPlaneId().equals(id))
-            .findFirst()
-            .orElseThrow(() -> new PlaneNotFoundException(id));
+                .filter(plane -> plane.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new PlaneNotFoundException(id));
     }
 
     public Plane getRandomPlane() {
         Random rand = new Random();
         return planes.get(rand.nextInt(planes.size()));
     }
-    
+
     public void handleServiceCanceled (Plane plane, PlaneService service) {
-    	System.out.println("ICancel:"+plane.getPlaneId());
-		notifyObservers(Arrays.asList(plane,"cancel", service)); 
+        System.out.println("ICancel:"+plane.getId());
+        notifyObservers(Arrays.asList(plane,"cancel", service));
     }
 }

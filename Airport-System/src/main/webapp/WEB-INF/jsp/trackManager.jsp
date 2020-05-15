@@ -25,8 +25,8 @@
                <th></th>
            </tr>
            <c:forEach items="${newTrackRequests}" var="request">
-                   <tr id="${request.plane.planeId}">
-                       <td>${request.plane.planeId}</td>
+                   <tr id="${request.plane.id}">
+                       <td>${request.plane.id}</td>
                        <td ALIGN="center">
                           <select>
                               <c:forEach items="${availableTracks}" var="track">
@@ -54,7 +54,7 @@
                     <tr id="${track.trackID}">
                         <td value=${track.trackID}>${track.trackID}</td>
                         <td>${track.state.state}</td>
-                        <td>${track.assignedPlane.planeId}</td>
+                        <td>${track.assignedPlane.id}</td>
                         <td><input onclick="unassignTrack(this)" type="button" ${ track.state.state eq "assigned"? '' : 'disabled="disabled"'} value="Unassign track" /></td>
                     </tr>
                 </c:forEach>
@@ -64,7 +64,6 @@
 
 <script>
     connectTrackWebsocket();
-    connectRequestWebsocket();
     function connectTrackWebsocket() {
        var socket = new SockJS('/track-websocket');
        stompClient = Stomp.over(socket);
@@ -78,6 +77,7 @@
         });
     };
 
+    connectRequestWebsocket();
     function connectRequestWebsocket() {
        var socket = new SockJS('/track-websocket');
        stompClient = Stomp.over(socket);
@@ -93,7 +93,7 @@
     function updateTrackStatus(update){
         $('tr').each(function(){
             if($(this).attr('id') == update.trackID){
-                var planeId = update.assignedPlane? update.assignedPlane.planeId : "";
+                var planeId = update.assignedPlane? update.assignedPlane.id : "";
                 var isDisabled = planeId? "" : "disabled";
                 $(this).html("<td>"+update.trackID+"</td><td>"+update.state.state+"</td><td>"+ planeId +"</td><td><input onclick='unassignTrack(this)' " + isDisabled + " type='button' value='Unassign track' /></td>");
             }
@@ -112,8 +112,8 @@
 
     var addRequestRow = function(request){
     	var output =
-    	'<tr id="' + request.plane.planeId + '">' +
-    	'<td>'+ request.plane.planeId +'</td>' +
+    	'<tr id="' + request.plane.id + '">' +
+    	'<td>'+ request.plane.id +'</td>' +
     	'<td><select>'+ addOptions(request.availableTracks) + '</select></td>' +
         '<td><input onclick="assignTrack(this);" type="button" value="Assign track" />' +
         '</tr>'
