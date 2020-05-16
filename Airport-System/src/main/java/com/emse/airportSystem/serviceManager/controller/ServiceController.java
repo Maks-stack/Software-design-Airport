@@ -96,17 +96,17 @@ public class ServiceController {
 
     @RequestMapping("/addserviceteam")
     @ResponseBody
-    public ResponseEntity<?> AddServiceTeam(@RequestParam String serviceSelected)
+    public ResponseEntity<?> AddServiceTeam(@RequestParam String serviceSelected, @RequestParam String serviceName)
     throws ServiceNotAvailableException, RequestNotFoundException {
-            serviceManager.AddServiceTeam(serviceSelected);
+            serviceManager.AddServiceTeam(serviceSelected, serviceName);
             return new ResponseEntity<>(HttpStatus.OK);
     }
     
     @RequestMapping("/removeserviceteam")
     @ResponseBody
-    public ResponseEntity<?> RemoveServiceTeam(@RequestParam String serviceSelected)
+    public ResponseEntity<?> RemoveServiceTeam(@RequestParam String serviceSelected, @RequestParam String teamSelected)
     throws ServiceNotAvailableException, RequestNotFoundException {
-    		serviceManager.RemoveServiceTeam(serviceSelected);
+    		serviceManager.RemoveServiceTeam(serviceSelected, teamSelected);
             return new ResponseEntity<>(HttpStatus.OK);
     }
     

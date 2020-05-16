@@ -109,10 +109,24 @@ public class ServiceManager implements Observable{
         newServiceRequests.put(serviceRequest.getId(), serviceRequest);
     }
     
-    public void AddServiceTeam(String serviceId) throws ServiceNotAvailableException, RequestNotFoundException {
+    public void AddServiceTeam2(String serviceId, String serviceName) throws ServiceNotAvailableException, RequestNotFoundException {
     	String ServiceId = serviceId.toLowerCase().split(" ")[0];
+    	List<PlaneService> ServiceList = getServicesByType(ServiceId);
+    	int IdCounter = -1;
+    	for (PlaneService service :ServiceList) {
+    		if ( IdCounter+1 != Integer.parseInt(service.getName().split(" ")[1])) {
+    			IdCounter++;
+    			break;
+    		}
+    		IdCounter = Integer.parseInt(service.getName().split(" ")[1]);
+    	}
+    	System.out.println((IdCounter+1 == ServiceList.size()));
+    	IdCounter = (IdCounter+1 == ServiceList.size()) ? IdCounter+1 : IdCounter;
+    	System.out.println("IdCounter: "+IdCounter +"| Size: "+ ServiceList.size());
+    	
+    	
     	String name = ServiceId.substring(0, 1).toUpperCase() + ServiceId.substring(1)+" "
-    			+ getServicesByType(ServiceId).size();
+    	+ IdCounter;
         String id = name.replace(" ","").toLowerCase();
         PlaneService service = null;//miro
     	switch(ServiceId){
@@ -125,20 +139,58 @@ public class ServiceManager implements Observable{
     	}
     	services.put(id, service);
     	notifyObservers(service);
+    	
     }
     
-    public void RemoveServiceTeam(String serviceId) throws ServiceNotAvailableException, RequestNotFoundException {
-    	String ServiceId = serviceId.toLowerCase().split(" ")[0];
-    	List<PlaneService> lista = getServicesByType(ServiceId);
-    	Collections.reverse(lista);
-    	for (PlaneService service : lista) {
-    		if(service.getAvailable()) {
-    			//notifyObservers(service);//Giancarlo
-    			services.remove(service.getId());
-    			break;
-    		}
+
+	public void AddServiceTeam(String serviceId, String serviceName) throws ServiceNotAvailableException, RequestNotFoundException {    	
+    	int idNumber = 0;
+        List<PlaneService> ListSameTypeServices = getServicesByType(serviceId);
+        List<Integer> ListofId = new ArrayList<Integer>();
+        for (PlaneService Service : ListSameTypeServices) {
+        	ListofId.add(Integer.parseInt(Service.getId().replaceAll("[^0-9]", "")));
         }
-    	notifyObservers(null);//mirar mañana 
+        for (PlaneService Service : ListSameTypeServices) {
+        	if(!ListofId.contains(idNumber)) {
+        		System.out.println("Break");
+        		break;
+        	}
+        	idNumber++;
+         }
+        String name = serviceName;
+        String id = serviceId + String.valueOf(idNumber);
+        PlaneService service = null;
+    	switch(serviceId){
+    	case "refuel":
+    		service = new ServiceRefuel(name, id , this);
+    		break;
+    	case "bus":
+    		service = new ServiceBus(name, id , this);
+    		break;
+    	default:
+    		System.err.println("ERROR");
+    	}
+    	services.put(id, service); 
+    	notifyObservers(service);
+    }
+    
+    public void RemoveServiceTeam(String serviceId, String teamId) throws ServiceNotAvailableException, RequestNotFoundException {
+    	String ServiceId = serviceId.toLowerCase().split(" ")[0];
+    	List<PlaneService> ServiceList = getServicesByType(ServiceId);
+    	boolean Does_exist = false;
+    	for (PlaneService service :ServiceList) {
+    		if(service.getName().equals(teamId)) {
+    			services.remove(service.getId());
+    			
+    		}
+    	}
+    	
+    	if(Does_exist) {
+    		throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
+    	}else {
+    		notifyObservers(null);//mirar mañana 	
+    	}
+    	
     }
 
     public void notifyServiceCompleted(PlaneService service){

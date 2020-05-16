@@ -48,17 +48,54 @@
 	       </div>
 	</div>
 <hr>
+<div id="AddServices" class = "widget">
+	<h4>Create services</h4>		
+	<table class="greyGridTable" style="width: 500px" id="overviewTable">
+	       	    <tr>
+	                   <th>Name</th>
+	                   <th>Service</th>
+	                   <th>Create</th>
+				</tr>
+				<tr>
+				<td><input id="InputName" type="text"></td>
+				<td>
+					<select class = "browser-default">
+						<c:forEach items="${allServices}" var="request">
+							<option value="${request.key.key}">${request.key.key}</option>
+						</c:forEach>
+					</select>
+				</td>
+				<td><button id="AddTeam" class="waves-effect waves-light btn-small">Add New Service Team</button></td>
+				</tr>
+	</table>
+</div>
 
-<div id="overwiewOfServices" class = "widget">
-	       	    <table class="greyGridTable" style="width: 300px" id="overviewTable">
+<hr>
+<div id="DeleteServices" class = "widget">
+	<h4>Delete services</h4>
+	       	    <table class="greyGridTable" style="width: 500px" id="overviewTable">
 	       	    <tr>
 	                   <th>Service</th>
+	                   <th>Select</th>
+	                   <th>Remove</th>
 	            </tr>
-	               <c:forEach items="${allServices}" var="serviceGroup">
+	               <c:forEach items="${allServices}" var="request">
 	                       <tr>
-	                       <td>${serviceGroup.key.value}</td>
-	                       <td><a class="btn-floating btn-small waves-effect waves-light red" onClick="RemoveTemporalName('${serviceGroup.key.value}')">-</a>
-	                       <a class="btn-floating btn-small waves-effect waves-light red" onClick="AddTemporalName('${serviceGroup.key.value}')">+</a></td>    
+	                       <td>${request.key.key}</td>
+	                       <td>
+	                           <c:forEach items="${allServices}" var="serviceGroup">
+	                                <c:if test="${fn:toLowerCase(serviceGroup.key.key).startsWith(fn:toLowerCase(request.key.key))}">
+	                                     <select class = "browser-default">
+	                                            <c:forEach items="${serviceGroup.value}" var="service">
+		                                            <c:if test="${ service.available }">
+		                                               <option value="${service.id}">${service.name}</option>
+	                                               </c:if>
+	                                            </c:forEach>
+	                                     </select>
+                                     </c:if>	                                
+	                           </c:forEach>                       
+	                       </td>
+	                       <td><button id="RemoveTeam" class="waves-effect waves-light btn-small">Remove Team</button></td>
 	                       </tr>
 	               </c:forEach>
 	           </table>
@@ -106,32 +143,51 @@
         }
         document.getElementById("overviewContainer").innerHTML = html;
   }
+
+
+    
+
+
+    $("body").on( "click", "#AddTeam", function(){
+    	
+		Name = document.getElementById("InputName").value;
+		
+    	if( /^([a-zA-Z]){3,6}([0-9]){0,2}$/.test(Name) ){
+    		$.ajax({
+                type: "POST",
+                url:  "http://"+window.location.hostname+":8080/addserviceteam",
+                data: {
+                    serviceSelected : $(this).closest('tr').find('td:eq(1) :selected').text(),
+                    serviceName : document.getElementById("InputName").value
+                  },
+                statusCode: {
+                    409: function(xhr) {
+                        alert(xhr.responseJSON.error.message);
+                    },
+                  	500: function(xhr) {
+                      alert(xhr.responseJSON.error.message);
+                	}
+                },
+                success :
+                	function(data){
+
+                }  
+            })
+    	}else{
+    		alert("Incorrect name for a service");
+    	}
+    	
+		
+	});
 	
-
-	function AddTemporalName(ServiceGroup){
-		$.ajax({
-            type: "POST",
-            url:  "http://"+window.location.hostname+":8080/addserviceteam",
-            data: {
-                serviceSelected : ServiceGroup
-              },
-            statusCode: {
-                409: function(xhr) {
-                    alert(xhr.responseJSON.error.message);
-                }
-            },
-            success :
-            	function(data){
-
-            }  
-        })
-	}
-	function RemoveTemporalName(ServiceGroup){
+	$("body").on( "click", "#RemoveTeam", function(){ 
+		
 		$.ajax({
             type: "POST",
             url:  "http://"+window.location.hostname+":8080/removeserviceteam",
             data: {
-                serviceSelected : ServiceGroup
+                serviceSelected : $(this).closest('tr').find('td:eq(0)').text(),
+                teamSelected : $(this).closest('tr').find('td:eq(1) :selected').text()
               },
             statusCode: {
                 409: function(xhr) {
@@ -143,8 +199,10 @@
 
             }  
         })
-	}	
+
+	});
 	
+
 	
 </script>
 </body>
