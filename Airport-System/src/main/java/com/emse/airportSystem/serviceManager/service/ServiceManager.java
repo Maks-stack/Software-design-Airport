@@ -24,12 +24,11 @@ public class ServiceManager implements Observable{
     Map<String, Object> services  = new HashMap<>();
     Map<String, ServiceRequest> newServiceRequests = new HashMap<>();
     List<ServiceRequest> serviceRequestsInProgress = new ArrayList<ServiceRequest>();
-    List<ServiceRequest> serviceRequestsCompleted = new ArrayList<ServiceRequest>();
     List<Observer> observers = new ArrayList<Observer>();
     Map<String,String> serviceCatalog = new HashMap<>();
 
     {
-        serviceCatalog.put("bus", "Bus service"); 
+        serviceCatalog.put("bus", "Bus service");
         serviceCatalog.put("refuel", "Refuel service");
 
         for (int i = 0; i < 10; i++) {
@@ -65,33 +64,27 @@ public class ServiceManager implements Observable{
 
     public void assignService(String requestId, String serviceId) throws ServiceNotAvailableException, RequestNotFoundException {
         PlaneService service = (PlaneService) services.get(serviceId);
-        if (service.getAvailable()) {
+        try {
+            ServiceRequest originalServiceRequest = newServiceRequests.get(requestId);
+            service.assignRequest(originalServiceRequest);
             registerServiceRequestsInProgress(requestId);
-            ServiceRequest originalServiceRequest = serviceRequestsInProgress.stream()
-            .filter(item -> item.getId().equals(requestId)).findFirst().orElse(null);
-            service.setPlaneId(originalServiceRequest.getPlane().getPlaneId());
-            Thread t = new Thread(service);
-            t.start();
             planeManager.handleServiceAssigned(originalServiceRequest.getPlane(), service);
-        } else {
-            throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
+        } catch (Exception e) {
+            throw new RequestNotFoundException("Request " +requestId+ " was not found");
         }
     }
 
     public void cancelService(String serviceId) {
-        PlaneService service = (PlaneService) services.get(serviceId); System.out.println("Nom:"+service.getPlaneId());
-        Plane plane = null;
-        for(ServiceRequest rs : serviceRequestsInProgress) {
-        	if(service.getPlaneId() == rs.getPlane().getPlaneId()) {
-        		plane = rs.getPlane();
-        	}
-        }
-        service.cancelService(); planeManager.handleServiceCanceled(plane,service);
+        PlaneService service = (PlaneService) services.get(serviceId);
+        Plane plane = service.getAssignedPlane();
+        service.cancelService();
+        planeManager.handleServiceCanceled(plane,service);
     }
 
     public void assignRandomService() throws ServiceNotAvailableException, RequestNotFoundException {
         try{
-            Plane mockPlane = new Plane("Mock1",new InAir(),"Mock1");
+            Plane mockPlane = new Plane("Mock1",new InAir(),"Mock1", planeManager);
+            planeManager.addPlane(mockPlane);
             ServiceRequest serviceRequest = new ServiceRequest(mockPlane,"Bus", this);
             newServiceRequests.put(serviceRequest.getId(), serviceRequest);
             this.assignService(serviceRequest.getId(), "bus"+new Random().nextInt(10));
@@ -163,14 +156,7 @@ public class ServiceManager implements Observable{
     }
 
     public void notifyServiceCompleted(PlaneService service, String planeId) {
-    	Plane plane = null; 
-    	for(ServiceRequest rs : serviceRequestsInProgress) {
-    		System.out.println("1:"+planeId+"2:"+rs.getPlane().getPlaneId());
-        	if(planeId == rs.getPlane().getPlaneId()) {
-        		plane = rs.getPlane(); System.out.println("Here:"+plane.getPlaneId());
-        	}
-        }
-        planeManager.handleServiceCompleted(plane,service); 
+        planeManager.handleServiceCompleted(planeId,service);
     }
 
     public Collection<ServiceRequest> getNewServiceRequests(){
@@ -203,6 +189,5 @@ public class ServiceManager implements Observable{
     public void notifyServiceRequestObservers(Object obj) {
         observers.forEach(observer -> observer.update(obj));
     }
-
 
 }

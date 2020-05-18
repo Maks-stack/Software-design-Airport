@@ -17,12 +17,12 @@ public class TracksObserver implements Observer {
 
     @Override
     public void update() {
-        this.trackController.notifyServiceSubscribers();
+        this.trackController.notifyTracksSubscribers();
     }
 
     @Override
     public void update(Object obj) {
-        this.trackController.notifyServiceSubscribers(obj);
+        this.trackController.notifyTracksSubscribers(obj);
     }
 
     public void updateRequest(Object obj) {

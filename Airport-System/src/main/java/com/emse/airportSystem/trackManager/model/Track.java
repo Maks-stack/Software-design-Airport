@@ -5,23 +5,23 @@ import com.emse.airportSystem.trackManager.states.TrackState;
 
 public class Track {
 
-    private int trackID;
+    private Integer trackID;
     private TrackState state;
     private Plane assignedPlane;
 
     public Track() {
     }
 
-    public Track(int trackID, TrackState state) {
+    public Track(Integer trackID, TrackState state) {
         this.trackID = trackID;
         this.state = state;
     }
 
-    public int getTrackID() {
+    public Integer getTrackID() {
         return trackID;
     }
 
-    public void setTrackID(int trackID) {
+    public void setTrackID(Integer trackID) {
         this.trackID = trackID;
     }
 

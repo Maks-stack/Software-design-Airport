@@ -24,10 +24,10 @@ public class TrackManager implements Observable {
     List<TrackRequest> newTrackRequests = new ArrayList<>();
 
     {
-        for (int i = 0; i < 2; i++) {
+        for (Integer i = 0; i < 2; i++) {
             tracks.add(new Track(i, new Available()));
         }
-        for (int i = 2; i < 4; i++) {
+        for (Integer i = 2; i < 4; i++) {
             tracks.add(new Track(i, new Available()));
         }
     }
@@ -65,36 +65,40 @@ public class TrackManager implements Observable {
         return availableTracks;
     }
 
-    public void assignTrack(int id, String planeId) {
+    public void assignTrack(Integer id, String planeId) {
         Track freeTrack = getFreeTracks().stream().parallel()
-            .filter(track -> track.getTrackID() == id)
-            .findAny()
-            .orElseThrow(RuntimeException::new);
+                .filter(track -> track.getTrackID() == id)
+                .findAny()
+                .orElseThrow(RuntimeException::new);
 
         freeTrack.nextState();
-        freeTrack.setAssignedPlane(planeManager.findPlane(planeId));
+        Plane plane = planeManager.findPlane(planeId);
+        freeTrack.setAssignedPlane(plane);
         deleteTrackRequest(planeId);
         notifyObservers(freeTrack);
         newTrackRequests.stream()
-            .map(TrackRequest::getAvailableTracks)
-            .forEach(list -> list.remove(freeTrack));
+                .map(TrackRequest::getAvailableTracks)
+                .forEach(list -> list.remove(freeTrack));
         notifyRequestObservers(newTrackRequests);
+
+        plane.setAssignedTrack(id);
         System.out.println("Assigned track: " + freeTrack.toString());
     }
 
-    public void unassignTrack(int id) {
+    public void unassignTrack(Integer id) {
         Track assignedTrack = tracks.stream()
-            .filter(track -> track.getTrackID() == id)
-            .findAny()
-            .orElseThrow(RuntimeException::new);
+                .filter(track -> track.getTrackID() == id)
+                .findAny()
+                .orElseThrow(RuntimeException::new);
         assignedTrack.nextState();
+        assignedTrack.getAssignedPlane().removeAssignedTrack();
         assignedTrack.setAssignedPlane(null);
         notifyObservers(assignedTrack);
 
         newTrackRequests.stream()
-            .map(TrackRequest::getAvailableTracks)
-            .peek(list -> list.add(assignedTrack))
-            .forEach(list -> list.sort(Comparator.comparingInt(Track::getTrackID)));
+                .map(TrackRequest::getAvailableTracks)
+                .peek(list -> list.add(assignedTrack))
+                .forEach(list -> list.sort(Comparator.comparingInt(Track::getTrackID)));
 
         notifyRequestObservers(newTrackRequests);
         System.out.println("Assigned track: " + assignedTrack.toString());
@@ -102,10 +106,10 @@ public class TrackManager implements Observable {
 
     private void deleteTrackRequest(String planeId) {
         TrackRequest request = newTrackRequests.stream().parallel()
-            .filter(trackRequest -> trackRequest.getPlane().getPlaneId().equals(planeId))
-            .peek(trackRequest -> trackRequest.getPlane().nextState())
-            .findAny()
-            .orElseThrow(RuntimeException::new);
+                .filter(trackRequest -> trackRequest.getPlane().getId().equals(planeId))
+                .peek(trackRequest -> trackRequest.getPlane().nextState())
+                .findAny()
+                .orElseThrow(RuntimeException::new);
 
         newTrackRequests.remove(request);
         notifyRequestObservers(newTrackRequests);

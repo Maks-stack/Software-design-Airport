@@ -1,8 +1,9 @@
 package com.emse.airportSystem.serviceManager.model;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
+import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
+import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.serviceManager.service.ServiceManager;
 
 public class PlaneService implements Runnable{
@@ -10,38 +11,47 @@ public class PlaneService implements Runnable{
     String id;
     Boolean available;
     ServiceManager serviceManager;
-    Boolean cancelled = false;
     LocalDateTime timeStarted;
     long duration = 50000;
-    String planeId = "";
+    Plane assignedPlane = null;
+    Thread serviceThread = null;
 
     public void cancelService() {
+        assignedPlane.removeAssignedService(this.id);
+        serviceThread.interrupt();
         setAvailable();
-        planeId = "";
-        this.cancelled = Boolean.TRUE;
-        serviceManager.notifyObservers(this);
-        return;
+    }
+
+    public void assignRequest(ServiceRequest serviceRequest) throws ServiceNotAvailableException {
+        if(available){
+            assignedPlane = serviceRequest.plane;
+            assignedPlane.addAssignedService(this.id);
+            serviceThread = new Thread(this);
+            serviceThread.start();
+        } else {
+            throw new ServiceNotAvailableException("Service "+ name + " is not available");
+        }
     }
 
     public void carryOutService() {
+        System.out.println(assignedPlane.toString());
         this.available = Boolean.FALSE;
         timeStarted = LocalDateTime.now();
         serviceManager.notifyObservers(this);
         try {
             Thread.sleep(duration);
+            assignedPlane.removeAssignedService(this.id);
+            serviceManager.notifyServiceCompleted(this, assignedPlane.getId());
+            setAvailable();
         } catch (InterruptedException e) {
-            e.printStackTrace();
+            System.out.println("Service cancelled");
         }
-        this.available = Boolean.TRUE;
-        
-        serviceManager.notifyObservers(this);
-        serviceManager.notifyServiceCompleted(this,planeId);
-        planeId = "";
-
     }
 
     public void setAvailable() {
         this.available = Boolean.TRUE;
+        this.assignedPlane = null;
+        serviceManager.notifyObservers(this);
     }
 
     public void setNotAvailable() {
@@ -57,7 +67,7 @@ public class PlaneService implements Runnable{
     public Boolean getAvailable() {
         return this.available;
     }
-    
+
     public LocalDateTime getTimeStarted() {
         return this.timeStarted;
     }
@@ -65,18 +75,12 @@ public class PlaneService implements Runnable{
     public long getDuration() {
         return this.duration;
     }
-    public void setPlaneId(String id) {
-    	this.planeId = id;
-    }
-    public String getPlaneId() {
-    	return this.planeId;
-    }
-    
+
+    public Plane getAssignedPlane(){ return assignedPlane; }
+
     @Override
     public void run() {
         this.carryOutService();
     }
-
-    public Boolean getCancelled(){ return this.cancelled; }
 
 }

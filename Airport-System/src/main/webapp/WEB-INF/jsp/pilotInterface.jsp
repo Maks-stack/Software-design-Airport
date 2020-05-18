@@ -121,75 +121,59 @@ input:hover
 
 
 <script>
-
-
-    connectServicesWebsocket();
-    connectTrackWebsocket();
+    connectPlaneWebsocket();
+    //connectTrackWebsocket();
     var currentState = $("#planeState").text();
-    function connectTrackWebsocket() {
-       var socket = new SockJS('/planes-websocket');
-       stompClient = Stomp.over(socket);
-       stompClient.connect({}, function (frame) {
-          console.log('Connected: ' + frame);
-          stompClient.subscribe('/tracks/updates', function (update) {
-             
-             updateObject = JSON.parse(update.body);
-             if(updateObject != null) {
-             	document.getElementById("trackAffectedID").innerHTML = updateObject.trackID;
-             	if(updateObject.assignedPlane.state.stateName == "Landing")
-             	{
-             		document.getElementById("planeState").innerHTML = "Landing";
-             		let html = '<h4>Status</h4>'+
-				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
-				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
-				    document.getElementById("status").innerHTML = html;
-				    $("#trackAffected").show();
-	                $("#requestLanding").hide(); 
-	                $("#requestTakeOff").hide();
-		    	
-             	}
-             	else if(updateObject.assignedPlane.state.stateName == "TakingOff")
-             	{
-             		document.getElementById("planeState").innerHTML = "TakingOff";
-             		let html = '<h4>Status</h4>'+
-				    '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
-				    '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled"/>'+
-				    '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
-				    document.getElementById("status").innerHTML = html;
-				    $("#trackAffected").show();
-	                $("#requestLanding").hide(); 
-	                $("#requestTakeOff").hide();
-		    	
-             	}
-		        console.log("Track id : "+updateObject.trackID);
 
-             }
-
-          });
-       });
-    }
     
-    function connectServicesWebsocket() {
+    function connectPlaneWebsocket() {
        var socket = new SockJS('/planes-websocket');
        stompClient = Stomp.over(socket);
        stompClient.connect({}, function (frame) {
           stompClient.subscribe('/planes/${planeId}/updates', function (update) {
             
              updateObject = JSON.parse(update.body);
-             if(updateObject[1] === "assigned") {
-             	updateServiceStatus(updateObject); 
-             } 
-             if(updateObject[1] === "nextState") {
-             	changeValueState(updateObject);
+
+             if (Array.isArray(updateObject)){
+                 if(updateObject[1] === "assigned") {
+                    updateServiceStatus(updateObject);
+                 }
+                 if(updateObject[1] === "nextState") {
+                    changeValueState(updateObject);
+                 }
+                 if(updateObject[1] === "cancel") {
+                    cancelService(updateObject);
+                 }
+                 if(updateObject[1] === "completed") {
+                    serviceCompleted(updateObject);
+                 }
+             } else {
+                  console.log(updateObject);
+                  if (updateObject.assignedTrackId != 'null'){
+                        document.getElementById("trackAffectedID").innerHTML = updateObject.assignedTrackId;
+                        if(updateObject.state.stateName == "Landing") {
+                            document.getElementById("planeState").innerHTML = "Landing";
+                            let html = '<h4>Status</h4>'+
+                            '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');" disabled="disabled"/>'+
+                            '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');"  />'+
+                            '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+                            document.getElementById("status").innerHTML = html;
+                            $("#trackAffected").show();
+                            $("#requestLanding").hide();
+                            $("#requestTakeOff").hide();
+                        } else if(updateObject.state.stateName == "TakingOff") {
+                            document.getElementById("planeState").innerHTML = "TakingOff";
+                            let html = '<h4>Status</h4>'+
+                            '<input id="inAir" type="button" value="In the air" onClick="changeState(\'InAir\');"/>'+
+                            '<input id="landed" type="button" value="Landed" onClick="changeState(\'Landed\');" disabled="disabled"/>'+
+                            '<input id="atTerminal" type="button" value="At terminal" onClick="changeState(\'AtTerminal\');" disabled="disabled"/>';
+                            document.getElementById("status").innerHTML = html;
+                            $("#trackAffected").show();
+                            $("#requestLanding").hide();
+                            $("#requestTakeOff").hide();
+                        }
+                  }
              }
-             if(updateObject[1] === "cancel") {
-             	cancelService(updateObject); 
-             }
-             if(updateObject[1] === "completed") {
-             	serviceCompleted(updateObject);
-             }
-             
           });
        });
     }
@@ -240,8 +224,7 @@ input:hover
        function requestLandingFunc() {
         let planeId = "${planeId}";
         let data = {"planeId": planeId};
-        //alert(data);
-         $.ajax({
+        $.ajax({
                             type : "POST",
                             data: JSON.stringify(data),
                            
@@ -388,66 +371,7 @@ input:hover
             $("#requestTakeOff").show();
         }
     }
-    
-    
-    document.getElementById("ChangeStatusButton").onclick = function () {
-    	let planeId = "${planeId}";
-        let data = {"planeId": planeId};
-    	$.ajax({
-            type : "POST",
-            data: JSON.stringify(data),
-            contentType : 'application/json; charset=utf-8',
-            url : "http://localhost:8080/plane/changeState",
-            success: function(data){
-                console.log(data);
-              },
-            error: function(data){
-                console.log(data);
-            },
-        });
-    	VisualizationBased_Status(document.getElementById('ChangeStatusButton').value);
-    	
-    };
-    function VisualizationBased_Status(status){
-    	switch(status) {
-    	  case "InAir":
-    		document.getElementById('ChangeStatusButton').value = "AwaitingTrackForLanding";
-    		
-      	    break;
-    	  case "AwaitingTrackForLanding":
-    	    document.getElementById('ChangeStatusButton').value = "Landing";
 
-    		  break;
-    	  case "Landing":
-      	    document.getElementById('ChangeStatusButton').value = "Landed";
-    		  break;  
-      	  case "Landed":
-        	document.getElementById('ChangeStatusButton').value = "AwaitingGateAssigment";
-
-            break;
-      	  case "AwaitingGateAssigment":
-          	document.getElementById('ChangeStatusButton').value = "AtTerminal";
-
-  		    break;  
-      	  case "AtTerminal":
-            document.getElementById('ChangeStatusButton').value = "AwaitingTrackForTakeOff";
-      		$("#CatalogOfServices").show();
-
-        	break;
-      	  case "AwaitingTrackForTakeOff":
-            document.getElementById('ChangeStatusButton').value = "TakingOff";
-            $("#CatalogOfServices").hide();
-
-  		    break;
-      	  case "TakingOff":
-            document.getElementById('ChangeStatusButton').value = "InAir";
-
-  		    break; 
-    	  default:
-    	  	console.log(status);
-    	} 
-    }
-    
     function changeValueState(updateObject) {
     	let plane = updateObject[0]
     	let state = updateObject[2]

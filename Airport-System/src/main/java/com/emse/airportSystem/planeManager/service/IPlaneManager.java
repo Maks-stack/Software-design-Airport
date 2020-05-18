@@ -7,7 +7,9 @@ import java.util.ArrayList;
 
 public interface IPlaneManager {
 
-  void addPlane(String model, State state, String planeId);
+  void createAndAddPlane(String model, State state, String planeId);
+
+  void addPlane(Plane plane);
 
   void removePlane(Plane plane);
 

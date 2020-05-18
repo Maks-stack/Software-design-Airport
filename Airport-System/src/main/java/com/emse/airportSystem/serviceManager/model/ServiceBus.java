@@ -11,11 +11,9 @@ public class ServiceBus extends PlaneService {
         this.serviceManager = serviceManager;
         this.name = name;
         this.id = id;
-        this.cancelled = Boolean.FALSE;
-        this.cancelled = Boolean.FALSE;
         this.timeStarted = LocalDateTime.MAX;
         this.duration = 30000;
-        
+
     }
 
     public ServiceBus(String name, String id, ServiceManager serviceManager, Boolean available){
@@ -23,7 +21,6 @@ public class ServiceBus extends PlaneService {
         this.serviceManager = serviceManager;
         this.name = name;
         this.id = id;
-        this.cancelled = Boolean.FALSE;
         this.duration = 30000;
         this.timeStarted = LocalDateTime.MAX;
     }

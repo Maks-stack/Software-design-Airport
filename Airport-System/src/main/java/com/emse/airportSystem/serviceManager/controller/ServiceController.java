@@ -2,6 +2,7 @@ package com.emse.airportSystem.serviceManager.controller;
 
 import com.emse.airportSystem.exceptions.RequestNotFoundException;
 import com.emse.airportSystem.exceptions.ServiceNotAvailableException;
+import com.emse.airportSystem.planeManager.service.impl.PlaneManager;
 import com.emse.airportSystem.planeManager.states.InAir;
 import com.emse.airportSystem.planeManager.model.Plane;
 import com.emse.airportSystem.serviceManager.model.PlaneService;
@@ -29,15 +30,18 @@ public class ServiceController {
     private ServiceManager serviceManager;
 
     @Autowired
+    private PlaneManager planeManager;
+
+    @Autowired
     private SimpMessagingTemplate template;
 
     public ServiceController(){
     }
 
     @RequestMapping("/")
-	  public String central() {
-	  	return "centralControl";
-	  }
+    public String central() {
+        return "centralControl";
+    }
 
     @RequestMapping("/servicemanager")
     public String index(Model model) {
@@ -60,8 +64,8 @@ public class ServiceController {
     @RequestMapping("/mockplanerequest")
     @ResponseBody
     public void mockPlaneRequest(Model model){
-        System.out.println("Mocking plane request");
-        Plane plane = new Plane("A777", new InAir(), "Test"+System.currentTimeMillis());
+        Plane plane = new Plane("A777", new InAir(), "Test"+System.currentTimeMillis(), planeManager);
+        planeManager.addPlane(plane);
         String[] optionsArray = {"Bus", "Refuel"};
         serviceManager.registerNewRequest(plane, optionsArray[(new Random()).nextInt(optionsArray.length)]);
     }
@@ -69,16 +73,16 @@ public class ServiceController {
     @RequestMapping("/assignservice")
     @ResponseBody
     public ResponseEntity<?> assignservice(@RequestParam String requestId, @RequestParam String serviceSelected)
-    throws ServiceNotAvailableException, RequestNotFoundException {
-            serviceManager.assignService(requestId, serviceSelected);
-            return new ResponseEntity<>(HttpStatus.OK);
+            throws ServiceNotAvailableException, RequestNotFoundException {
+        serviceManager.assignService(requestId, serviceSelected);
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping("/mockassignservice")
     @ResponseBody
     public ResponseEntity<?> mockAssignservice() throws ServiceNotAvailableException, RequestNotFoundException {
-            serviceManager.assignRandomService();
-            return new ResponseEntity<>(HttpStatus.OK);
+        serviceManager.assignRandomService();
+        return new ResponseEntity<>(HttpStatus.OK);
     }
 
     @RequestMapping("/cancelService")
@@ -116,7 +120,6 @@ public class ServiceController {
 
     public void notifyServiceSubscribers(Object updatedService) {
         Map<Map.Entry<String, String>, List<PlaneService>> allServices = serviceManager.getAllServicesMap();
-
         this.template.convertAndSend("/services/updates", Arrays.asList(updatedService, allServices));
     }
 

@@ -46,11 +46,11 @@ public class PublicInterfaceController {
         publicInterfaceData.advancePlaneState();
     }
 
-    public void notifyServiceSubscribers() {
+    public void notifyPublicInterfaceSubscribers() {
         this.template.convertAndSend("/planes/updates", "Test");
     }
 
-    public void notifyServiceSubscribers(Object obj) {
+    public void notifyPublicInterfaceSubscribers(Object obj) {
         this.template.convertAndSend("/publicinterface/updates", obj);
     }
 

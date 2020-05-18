@@ -4,8 +4,6 @@ import com.emse.airportSystem.observer.Observable;
 import com.emse.airportSystem.observer.Observer;
 import org.springframework.stereotype.Service;
 
-import java.util.List;
-
 @Service
 public class PlanesObserver implements Observer {
 
@@ -18,17 +16,17 @@ public class PlanesObserver implements Observer {
 
     @Override
     public void update() {
-        this.planeController.notifyServiceSubscribers();
+        this.planeController.notifyPlaneSubscribers();
     }
 
     @Override
     public void update(Object obj) {
-        this.planeController.notifyServiceSubscribers(obj);
+        this.planeController.notifyPlaneSubscribers(obj);
     }
 
     @Override
     public void updateRequest(Object obj) {
-        
+
     }
 
     @Override
