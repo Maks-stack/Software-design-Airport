@@ -57,18 +57,18 @@ public class TrackController {
         System.out.println("Mocking track request");
 
         TM.registerNewRequest(planeManager.getRandomPlane());
-        notifyServiceSubscribers("trackEndpointUpdate");
+        notifyTracksSubscribers("trackEndpointUpdate");
 
         notifyRequestSubscribers("requestEndpointUpdate");
 
         return ResponseEntity.ok().build();
     }
 
-    public void notifyServiceSubscribers() {
+    public void notifyTracksSubscribers() {
         this.template.convertAndSend("/tracks/updates", "Test");
     }
 
-    public void notifyServiceSubscribers(Object obj) {
+    public void notifyTracksSubscribers(Object obj) {
         this.template.convertAndSend("/tracks/updates", obj);
     }
 
