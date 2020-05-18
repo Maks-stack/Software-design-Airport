@@ -107,6 +107,53 @@ public class ServiceManager implements Observable{
         ServiceRequest serviceRequest = new ServiceRequest(plane, ServiceName, this);
         newServiceRequests.put(serviceRequest.getId(), serviceRequest);
     }
+    
+	public void AddServiceTeam(String serviceId, String serviceName) throws ServiceNotAvailableException, RequestNotFoundException {    	
+    	int idNumber = 0;
+        List<PlaneService> ListSameTypeServices = getServicesByType(serviceId);
+        List<Integer> ListofId = new ArrayList<Integer>();
+        for (PlaneService Service : ListSameTypeServices) {
+        	ListofId.add(Integer.parseInt(Service.getId().replaceAll("[^0-9]", "")));
+        }
+        for (PlaneService Service : ListSameTypeServices) {
+        	if(!ListofId.contains(idNumber)) {
+        		break;
+        	}
+        	idNumber++;
+         }
+        String name = serviceName;
+        String id = serviceId + String.valueOf(idNumber);
+        PlaneService service = null;
+    	switch(serviceId){
+    	case "refuel":
+    		service = new ServiceRefuel(name, id , this);
+    		break;
+    	case "bus":
+    		service = new ServiceBus(name, id , this);
+    		break;
+    	default:
+    		System.err.println("ERROR");
+    	}
+    	services.put(id, service); 
+    	notifyObservers(service);
+    }
+    
+    public void RemoveServiceTeam(String serviceId, String teamId) throws ServiceNotAvailableException, RequestNotFoundException {
+    	String ServiceId = serviceId.toLowerCase().split(" ")[0];
+    	List<PlaneService> ServiceList = getServicesByType(ServiceId);
+    	boolean Does_exist = false;
+    	for (PlaneService service :ServiceList) {
+    		if(service.getName().equals(teamId)) {
+    			services.remove(service.getId());		
+    		}
+    	}
+    	if(Does_exist) {
+    		throw new ServiceNotAvailableException("Service " +serviceId+ " is not available");
+    	}else {
+    		notifyObservers(null);
+    	}
+    	
+    }
 
     public void notifyServiceCompleted(PlaneService service, String planeId) {
         planeManager.handleServiceCompleted(planeId,service);
